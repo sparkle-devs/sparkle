@@ -1123,7 +1123,8 @@ function attachEventHandlers(ide) {
         dlg.inform(
           "About Crackle",
           `Crackle, a modding framework for Snap!\n` +
-          `Developed by tethrarxitet, codingisfun2831t and d016\n` +
+          `Developed by codingisfun2831t and d016\n` +
+          `Inspired by tethrarxitet and orchestrated by PPPDUD` +
           `Version ${window.__crackle__.version}\n`,
           world,
         );
