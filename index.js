@@ -1066,6 +1066,7 @@ function attachEventHandlers(ide) {
       about() {
         // show the dialog. soon after the image will load and update
         // the dialog with it.
+        let dlg = new DialogBoxMorph();
         dlg.inform(
           "About Crackle",
           `Crackle, a modding framework for Snap!\n` +
