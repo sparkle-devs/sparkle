@@ -1,7 +1,7 @@
 "use strict";
 /* 
-    CrackleSDK - A modding framework for Snap!
-    Copyright (C) 2025, developed by CrackleTeam
+    CrackleSDK - A modding framework for Snap! and its forks
+    Copyright (C) 2025, developed by CrackleTeam and later the Mojavesoft Group
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1068,8 +1068,8 @@ function attachEventHandlers(ide) {
         // the dialog with it.
         let dlg = new DialogBoxMorph();
         dlg.inform(
-          "About Crackle",
-          `Crackle, a modding framework for Snap!\n` +
+          "About Sparkle",
+          `Sparkle, a modding framework for Snap! and its forks\n` +
           `Developed by codingisfun2831t and d016\n` +
           `Inspired by tethrarxitet and orchestrated by PPPDUD\n` +
           `Version ${window.__crackle__.version}\n`,
