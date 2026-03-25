@@ -1,4 +1,4 @@
-# CrackleSDK API
+# Sparkle API
 This file will describe the interface you have with mods, both the `api` variable, the `Mod` object, and `Mod` events.
 
 ## Mod structure
@@ -8,7 +8,7 @@ return class extends Mod {
     // Metadata
     ID = "example-mod"; // the id of the mod
     NAME = "Example Mod"; // human-readable name
-    DESCRIPTION = "A example mod for CrackleSDK."; // description
+    DESCRIPTION = "A example mod for Sparkle."; // description
     VERSION = "1.0"; // version
     AUTHOR = "Your Name"; // author
     DEPENDS = []; // dependencies (mod ids, useful for libraries)
@@ -37,9 +37,9 @@ This section describes the variables/functions in the `api` member variable.
 
 ### Functions
 * `showMsg` - Show a basic message to the user.
-* `addApi` - Add a "extra API" to the Crackle API. This is useful for libraries. This is added to mods' `api` objects.
+* `addApi` - Add a "extra API" to the Sparkle API. This is useful for libraries. This is added to mods' `api` objects.
 * `inform` - Inform the user of something, with a title.
-* `wrapFunction` - Lets you add extra code that runs after a function. Crackle automatically discards each wrap when deleting a mod!
+* `wrapFunction` - Lets you add extra code that runs after a function. Sparkle automatically discards each wrap when deleting a mod!
 * `registerMenuHook` - Attach a menu hook. First item is the name of the menu to hook, and the second is a function which takes in a MenuMorph and modifies it. Here are the menu names:
     * `projectMenu` - Menu from file button
     * `settingsMenu` - Menu from settings button
@@ -57,9 +57,9 @@ The object stored in `this` is a `Mod` object (see `index.js`), because you of c
 * `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. 'detail' is the same as categoryCreating.
 
 ## "Snap" detection
-One very interesting feature in CrackleSDK is its cross-modness. This means, that not only can you run Crackle and make mods for Snap!, you can also use it on other Snap! mods!
+One very interesting feature in Sparkle is its cross-modness. This means, that not only can you run Sparkle and make mods for Snap!, you can also use it on other Snap! mods!
 
-The current term for a Snap! mod (including Snap! itself) is simply a "Snap". Currently we only support Snap! and Split, if you have created a mod and want detection for it, simply create a issue and we'll get on it!
+The current term for a Snap! mod (including Snap! itself) is simply a "Snap".
 
 There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making a mod for Split that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
 

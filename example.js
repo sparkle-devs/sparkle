@@ -2,7 +2,7 @@ return class extends Mod {
     // Metadata
     ID = "example-mod"; // the id of the mod
     NAME = "Example Mod"; // human-readable name
-    DESCRIPTION = "A example mod for CrackleSDK."; // description
+    DESCRIPTION = "A example mod for Sparkle."; // description
     VERSION = "1.0"; // version
     AUTHOR = "Your Name"; // author
     DEPENDS = []; // dependencies (mod ids, useful for libraries)
