@@ -106,7 +106,7 @@ class API {
 
   requireSnaps(...names) {
     if (!names.includes(this.snap.snap)) {
-      let msg = `Mod "${this.mod.name}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
+      let msg = `Mod "${this.mod.NAME}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
       this.inform(msg, "Incompatible Snap");
       throw new Error("snap not compatible");
     }
@@ -121,7 +121,7 @@ class API {
 
   disallowSnaps(...names) {
     if (names.includes(this.snap.snap)) {
-      let msg = `Mod "${this.mod.name}" does not work with ${this.snap.snap}!`;
+      let msg = `Mod "${this.mod.NAME}" does not work with ${this.snap.snap}!`;
       this.inform(msg, "Incompatible Snap");
       throw new Error("snap not compatible");
     }
@@ -296,12 +296,12 @@ class CrackleMorph extends ScrollFrameMorph {
           if (crackle.autoload.isAutoloaded(mod.ID)) {
             crackle.autoload.delete(mod.ID);
             world.children[0].showMessage(
-              `${mod.name} will no longer run on startup again.`,
+              `${mod.NAME} will no longer run on startup again.`,
             );
           } else {
             crackle.autoload.add(mod.ID);
             world.children[0].showMessage(
-              `${mod.name} will now run every time you open ${crackle.snap.snap}!`,
+              `${mod.NAME} will now run every time you open ${crackle.snap.snap}!`,
             );
           }
           autoloadButton.labelString = crackle.autoload.isAutoloaded(mod.ID)
