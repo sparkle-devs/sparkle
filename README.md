@@ -15,7 +15,7 @@ Go to `about:debugging`, go to `This Firefox`, click `Load Temporary Add-on...` 
 First, go to [chrome://extensions/](chrome://extensions/). There should be a "Developer mode" options. Simply press that, and then go to the "Manage Extensions" option/There should be a "Load unpacked" button at the top left. Import your Sparkle folder in there, and see the results.
 
 # How to use
-When launching Snap! or one of its mods with Sparkle open, you should see a new button being added to the title bar:
+When launching Snap! or one of its forks with Sparkle open, you should see a new button being added to the title bar:
 
 ![Snap! Topbar buttons, but with the new Addon button](doc/Buttons.png)
 
@@ -26,11 +26,11 @@ If you were to click on the addon button, you'll see this menu popup:
 Here is what each of those options do:
 
 * `About Sparkle...` - Display a dialog containing info about Sparkle
-* `Load mod from code...` - Load mod from direct code
-* `Load mod from file...` - Load mod from a file on your computer
-* `Manage loaded mods...` - Display a menu allowing you to see info or delete mods currently loaded
+* `Load addon from code...` - Load mod from direct code
+* `Load addon from file...` - Load mod from a file on your computer
+* `Manage loaded addons...` - Display a menu allowing you to see info or delete currently-loaded addons
 
-For mod creators, check out [the API documentation](doc/API.md) so you can make your own mods.
+For mod creators, check out [the API documentation](doc/API.md) so you can make your own addons.
 
 ## A note about manmade code
 The owner of this project believes in good faith that it complies with [The Manmade Software Declaration 1.0](https://mojavesoft.net/ai-policy/1.0).
