@@ -106,7 +106,7 @@ class API {
 
   requireSnaps(...names) {
     if (!names.includes(this.snap.snap)) {
-      let msg = `Mod "${this.mod.name}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
+      let msg = `Mod "${this.mod.NAME}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
       this.inform(msg, "Incompatible Snap");
       throw new Error("snap not compatible");
     }
@@ -121,7 +121,7 @@ class API {
 
   disallowSnaps(...names) {
     if (names.includes(this.snap.snap)) {
-      let msg = `Mod "${this.mod.name}" does not work with ${this.snap.snap}!`;
+      let msg = `Mod "${this.mod.NAME}" does not work with ${this.snap.snap}!`;
       this.inform(msg, "Incompatible Snap");
       throw new Error("snap not compatible");
     }
