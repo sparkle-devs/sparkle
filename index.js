@@ -839,8 +839,8 @@ function attachEventHandlers(ide) {
 
   // create the __crackle__ object
   window.__crackle__ = {
-    version: "0.2",
-    source: "https://github.com/CrackleTeam/CrackleSDK/releases/latest",
+    version: "0.1",
+    source: "https://github.com/Mojavesoft-Group/sparkle/releases",
     loadedMods: [],
     extraApi: {},
     autoloadMods: {},
@@ -851,9 +851,7 @@ function attachEventHandlers(ide) {
     snap: (function () {
       // Jameson?
       if (
-        (window.location.hostname + window.location.pathname) ==
-        "mojavesoft.net/ide/snap" || (window.location.hostname + window.location.pathname) ==
-        "mojavesoft.org/ide/snap"
+        (window.isJameson
       ) {
         return {
           snap: "Jameson",
