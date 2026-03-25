@@ -1054,7 +1054,7 @@ function attachEventHandlers(ide) {
     if (window.__crackle__.snap.snap == "Split" || window.__crackle__.snap.snap) {
       var modButton = controlBar.settingsButton.fullCopy();
       controlBar.modButton = modButton;
-      console.warn(controlBar.modButton);
+      //console.warn(controlBar.modButton);
       controlBar.addChild(modButton);
     }
 
