@@ -296,12 +296,12 @@ class CrackleMorph extends ScrollFrameMorph {
           if (crackle.autoload.isAutoloaded(mod.ID)) {
             crackle.autoload.delete(mod.ID);
             world.children[0].showMessage(
-              `${mod.name} will no longer run on startup again.`,
+              `${mod.NAME} will no longer run on startup again.`,
             );
           } else {
             crackle.autoload.add(mod.ID);
             world.children[0].showMessage(
-              `${mod.name} will now run every time you open ${crackle.snap.snap}!`,
+              `${mod.NAME} will now run every time you open ${crackle.snap.snap}!`,
             );
           }
           autoloadButton.labelString = crackle.autoload.isAutoloaded(mod.ID)
