@@ -3,7 +3,7 @@
 
 [History](HISTORY.md) | [License](LICENSE)
 
-A modding framework for Snap!, made by [@tethrarxitet](https://forum.snap.berkeley.edu/u/tethrarxitet), [@codingisfun2831t](https://forum.snap.berkeley.edu/u/codingisfun2831t), and [@e016](https://forum.snap.berkeley.edu/u/d016) et al.
+A modding framework for Snap!, made by [@tethrarxitet](https://forum.snap.berkeley.edu/u/tethrarxitet), [@codingisfun2831t](https://forum.snap.berkeley.edu/u/codingisfun2831t), and [@e016](https://forum.snap.berkeley.edu/u/d016) among others.
 
 # Loading in browser
 For now, Sparkle does not have any pages for it on common browser extension stores, so you will have to load it manually for your browser.
