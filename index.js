@@ -90,8 +90,8 @@ class API {
       target: originalFunction,
       functions: {
         [this.mod.ID]: wrapper,
-      }
-    }
+      },
+    };
     if (overwrite) {
       wrapData.overwrites = [this.mod.ID];
     }
@@ -114,15 +114,19 @@ class API {
 
   suggestSnaps(...names) {
     if (!names.includes(this.snap.snap)) {
-      this.inform(`This mod is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
-        The mod might still work; continue at your own risk.`, "Sparkle");
+      this.inform(
+        `This mod is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
+        The mod might still work; continue at your own risk.`,
+        "Sparkle",
+      );
     }
   }
 
   disallowSnaps(...names) {
     if (names.includes(this.snap.snap)) {
-      let msg = `Mod "${this.mod.NAME}" does not work with ${this.snap.snap}!`;
+      let msg = `The addon "${this.mod.NAME}" does not work with ${this.snap.snap}. `;
       this.inform(msg, "Incompatible Snap");
+      window.__crackle__.deleteMod(this.mod.ID ?? this.mod.id);
       throw new Error("snap not compatible");
     }
   }
@@ -155,7 +159,9 @@ class Mod extends EventTarget {
       ret = ret && mod.dispatchEvent(event);
     }
 
-    Object.values(window.__crackle__.allEventTargets).forEach((element) => element.dispatchEvent(event))
+    Object.values(window.__crackle__.allEventTargets).forEach((element) =>
+      element.dispatchEvent(event),
+    );
 
     return ret;
   }
@@ -218,7 +224,8 @@ class CrackleMorph extends ScrollFrameMorph {
     );
     this.mods.action = (lib) => (
       (this.selected = lib),
-      (this.notesText.text = lib.description + (lib.author ? ("\n\n" + "made by " + lib.author) : "") ),
+      (this.notesText.text =
+        lib.description + (lib.author ? "\n\n" + "made by " + lib.author : "")),
       this.notesText.fixLayout(),
       this.notesText.rerender()
     );
@@ -264,7 +271,7 @@ class CrackleMorph extends ScrollFrameMorph {
       const label = new TextMorph(`${mod.NAME} (${mod.ID})`);
       label.setPosition(new Point(10, 5));
       label.setColor(new Color(240, 240, 240));
-      labelFrame.setExtent(modMorph.extent())
+      labelFrame.setExtent(modMorph.extent());
       labelFrame.add(label);
       labelFrame.alpha = 0;
       labelFrame.color = CLEAR;
@@ -285,7 +292,7 @@ class CrackleMorph extends ScrollFrameMorph {
         },
         "Info",
       );
-      
+
       infoButton.setColor(new Color(100, 100, 250));
       modMorph.addChild(infoButton);
       modMorph.infoButton = infoButton;
@@ -374,7 +381,7 @@ class CrackleMorph extends ScrollFrameMorph {
     }
   }
   fixManageLayout() {
-    this.contents.children.forEach(child => child.fixLayout());
+    this.contents.children.forEach((child) => child.fixLayout());
   }
   buildSettings() {
     if (this.settings) {
@@ -547,13 +554,13 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
       tab.labelShadowColor = BLACK;
       tab.labelShadowOffset = new Point(1, 1);
       tab.fixLayout();
-    } 
+    }
 
     var tab,
       colors = [
-        PushButtonMorph.prototype.color.darker(), 
-        PushButtonMorph.prototype.highlightColor.darker(), 
-        PushButtonMorph.prototype.pressColor.darker()
+        PushButtonMorph.prototype.color.darker(),
+        PushButtonMorph.prototype.highlightColor.darker(),
+        PushButtonMorph.prototype.pressColor.darker(),
       ];
     this.tabs = new AlignmentMorph("row", -15, "center");
     this.tabs.alignment = "center";
@@ -561,7 +568,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
       colors,
       null,
       () => {
-        this.switchTab("import")
+        this.switchTab("import");
       },
       "Explore",
       () => this.tab == "import",
@@ -572,7 +579,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
       colors,
       null,
       () => {
-        this.switchTab("manage")
+        this.switchTab("manage");
       },
       "Manage",
       () => this.tab == "manage",
@@ -583,7 +590,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
       colors,
       null,
       () => {
-        this.switchTab("settings")
+        this.switchTab("settings");
       },
       "Settings",
       () => this.tab == "settings",
@@ -662,7 +669,6 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
   }
 }
 
-
 // wait for Snap! to be ready and get references
 function waitForSnapReady() {
   return new Promise((resolve) => {
@@ -697,16 +703,13 @@ function attachMenuHooks(ide) {
   };
 
   // projectMenu
-  IDE_Morph.prototype.projectMenu = new Proxy(
-    IDE_Morph.prototype.projectMenu,
-    {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "projectMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
+  IDE_Morph.prototype.projectMenu = new Proxy(IDE_Morph.prototype.projectMenu, {
+    apply(target, ctx, args) {
+      window.__crackle__.currentMenu = "projectMenu";
+      Reflect.apply(...arguments); // This calls the original function
+      window.__crackle__.currentMenu = null;
     },
-  );
+  });
 
   // settingsMenu
   IDE_Morph.prototype.settingsMenu = new Proxy(
@@ -721,40 +724,31 @@ function attachMenuHooks(ide) {
   );
 
   // cloudMenu
-  IDE_Morph.prototype.cloudMenu = new Proxy(
-    IDE_Morph.prototype.cloudMenu,
-    {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "cloudMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
+  IDE_Morph.prototype.cloudMenu = new Proxy(IDE_Morph.prototype.cloudMenu, {
+    apply(target, ctx, args) {
+      window.__crackle__.currentMenu = "cloudMenu";
+      Reflect.apply(...arguments); // This calls the original function
+      window.__crackle__.currentMenu = null;
     },
-  );
+  });
 
   // snapMenu
-  IDE_Morph.prototype.snapMenu = new Proxy(
-    IDE_Morph.prototype.snapMenu,
-    {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "snapMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
+  IDE_Morph.prototype.snapMenu = new Proxy(IDE_Morph.prototype.snapMenu, {
+    apply(target, ctx, args) {
+      window.__crackle__.currentMenu = "snapMenu";
+      Reflect.apply(...arguments); // This calls the original function
+      window.__crackle__.currentMenu = null;
     },
-  );
+  });
 
   // scriptsMenu
-  ScriptsMorph.prototype.userMenu = new Proxy(
-    ScriptsMorph.prototype.userMenu,
-    {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "scriptsMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
+  ScriptsMorph.prototype.userMenu = new Proxy(ScriptsMorph.prototype.userMenu, {
+    apply(target, ctx, args) {
+      window.__crackle__.currentMenu = "scriptsMenu";
+      Reflect.apply(...arguments); // This calls the original function
+      window.__crackle__.currentMenu = null;
     },
-  );
+  });
 
   // paletteMenu
   //
@@ -773,8 +767,8 @@ function attachMenuHooks(ide) {
           apply(target, ctx, args) {
             let menu = Reflect.apply(...arguments);
             applyHooks(menu, "paletteMenu");
-            return menu
-          }
+            return menu;
+          },
         });
 
         return palette;
@@ -829,7 +823,6 @@ function attachEventHandlers(ide) {
   );
 }
 (async function () {
-
   console.log("CrackleSDK is loading...");
 
   const BUTTON_OFFSET = 5; // pixels between buttons
@@ -850,9 +843,7 @@ function attachEventHandlers(ide) {
     wrappedFunctions: new Map(),
     snap: (function () {
       // Jameson?
-      if (
-        window.isJameson
-      ) {
+      if (window.isJameson) {
         return {
           snap: "Jameson",
           version: window.SnapVersion,
@@ -871,15 +862,15 @@ function attachEventHandlers(ide) {
       if (typeof window.SplitVersion !== "undefined") {
         return {
           snap: "Split",
-          version: window.SplitVersion
+          version: window.SplitVersion,
         };
       }
 
       // default to Snap
       return {
         snap: "Snap",
-        version: window.SnapVersion
-      }
+        version: window.SnapVersion,
+      };
     })(),
 
     // load a mod from code, TEMPORARY. use addMod for loading normal mods from the menu or download.
@@ -904,16 +895,22 @@ function attachEventHandlers(ide) {
       } else mod = new mod();
 
       if (this.loadedMods.some((element) => element.ID == mod.ID)) {
-        ide.showMessage(
-          "Mod already loaded, reloading it.. (deleting the current instance before loading it)",
-        );
+        ide.showMessage("Addon already loaded, reloading it..");
         this.deleteMod(mod.ID);
       }
 
       this.loadedMods.push(mod);
       this.modCodes[mod.ID] = code;
       if (mod.DO_MENU) mod.menu = new MenuMorph();
-      mod.main();
+
+      try {
+        mod.main();
+      } catch (e) {
+        ide.showMessage(
+          `Failed to load addon:\n${e}. Check the console for more details.`,
+        );
+        console.log(e);
+      }
 
       return mod;
     },
@@ -956,7 +953,8 @@ function attachEventHandlers(ide) {
       load() {
         let data = window.__crackle__.storage.get("crackle_autoload_mods");
         if (!data || data == "[]")
-          (window.__crackle__.storage.set("crackle_autoload_mods", "{}"), (data = {}));
+          (window.__crackle__.storage.set("crackle_autoload_mods", "{}"),
+            (data = {}));
 
         return JSON.parse(data) || {};
       },
@@ -991,10 +989,10 @@ function attachEventHandlers(ide) {
             window.__crackle__.loadMod(mod, true);
           } catch (e) {
             ide.showMessage(
-              "Failed to autoload mod, check console for more info",
+              "Failed to autoload addon, check console for more info",
             );
 
-            console.error("Failed to load mod: ", mod, e);
+            console.log("Failed to load addon: ", mod, e); // Make this console.log in order to stop a scary "Errors" button from showing up on Chrome
           }
         }
       },
@@ -1051,13 +1049,15 @@ function attachEventHandlers(ide) {
       controlBar.modButton.destroy();
     }
 
-    if (window.__crackle__.snap.snap == "Split" || window.__crackle__.snap.snap) {
+    if (
+      window.__crackle__.snap.snap == "Split" ||
+      window.__crackle__.snap.snap
+    ) {
       var modButton = controlBar.settingsButton.fullCopy();
       controlBar.modButton = modButton;
       //console.warn(controlBar.modButton);
       controlBar.addChild(modButton);
     }
-
 
     // add functionality to mod button
     Object.assign(modButton, {
@@ -1068,24 +1068,24 @@ function attachEventHandlers(ide) {
         dlg.inform(
           "About Sparkle",
           `Sparkle, a modding framework for Snap! and its forks\n` +
-          `Developed by codingisfun2831t and d016\n` +
-          `Inspired by tethrarxitet and orchestrated by PPPDUD\n` +
-          `Version ${window.__crackle__.version}\n`,
+            `Developed by codingisfun2831t and d016\n` +
+            `Inspired by tethrarxitet and orchestrated by PPPDUD\n` +
+            `Version ${window.__crackle__.version}\n`,
           world,
         );
       },
       settings() {
         var dlg = new DialogBoxMorph(),
-          body = new AlignmentMorph('column', 5);
+          body = new AlignmentMorph("column", 5);
 
         body = new CrackleMorph(window.__crackle__, false);
         body.setupSettings();
 
         dlg.key = "settings";
-        dlg.labelString = "Crackle Settings";
+        dlg.labelString = "Sparkle settings";
         dlg.createLabel();
         dlg.addBody(body);
-        dlg.addButton('ok', 'OK');
+        dlg.addButton("ok", "OK");
         dlg.fixLayout();
         dlg.popUp(world);
       },
@@ -1106,18 +1106,18 @@ function attachEventHandlers(ide) {
               } else {
                 mod = window.__crackle__.addMod(input);
               }
-              ide.showMessage(`Mod loaded successfully!`);
+              ide.showMessage(`Addon loaded successfully!`);
             } catch (e) {
               ide.showMessage(
-                `Failed to load mod:\n${e}. Check the console for more details.`,
+                `Failed to load addon:\n${e}. Check the console for more details.`,
               );
-              console.error(e);
+              console.log(e);
             }
           },
           this,
         ).promptCode(
-          "Load mod from code",
-          "// Paste your mod code here",
+          "Load addon from code",
+          "// Paste your addon code here",
           world,
         );
       },
@@ -1139,9 +1139,9 @@ function attachEventHandlers(ide) {
               } else {
                 mod = window.__crackle__.addMod(e.target.result);
               }
-              ide.showMessage(`Mod "${mod.NAME}" loaded successfully!`);
+              ide.showMessage(`Addon "${mod.NAME}" loaded successfully!`);
             } catch (e) {
-              ide.showMessage(`Failed to load mod:\n${e}`);
+              ide.showMessage(`Failed to load addon:\n${e}`);
             }
           };
           reader.readAsText(file);
@@ -1173,29 +1173,41 @@ function attachEventHandlers(ide) {
         menu.addItem("Download source...", "download");
         menu.addLine();
         menu.addItem(
-          "Download mods...",
+          "Download addons...",
           () => {
             new CrackleImportLibraryMorph(this, (code, name) => {
               window.__crackle__.addMod(code, true);
-              new MenuMorph(null, `${name} Loaded`).popUpCenteredInWorld(
-                this.world(),
-              );
+              new MenuMorph(
+                null,
+                `"${name}" addon loaded`,
+              ).popUpCenteredInWorld(this.world());
             });
           },
           null,
           null,
           true,
         );
-        menu.addItem("Load mod from file...", "loadModFile");
-        if (window.__crackle__.isDev || world.currentKey === 16) { // shift
+        menu.addItem("Load addon from file...", "loadModFile");
+        if (window.__crackle__.isDev || world.currentKey === 16) {
+          // shift
           menu.addLine();
-          menu.addItem("Load temporary mod from code...", () => modButton.loadMod(true),
-            "load a temporary mod from code" + (window.__crackle__.isDev ? "" : ", mainly for development"), new Color(100, 0, 0));
-          menu.addItem("Load temporary mod from file...", () => modButton.loadModFile(true),
-            "load a temporary mod from file" + (window.__crackle__.isDev ? "" : ", mainly for development"), new Color(100, 0, 0));
+          menu.addItem(
+            "Load temporary addon from code...",
+            () => modButton.loadMod(true),
+            "load a temporary addon from code" +
+              (window.__crackle__.isDev ? "" : ", mainly for development"),
+            new Color(100, 0, 0),
+          );
+          menu.addItem(
+            "Load temporary addon from file...",
+            () => modButton.loadModFile(true),
+            "load a temporary addon from file" +
+              (window.__crackle__.isDev ? "" : ", mainly for development"),
+            new Color(100, 0, 0),
+          );
         }
         menu.addLine();
-        menu.addItem("Manage loaded mods...", "manageLoadedMods");
+        menu.addItem("Manage loaded addons...", "manageLoadedMods");
 
         let menus = {};
         for (let mod of window.__crackle__.loadedMods) {
@@ -1223,7 +1235,9 @@ function attachEventHandlers(ide) {
       modButton.children[1].text = "Mods";
       modButton.children[1].fixLayout();
       modButton.children[2].setLeft(modButton.children[1].right() + 5);
-      modButton.setWidth(30 + modButton.children.reduce((sum, child) => sum + child.width(), 0));
+      modButton.setWidth(
+        30 + modButton.children.reduce((sum, child) => sum + child.width(), 0),
+      );
     }
 
     controlBar.modButton = modButton;
@@ -1248,21 +1262,18 @@ function attachEventHandlers(ide) {
         this.label.children[0].setPosition(this.label.position());
       }
     };
-    controlBar.fixLayout = new Proxy(
-      controlBar.fixLayout,
-      {
-        apply(target, ctx, args) {
-          Reflect.apply(...arguments);
-          let btn = window.__crackle__.snap.snap == "Split" ? ctx.editButton : ctx.settingsButton;
-          ctx.modButton.setPosition(
-            new Point(
-              btn.right() + BUTTON_OFFSET,
-              btn.top(),
-            ),
-          );
-        },
+    controlBar.fixLayout = new Proxy(controlBar.fixLayout, {
+      apply(target, ctx, args) {
+        Reflect.apply(...arguments);
+        let btn =
+          window.__crackle__.snap.snap == "Split"
+            ? ctx.editButton
+            : ctx.settingsButton;
+        ctx.modButton.setPosition(
+          new Point(btn.right() + BUTTON_OFFSET, btn.top()),
+        );
       },
-    );
+    });
     adjustLabel(controlBar.modButton);
     controlBar.fixLayout();
   };
@@ -1280,15 +1291,12 @@ function attachEventHandlers(ide) {
   // create mod button
 
   ide.createModButton();
-  ide.createControlBar = new Proxy(
-    ide.createControlBar,
-    {
-      apply(target, ctx, args) {
-        Reflect.apply(...arguments);
-        ctx.createModButton();
-      },
+  ide.createControlBar = new Proxy(ide.createControlBar, {
+    apply(target, ctx, args) {
+      Reflect.apply(...arguments);
+      ctx.createModButton();
     },
-  );
+  });
 
   // attach final things
   attachEventHandlers(ide);
