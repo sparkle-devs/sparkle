@@ -455,7 +455,7 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
     this.container = new CrackleMorph(window.__crackle__, false);
     this.tab = "import"; // for vertical
     this.path =
-      "https://raw.githubusercontent.com/CrackleTeam/CrackleMods/refs/heads/master/";
+      "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/";
     this.labelString = "Import Mod";
     this.key = "crackle import mods";
     fetch(this.path + "mods.json")
