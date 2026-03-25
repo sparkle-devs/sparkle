@@ -1170,9 +1170,9 @@ function attachEventHandlers(ide) {
       action() {
         const menu = new MenuMorph(modButton);
         const world = this.world();
-        menu.addItem("About Crackle...", "about");
-        menu.addItem("Crackle Settings...", "settings");
-        menu.addItem("Download Source...", "download");
+        menu.addItem("About Sparkle...", "about");
+        menu.addItem("Sparkle settings...", "settings");
+        menu.addItem("Download source...", "download");
         menu.addLine();
         menu.addItem(
           "Download mods...",
