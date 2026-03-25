@@ -851,7 +851,7 @@ function attachEventHandlers(ide) {
     snap: (function () {
       // Jameson?
       if (
-        (window.isJameson
+        window.isJameson
       ) {
         return {
           snap: "Jameson",
