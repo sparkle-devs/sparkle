@@ -1,7 +1,7 @@
 "use strict";
 /* 
-    CrackleSDK - A modding framework for Snap! and its forks
-    Copyright (C) 2025, developed by CrackleTeam and later the Mojavesoft Group
+    Sparkle - A modding framework for Snap! and its forks
+    Copyright (C) 2025-2026, developed by CrackleTeam and later the Mojavesoft Group
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
