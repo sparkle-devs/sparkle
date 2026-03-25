@@ -1,35 +1,35 @@
 # Sparkle API
-This file will describe the interface you have with mods, both the `api` variable, the `Mod` object, and `Mod` events.
+This file will describe the interface you have with addons, both the `api` variable, the `Mod` object, and `Mod` events.
 
-## Mod structure
-A typical mod file is a simple "return" statement, returing a class extending Mod containing metadata about the mod and its code. Here is a example:
+## Addons structure
+A typical addon file is a simple "return" statement, returing a class extending Mod containing metadata about the addon and its code. Here is an example:
 ```js
 return class extends Mod {
     // Metadata
-    ID = "example-mod"; // the id of the mod
-    NAME = "Example Mod"; // human-readable name
-    DESCRIPTION = "A example mod for Sparkle."; // description
+    ID = "example-addon"; // the id of the addon
+    NAME = "Example Addon"; // human-readable name
+    DESCRIPTION = "An example addon for Sparkle."; // description
     VERSION = "1.0"; // version
     AUTHOR = "Your Name"; // author
-    DEPENDS = []; // dependencies (mod ids, useful for libraries)
+    DEPENDS = []; // dependencies (addon ids, useful for libraries)
     DO_MENU = true; // whether to add a menu item
 
-    // Main function - gets ran when the mod is loaded
+    // Main function - gets ran when the addon is loaded
     main() {
         // ...
     }
 
-    // Cleanup function - get ran when the mod is "deleted"
+    // Cleanup function - get ran when the addon is "deleted"
     cleanupFunc() {
         // ...
     }
 }
 ```
 
-Read the comments contained in the example for what each object property does. Your mod is loaded by calling the `main` function. Using `this.api`, you can do multiple actions, described below
+Read the comments contained in the example for what each object property does. Your addon is loaded by calling the `main` function. Using `this.api`, you can do multiple actions, described below:
 
 ## API
-This section describes the variables/functions in the `api` member variable.
+This section describes the variables/functions that can be invoked from `this.api` in `main()`.
 
 ### Variables
 * `ide` - The `IDE_Morph` (check Snap!'s `gui.js` for more infomation) Snap! is using. This is the Snap! interface.
@@ -37,9 +37,9 @@ This section describes the variables/functions in the `api` member variable.
 
 ### Functions
 * `showMsg` - Show a basic message to the user.
-* `addApi` - Add a "extra API" to the Sparkle API. This is useful for libraries. This is added to mods' `api` objects.
+* `addApi` - Add a "extra API" to the Sparkle API. This is useful for libraries. This is added to all addons' `api` objects.
 * `inform` - Inform the user of something, with a title.
-* `wrapFunction` - Lets you add extra code that runs after a function. Sparkle automatically discards each wrap when deleting a mod!
+* `wrapFunction` - Lets you add extra code that runs after a function. Sparkle automatically discards each wrap when deleting an addon!
 * `registerMenuHook` - Attach a menu hook. First item is the name of the menu to hook, and the second is a function which takes in a MenuMorph and modifies it. Here are the menu names:
     * `projectMenu` - Menu from file button
     * `settingsMenu` - Menu from settings button
@@ -48,7 +48,7 @@ This section describes the variables/functions in the `api` member variable.
     * `snapMenu` - Menu when you click the Snap! logo
 
 ## `this` in `main`
-The object stored in `this` is a `Mod` object (see `index.js`), because you of course inherited from it. This mod object actually supports events, by using EventTarget. You can `addEventListener` and such, just like DOM elements. The section following contains those events you can attach to.
+The object stored in `this` is a `Mod` object (see `index.js`), because you of course inherited from it. This object supports events using EventTarget. You can `addEventListener` and such, just like DOM elements. The section following contains those events you can attach to.
 
 ### Events
 * `projectCreating` - Triggered whenever the current project is about to be replaced with a new one. You can cancel this action by calling "preventDefault" on it.
@@ -57,12 +57,12 @@ The object stored in `this` is a `Mod` object (see `index.js`), because you of c
 * `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. 'detail' is the same as categoryCreating.
 
 ## "Snap" detection
-One very interesting feature in Sparkle is its cross-modness. This means, that not only can you run Sparkle and make mods for Snap!, you can also use it on other Snap! mods!
+One very interesting feature in Sparkle is its cross-modness. This means, that not only can you run Sparkle and make addons for Snap!, you can also use it on other Snap! mods!
 
 The current term for a Snap! mod (including Snap! itself) is simply a "Snap".
 
-There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making a mod for Split that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
+There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making an addon for Split that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
 
-* `requireSnaps`: Require either one of a set of snaps to run your mod
-* `suggestSnaps`: Suggest a list of snaps that would work perfectly with your mod
-* `disallowSnaps`: Disallow a list of snaps that your mod doesn't support. (e.g. better-flat-design, which wont work with Split as Split already has good flat design)
+* `requireSnaps`: Require either one of a set of snaps to run your addon
+* `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
+* `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
