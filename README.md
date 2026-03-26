@@ -1,4 +1,9 @@
 # Sparkle
+> [!WARNING]
+> Starting with Sparkle v0.2, support for the legacy, object-based addons system will become deprecated. In v0.3, it will be removed and all existing legacy extensions will break.
+> 
+> All of the addons in the `SparkleMods` repository have already been upgraded for your convenience.
+> 
 ![Sparkle logo](sparkle.gif)
 
 [History](HISTORY.md) | [License](LICENSE)
