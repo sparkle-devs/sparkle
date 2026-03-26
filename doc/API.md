@@ -61,7 +61,7 @@ One very interesting feature in Sparkle is its cross-modness. This means, that n
 
 The current term for a Snap! mod (including Snap! itself) is simply a "Snap".
 
-There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making an addon for Split that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
+There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making an addon for [Split](https://www.github.com/e016/split-mod) that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
 
 * `requireSnaps`: Require either one of a set of snaps to run your addon
 * `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
