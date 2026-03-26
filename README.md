@@ -4,7 +4,7 @@
 > 
 > All of the addons in the `SparkleMods` repository have already been upgraded for your convenience.
 > 
-![Sparkle logo](sparkle.gif)
+<img width=512 height=128 src=sparkle_text.png>
 
 [History](HISTORY.md) | [License](LICENSE)
 
