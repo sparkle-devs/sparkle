@@ -4,7 +4,7 @@
 > 
 > All of the addons in the `SparkleMods` repository have already been upgraded for your convenience.
 > 
-<img width=512 height=128 src=sparkle_text.png>
+<img width=512 height=128 src=sparkle-text-2-nocurve.png>
 
 [History](HISTORY.md) | [License](LICENSE)
 
