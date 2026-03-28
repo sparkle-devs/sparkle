@@ -178,7 +178,8 @@ class CrackleMorph extends ScrollFrameMorph {
 
   setupLibraries(list) {
     this.type = "import";
-    this.librariesList = list || [];
+    this.libraryData = list || [];
+    this.filteredLibrariesList = this.libraryData;
     this.buildContents();
     this.fixLayout();
   }
@@ -205,16 +206,13 @@ class CrackleMorph extends ScrollFrameMorph {
       }
     });
   }
-  buildLibrary() {
+  buildModsList() {
     if (this.mods) {
       this.mods.destroy();
     }
-    if (this.notesField) {
-      this.notesField.destroy();
-    }
 
     this.mods = new ListMorph(
-      this.librariesList,
+      this.filteredLibrariesList,
       (element) =>
         element.name + (element.version ? ` (${element.version})` : ""),
       null,
@@ -222,7 +220,7 @@ class CrackleMorph extends ScrollFrameMorph {
       "~", // separator
       false, // verbatim
     );
-    this.mods.action = (lib) => (
+    this.mods.action = (lib) => lib.author === null ? (this.selected = null) : (
       (this.selected = lib),
       (this.notesText.text =
         lib.description + (lib.author ? "\n\n" + "made by " + lib.author : "")),
@@ -230,6 +228,54 @@ class CrackleMorph extends ScrollFrameMorph {
       this.notesText.rerender()
     );
     this.mods.setColor(new Color(237, 237, 237));
+    this.addContents(this.mods);
+    this.fixListFieldItemColors();
+  }
+  buildLibrary() {
+    if (this.filterField) {
+      this.filterField.destroy();
+    }
+    if (this.magnifyingGlass) {
+      this.magnifyingGlass.destroy();
+    }
+    
+    if (this.notesField) {
+      this.notesField.destroy();
+    }
+    this.filterField = new InputFieldMorph("");
+    this.filterField.doContrastingColor = false;
+    this.filterField.color = new Color(237, 237, 237);
+    this.magnifyingGlass = new SymbolMorph("magnifyingGlass", this.filterField.height(), BLACK);
+
+    this.filterField.reactToInput = () => {
+      function getLibrarySearchData ({ name, description, author, id}) {
+        return [name, description, author, id].join(" ").toLowerCase();
+      }
+
+      let query = this.filterField.getValue().toLowerCase();
+      this.filteredLibrariesList = this.libraryData.filter(
+        (library) => getLibrarySearchData(library).indexOf(query) > -1
+      );
+      if (this.filteredLibrariesList.length < 1) {
+        this.filteredLibrariesList.push(
+          {
+            name: "(no matches)",
+            description: null,
+            author: null,
+          }
+        )
+      }
+      this.notesText.text = "";
+      this.notesText.fixLayout();
+      this.notesText.rerender();
+      this.buildModsList();
+      this.fixLayout();
+      /*this.mods.adjustScrollBars();
+      this.mods.scrollY(this.mods.top());*/
+    };
+
+    this.buildModsList();
+
     this.notesText = new TextMorph("");
     this.notesText.color = PushButtonMorph.prototype.labelColor;
     this.notesField = new ScrollFrameMorph();
@@ -239,11 +285,48 @@ class CrackleMorph extends ScrollFrameMorph {
     this.notesField.isTextLineWrapping = true;
     this.notesField.padding = 3;
     this.notesField.setContents(this.notesText);
-    this.fixListFieldItemColors();
+    
     this.notesField.color = new Color(237, 237, 237);
-
-    this.addContents(this.mods);
+    this.addContents(this.magnifyingGlass);
+    this.addContents(this.filterField);
     this.addContents(this.notesField);
+  }
+  fixLibrariesLayout() {
+    if (this.vertical) {
+      this.mods.setWidth(this.width() - this.myPadding);
+      this.mods.setHeight(this.height() / 2 - this.myPadding);
+      this.mods.setTop(this.top());
+      this.mods.setLeft(this.left());
+
+      this.notesField.setWidth(this.width());
+      this.notesField.setHeight(this.height() / 2 - this.myPadding);
+      this.notesField.setTop(this.mods.bottom() + this.myPadding);
+      this.notesField.setLeft(this.left());
+    } else {
+      this.magnifyingGlass.setTop(this.top());
+      this.magnifyingGlass.setLeft(this.left());
+
+      this.filterField.setTop(this.top());
+      this.filterField.setCenter(this.magnifyingGlass.center());
+      this.filterField.setLeft(this.magnifyingGlass.right() + 10);
+      
+      this.mods.setLeft(this.left());
+      this.mods.setTop(this.filterField.bottom() + 10);
+      this.mods.setWidth(200);
+      this.mods.setHeight(100);
+      
+      this.notesField.setHeight(100);
+      this.notesField.setWidth(200);
+      this.notesField.setTop(this.mods.top());
+      this.notesField.setLeft(this.mods.right() + 10);
+      
+      this.setWidth(this.mods.width() + 10 + this.notesField.width());
+      this.bounds.setHeight(this.filterField.height() + 10 + this.mods.height());
+      this.contents.setHeight(this.bounds.height());
+      this.contents.fixLayout();
+      this.filterField.bounds.corner.x = this.right();
+      this.filterField.fixLayout();
+    }
   }
   buildManager() {
     const myself = this;
@@ -418,29 +501,7 @@ class CrackleMorph extends ScrollFrameMorph {
         break;
     }
   }
-  fixLibrariesLayout() {
-    if (this.vertical) {
-      this.mods.setWidth(this.width() - this.myPadding);
-      this.mods.setHeight(this.height() / 2 - this.myPadding);
-      this.mods.setTop(this.top());
-      this.mods.setLeft(this.left());
-
-      this.notesField.setWidth(this.width());
-      this.notesField.setHeight(this.height() / 2 - this.myPadding);
-      this.notesField.setTop(this.mods.bottom() + this.myPadding);
-      this.notesField.setLeft(this.left());
-    } else {
-      this.mods.setWidth(200);
-      this.mods.setHeight(100);
-
-      this.notesField.setHeight(100);
-      this.notesField.setWidth(200);
-      this.notesField.setLeft(this.mods.right() + 10);
-
-      this.setWidth(this.mods.width() + 10 + this.notesField.width());
-      this.setHeight(100);
-    }
-  }
+  
   fixLayout() {
     ScrollFrameMorph.prototype.fixLayout.call(this);
     this.contents.adjustBounds();
@@ -495,6 +556,8 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
               ),
             ),
         "Import",
+        null,
+        true
       );
       this.addButton("cancel", "Cancel");
     }
@@ -723,14 +786,25 @@ function attachMenuHooks(ide) {
     },
   );
 
-  // cloudMenu
-  IDE_Morph.prototype.cloudMenu = new Proxy(IDE_Morph.prototype.cloudMenu, {
-    apply(target, ctx, args) {
-      window.__crackle__.currentMenu = "cloudMenu";
-      Reflect.apply(...arguments); // This calls the original function
-      window.__crackle__.currentMenu = null;
-    },
-  });
+  // cloudMenu (or userMenu, in Snavanced)
+  if (IDE_Morph.prototype.userMenu) {
+    IDE_Morph.prototype.userMenu = new Proxy(IDE_Morph.prototype.userMenu, {
+      apply(target, ctx, args) {
+        window.__crackle__.currentMenu = "cloudMenu";
+        Reflect.apply(...arguments); // This calls the original function
+        window.__crackle__.currentMenu = null;
+      },
+    });
+  }
+  if (IDE_Morph.prototype.cloudMenu) {
+    IDE_Morph.prototype.cloudMenu = new Proxy(IDE_Morph.prototype.cloudMenu, {
+      apply(target, ctx, args) {
+        window.__crackle__.currentMenu = "cloudMenu";
+        Reflect.apply(...arguments); // This calls the original function
+        window.__crackle__.currentMenu = null;
+      },
+    });
+  }
 
   // snapMenu
   IDE_Morph.prototype.snapMenu = new Proxy(IDE_Morph.prototype.snapMenu, {
@@ -823,7 +897,8 @@ function attachEventHandlers(ide) {
   );
 }
 (async function () {
-  console.log("CrackleSDK is loading...");
+  // console.log("CrackleSDK is loading..."); 
+  // nope! Snavanced modifies the console.log function to deal with morphic!
 
   const BUTTON_OFFSET = 5; // pixels between buttons
   await waitForSnapReady();
@@ -1166,8 +1241,13 @@ function attachEventHandlers(ide) {
 
       // action on click - show mod menu
       action() {
-        const menu = new MenuMorph(modButton);
-        const world = this.world();
+        const menu = new MenuMorph(modButton),
+        world = this.world(),
+        hiddenColor = window.__crackle__.snap.snap == "Split" ? new Color(255, 100, 100) : new Color(100, 0, 0)
+        if (IDE_Morph.prototype.ideRender) {
+          menu.bgColor = IDE_Morph.prototype.getControlBarColor();
+          IDE_Morph.prototype.ideRender(menu);
+        }
         menu.addItem("About Sparkle...", "about");
         menu.addItem("Sparkle settings...", "settings");
         menu.addItem("Download source...", "download");
@@ -1196,14 +1276,14 @@ function attachEventHandlers(ide) {
             () => modButton.loadMod(true),
             "load a temporary addon from code" +
               (window.__crackle__.isDev ? "" : ", mainly for development"),
-            new Color(100, 0, 0),
+            hiddenColor,
           );
           menu.addItem(
             "Load temporary addon from file...",
             () => modButton.loadModFile(true),
             "load a temporary addon from file" +
               (window.__crackle__.isDev ? "" : ", mainly for development"),
-            new Color(100, 0, 0),
+             hiddenColor,
           );
         }
         menu.addLine();
@@ -1232,7 +1312,7 @@ function attachEventHandlers(ide) {
     modButton.children[0].name = "cross";
 
     if (window.__crackle__.snap.snap === "Split") {
-      modButton.children[1].text = "Mods";
+      modButton.children[1].text = "Sparkle";
       modButton.children[1].fixLayout();
       modButton.children[2].setLeft(modButton.children[1].right() + 5);
       modButton.setWidth(
