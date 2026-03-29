@@ -228,6 +228,18 @@ class CrackleMorph extends ScrollFrameMorph {
       this.notesText.rerender()
     );
     this.mods.setColor(new Color(237, 237, 237));
+
+    if (this.crackle.snap.snap == "Split") {
+      this.mods.fixLayout = nop;
+      this.mods.edge = InputFieldMorph.prototype.edge / 2;
+      this.mods.fontSize = InputFieldMorph.prototype.fontSize;
+      this.mods.typeInPadding = InputFieldMorph.prototype.typeInPadding;
+      this.mods.contrast = InputFieldMorph.prototype.contrast;
+      this.mods.render = InputFieldMorph.prototype.render;
+      this.mods.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
+      this.mods.color = PushButtonMorph.prototype.color;
+    }
+
     this.addContents(this.mods);
     this.fixListFieldItemColors();
   }
@@ -243,8 +255,8 @@ class CrackleMorph extends ScrollFrameMorph {
       this.notesField.destroy();
     }
     this.filterField = new InputFieldMorph("");
-    this.filterField.doContrastingColor = false;
-    this.filterField.color = new Color(237, 237, 237);
+    this.filterField.doContrastingColor = true;
+    this.contents.color = PushButtonMorph.prototype.color;
     this.magnifyingGlass = new SymbolMorph("magnifyingGlass", this.filterField.height(), BLACK);
 
     this.filterField.reactToInput = () => {
@@ -285,8 +297,21 @@ class CrackleMorph extends ScrollFrameMorph {
     this.notesField.isTextLineWrapping = true;
     this.notesField.padding = 3;
     this.notesField.setContents(this.notesText);
-    
     this.notesField.color = new Color(237, 237, 237);
+
+    if (this.crackle.snap.snap == "Split") {
+      this.notesText.color = PushButtonMorph.prototype.labelColor;
+      this.notesField.fixLayout = nop;
+      this.notesField.edge = InputFieldMorph.prototype.edge / 2;
+      this.notesField.fontSize = InputFieldMorph.prototype.fontSize;
+      this.notesField.typeInPadding = InputFieldMorph.prototype.typeInPadding;
+      this.notesField.contrast = InputFieldMorph.prototype.contrast;
+      this.notesField.render = InputFieldMorph.prototype.render;
+      this.notesField.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
+      this.notesField.color = PushButtonMorph.prototype.color;
+    }
+    
+    
     this.addContents(this.magnifyingGlass);
     this.addContents(this.filterField);
     this.addContents(this.notesField);
@@ -483,7 +508,7 @@ class CrackleMorph extends ScrollFrameMorph {
 
     this.alpha = 0;
     if (!this.vertical) {
-      this.setWidth(Math.min(this.settings.width(), 200));
+      this.setWidth(200);
       this.setHeight(Math.min(this.settings.height(), 150));
     }
     this.addContents(this.settings);
