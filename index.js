@@ -976,23 +976,7 @@ function attachEventHandlers(ide) {
     // load a mod from code, TEMPORARY. use addMod for loading normal mods from the menu or download.
     loadMod(code) {
       let mod = Function(code)();
-      if (!(mod.prototype instanceof Mod)) {
-        // support old object mods
-        let newMod = new Mod();
-
-        if (mod.id) newMod.ID = mod.id;
-        if (mod.name) newMod.NAME = mod.name;
-        if (mod.description) newMod.DESCRIPTION = mod.description;
-        if (mod.author) newMod.AUTHOR = mod.author;
-        if (mod.version) newMod.VERSION = mod.version;
-        if (mod.depends) newMod.DEPENDS = mod.depends;
-        if (mod.doMenu) newMod.DO_MENU = mod.doMenu;
-
-        if (mod.main) newMod.main = mod.main;
-        if (mod.cleanupFunc) newMod.cleanupFunc = mod.cleanupFunc;
-
-        mod = newMod;
-      } else mod = new mod();
+      mod = new mod();
 
       if (this.loadedMods.some((element) => element.ID == mod.ID)) {
         ide.showMessage("Addon already loaded, reloading it..");
@@ -1011,8 +995,8 @@ function attachEventHandlers(ide) {
         );
         console.log(e);
       }
-
       return mod;
+      }
     },
 
     // load a mod and save it across runs
