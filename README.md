@@ -50,7 +50,6 @@ On March 24th, 2026, @pppdud, @codingisfun2831t, and @e016 discussed the future 
 
 Under the leadership of the Mojavesoft Group, Sparkle has obtained several features, like [Jameson](https://mojavesoft.net/ide/) support, that were requested multiple times but were never added to the Crackle source code.
 
-## A note about manmade code
-The owner of this project believes in good faith that it complies with [The Manmade Software Declaration 1.0](https://mojavesoft.net/ai-policy/1.0).
-Contributors are encouraged to follow the guidelines described at the aforementioned link when proposing any code changes, and patches that appear to violate those rules may be rejected at any time.
-
+## A note about maintainable free software
+This project is governed by [The Maintainable Free Software Policy v1.0](https://github.com/Mojavesoft-Group/free-software-policies/blob/main/1.0/README.md).
+The TMFSP is an all-in-one document that provides a basic set of rules for free software projects everywhere, so that they can be kept maintainable for years to come. To learn more about the rules of this project, click the link above.
