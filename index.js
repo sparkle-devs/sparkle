@@ -996,7 +996,6 @@ function attachEventHandlers(ide) {
         console.log(e);
       }
       return mod;
-      }
     },
 
     // load a mod and save it across runs
