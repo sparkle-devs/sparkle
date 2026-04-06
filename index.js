@@ -844,8 +844,9 @@ function attachMenuHooks(ide) {
   ScriptsMorph.prototype.userMenu = new Proxy(ScriptsMorph.prototype.userMenu, {
     apply(target, ctx, args) {
       window.__crackle__.currentMenu = "scriptsMenu";
-      Reflect.apply(...arguments); // This calls the original function
+      let menu = Reflect.apply(target, ctx, args); // This calls the original function
       window.__crackle__.currentMenu = null;
+      return menu;
     },
   });
 
