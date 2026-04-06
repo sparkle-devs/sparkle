@@ -47,7 +47,7 @@ class API {
   }
 
   wrapFunction(object, name, wrapper, overwrite) {
-    var originalFunction = object[name];
+    const originalFunction = object[name];
     if (originalFunction[window.__crackle__.crackleSymbol]) {
       originalFunction[window.__crackle__.crackleSymbol].functions[
         this.mod.ID
@@ -86,7 +86,7 @@ class API {
         return Reflect.get(target, property, receiver);
       },
     });
-    var wrapData = {
+    const wrapData = {
       target: originalFunction,
       functions: {
         [this.mod.ID]: wrapper,
@@ -496,7 +496,7 @@ class CrackleMorph extends ScrollFrameMorph {
       this.settings.destroy();
     }
     this.settings = new AlignmentMorph("column", 5);
-    var autoload = new ToggleMorph(
+    const autoload = new ToggleMorph(
       "checkbox",
       null,
       () => this.crackle.toggleDev(), // action,
@@ -644,7 +644,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
       tab.fixLayout();
     }
 
-    var tab,
+    let tab,
       colors = [
         PushButtonMorph.prototype.color.darker(),
         PushButtonMorph.prototype.highlightColor.darker(),
@@ -711,8 +711,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
   }
   fixLayout() {
     // determine by extent and arrange my components
-    var th = fontHeight(this.titleFontSize) + this.titlePadding * 2,
-      w,
+    const th = fontHeight(this.titleFontSize) + this.titlePadding * 2,
       stack = isNil(this.stackPadding) ? this.padding : this.stackPadding;
 
     if (this.head) {
@@ -976,8 +975,7 @@ function attachEventHandlers(ide) {
 
     // load a mod from code, TEMPORARY. use addMod for loading normal mods from the menu or download.
     loadMod(code) {
-      let mod = Function(code)();
-      mod = new mod();
+      let mod = new (Function(code)())();
 
       if (this.loadedMods.some((element) => element.ID == mod.ID)) {
         ide.showMessage("Addon already loaded, reloading it..");
@@ -1067,7 +1065,7 @@ function attachEventHandlers(ide) {
         window.__crackle__.autoloadMods = this.load();
 
         for (const id of Object.keys(window.__crackle__.autoloadMods)) {
-          var mod = window.__crackle__.autoloadMods[id];
+          const mod = window.__crackle__.autoloadMods[id];
           try {
             // TODO: optional fetching of mods
             window.__crackle__.loadMod(mod, true);
@@ -1087,7 +1085,7 @@ function attachEventHandlers(ide) {
       this.saveSettings();
     },
     loadSettings() {
-      var settings = JSON.parse(this.storage.get("crackle_settings") || "{}");
+      const settings = JSON.parse(this.storage.get("crackle_settings") || "{}");
       this.isDev = settings.isDev !== false;
     },
     saveSettings() {
@@ -1127,8 +1125,8 @@ function attachEventHandlers(ide) {
 
   // create mod button
   IDE_Morph.prototype.createModButton = function () {
-    var controlBar = this.controlBar;
-    var modButton;
+    const controlBar = this.controlBar;
+    let modButton;
     if (controlBar.modButton) {
       controlBar.modButton.destroy();
     }
@@ -1137,7 +1135,7 @@ function attachEventHandlers(ide) {
       window.__crackle__.snap.snap == "Split" ||
       window.__crackle__.snap.snap
     ) {
-      var modButton = controlBar.settingsButton.fullCopy();
+      modButton = controlBar.settingsButton.fullCopy();
       controlBar.modButton = modButton;
       //console.warn(controlBar.modButton);
       controlBar.addChild(modButton);
@@ -1159,7 +1157,7 @@ function attachEventHandlers(ide) {
         );
       },
       settings() {
-        var dlg = new DialogBoxMorph(),
+        const dlg = new DialogBoxMorph(),
           body = new AlignmentMorph("column", 5);
 
         body = new CrackleMorph(window.__crackle__, false);
