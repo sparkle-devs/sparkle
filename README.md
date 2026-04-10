@@ -1,6 +1,6 @@
 # Sparkle
 > [!WARNING]
-> Starting with Sparkle v0.2, support for the legacy, object-based addons system is deprecated. In v0.3, it will be removed and all existing legacy extensions will break.
+> In Sparkle v0.3, some older addons written for Crackle may suddenly break. If this happens, remove them from Sparkle and contact the developers for assistance.
 > 
 > All of the addons in the `SparkleMods` repository have already been upgraded for your convenience.
 > 
