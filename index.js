@@ -919,7 +919,7 @@ function attachEventHandlers(ide) {
 
   // create the __crackle__ object
   window.__crackle__ = {
-    version: "0.1",
+    version: "0.3",
     source: "https://github.com/Mojavesoft-Group/sparkle/releases",
     loadedMods: [],
     extraApi: {},
