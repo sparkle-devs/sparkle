@@ -2,7 +2,7 @@
 > [!WARNING]
 > In Sparkle v0.3 and later, some older addons written for Crackle may suddenly break. If this happens, remove them from Sparkle and contact the developers for assistance.
 >
-> If you're a developer, you should read [MIGRATION.md](docs/MIGRATION.md) for tips on how to migrate your code.
+> If you're a developer, you should read [MIGRATION.md](doc/MIGRATION.md) for tips on how to migrate your code.
 > 
 > All of the addons in the `SparkleMods` repository have already been upgraded for your convenience.
 > 
