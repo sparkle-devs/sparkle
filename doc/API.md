@@ -26,21 +26,21 @@ return class extends Mod {
 }
 ```
 
-Read the comments contained in the example for what each object property does. Your addon is loaded by calling the `main` function. Using `this.api`, you can do multiple actions, described below:
+The comments in the above code describe the intended purpose of each section of an addon. Here is a list of APIs that are exposed to addons:
 
 ## API
 This section describes the variables/functions that can be invoked from `this.api` in `main()`.
 
 ### Variables
 * `ide` - The `IDE_Morph` (check Snap!'s `gui.js` for more infomation) Snap! is using. This is the Snap! interface.
-* `world` - The `WorldMorph` (check Snap!'s `morphic.js` for more infomation) Snap! uses. This is the thing that contains the IDE.
+* `world` - The `WorldMorph` object from Snap!.
 
 ### Functions
 * `showMsg` - Show a basic message to the user.
-* `addApi` - Add a "extra API" to the Sparkle API. This is useful for libraries. This is added to all addons' `api` objects.
+* `addApi` - Add an extra API to the API object of each new addon.
 * `inform` - Inform the user of something, with a title.
 * `wrapFunction` - Lets you add extra code that runs after a function. Sparkle automatically discards each wrap when deleting an addon!
-* `registerMenuHook` - Attach a menu hook. First item is the name of the menu to hook, and the second is a function which takes in a MenuMorph and modifies it. Here are the menu names:
+* `registerMenuHook` - Attach a menu hook. The first argument is the menu name, and the second one is a function which accepts a `MenuMorph` as its first argument. Here's a list of possible menu names:
     * `projectMenu` - Menu from file button
     * `settingsMenu` - Menu from settings button
     * `cloudMenu` - Menu from cloud button
@@ -48,13 +48,13 @@ This section describes the variables/functions that can be invoked from `this.ap
     * `snapMenu` - Menu when you click the Snap! logo
 
 ## `this` in `main`
-The object stored in `this` is a `Mod` object (see `index.js`), because you of course inherited from it. This object supports events using EventTarget. You can `addEventListener` and such, just like DOM elements. The section following contains those events you can attach to.
+The object stored in `this` is a `Mod` object. This object supports events using EventTarget. You add event listeners with `addEventListener`, just like with DOM elements. What follows is a list of possible events that you can add listeners for:
 
 ### Events
 * `projectCreating` - Triggered whenever the current project is about to be replaced with a new one. You can cancel this action by calling "preventDefault" on it.
 * `projectCreated` - Triggered after a project is created, if it was not cancelled by another event
 * `categoryCreating` - Triggered whenever a new category is about to be created. You can cancel this action by calling "preventDefault" on it. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
-* `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. 'detail' is the same as categoryCreating.
+* `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
 
 ## "Snap" detection
 One very interesting feature in Sparkle is its cross-modness. This means, that not only can you run Sparkle and make addons for Snap!, you can also use it on other Snap! mods!
