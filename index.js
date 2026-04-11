@@ -2,6 +2,19 @@
 /* 
     Sparkle - A modding framework for Snap! and its forks
     Copyright (C) 2025-2026, developed by CrackleTeam and later the Mojavesoft Group
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 function commaOr(...items) {
@@ -207,13 +220,18 @@ class CrackleMorph extends ScrollFrameMorph {
       "~", // separator
       false, // verbatim
     );
-    this.mods.action = (lib) => lib.author === null ? (this.selected = null) : (
-      (this.selected = lib),
-      (this.notesText.text =
-        lib.description + (lib.author ? "\n\n" + "made by " + lib.author : "")),
-      this.notesText.fixLayout(),
-      this.notesText.rerender()
-    );
+    this.mods.action = (lib) => {
+      if (lib.author === null) {
+        this.selected = null;
+      } else {
+        this.selected = lib;
+        this.notesText.text =
+          lib.description +
+          (lib.author ? "\n\n" + "made by " + lib.author : "");
+        this.notesText.fixLayout();
+        this.notesText.rerender();
+      }
+    };
     this.mods.setColor(new Color(237, 237, 237));
 
     if (this.crackle.snap.snap == "Split") {
@@ -237,32 +255,34 @@ class CrackleMorph extends ScrollFrameMorph {
     if (this.magnifyingGlass) {
       this.magnifyingGlass.destroy();
     }
-    
+
     if (this.notesField) {
       this.notesField.destroy();
     }
     this.filterField = new InputFieldMorph("");
     this.filterField.doContrastingColor = true;
     this.contents.color = PushButtonMorph.prototype.color;
-    this.magnifyingGlass = new SymbolMorph("magnifyingGlass", this.filterField.height(), BLACK);
+    this.magnifyingGlass = new SymbolMorph(
+      "magnifyingGlass",
+      this.filterField.height(),
+      BLACK,
+    );
 
     this.filterField.reactToInput = () => {
-      function getLibrarySearchData ({ name, description, author, id}) {
+      function getLibrarySearchData({ name, description, author, id }) {
         return [name, description, author, id].join(" ").toLowerCase();
       }
 
       let query = this.filterField.getValue().toLowerCase();
       this.filteredLibrariesList = this.libraryData.filter(
-        (library) => getLibrarySearchData(library).indexOf(query) > -1
+        (library) => getLibrarySearchData(library).indexOf(query) > -1,
       );
       if (this.filteredLibrariesList.length < 1) {
-        this.filteredLibrariesList.push(
-          {
-            name: "(no matches)",
-            description: null,
-            author: null,
-          }
-        )
+        this.filteredLibrariesList.push({
+          name: "(no matches)",
+          description: null,
+          author: null,
+        });
       }
       this.notesText.text = "";
       this.notesText.fixLayout();
@@ -297,8 +317,7 @@ class CrackleMorph extends ScrollFrameMorph {
       this.notesField.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
       this.notesField.color = PushButtonMorph.prototype.color;
     }
-    
-    
+
     this.addContents(this.magnifyingGlass);
     this.addContents(this.filterField);
     this.addContents(this.notesField);
@@ -321,19 +340,21 @@ class CrackleMorph extends ScrollFrameMorph {
       this.filterField.setTop(this.top());
       this.filterField.setCenter(this.magnifyingGlass.center());
       this.filterField.setLeft(this.magnifyingGlass.right() + 10);
-      
+
       this.mods.setLeft(this.left());
       this.mods.setTop(this.filterField.bottom() + 10);
       this.mods.setWidth(200);
-      this.mods.setHeight(100);
-      
-      this.notesField.setHeight(100);
+      this.mods.setHeight(200);
+
+      this.notesField.setHeight(200);
       this.notesField.setWidth(200);
       this.notesField.setTop(this.mods.top());
       this.notesField.setLeft(this.mods.right() + 10);
-      
+
       this.setWidth(this.mods.width() + 10 + this.notesField.width());
-      this.bounds.setHeight(this.filterField.height() + 10 + this.mods.height());
+      this.bounds.setHeight(
+        this.filterField.height() + 14 + this.mods.height(),
+      );
       this.contents.setHeight(this.bounds.height());
       this.contents.fixLayout();
       this.filterField.bounds.corner.x = this.right();
@@ -513,7 +534,7 @@ class CrackleMorph extends ScrollFrameMorph {
         break;
     }
   }
-  
+
   fixLayout() {
     ScrollFrameMorph.prototype.fixLayout.call(this);
     this.contents.adjustBounds();
@@ -558,22 +579,23 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
     this.addBody(this.container);
     if (this.buttons.children.length == 0) {
       this.addButton(
-        () =>
-          fetch(this.path + "mods/" + this.container.selected.id + ".js")
+        "ok",
+        "Import",
+        true,
+      );
+      this.addButton("cancel", "Cancel");
+    }
+    this.fixLayout();
+  }
+  ok() {
+    fetch(this.path + "mods/" + this.container.selected.id + ".js")
             .then((x) => x.text())
             .then(
               (mod) => (
                 this.action(mod, this.container.selected.name),
                 this.vertical || this.destroy()
               ),
-            ),
-        "Import",
-        null,
-        true
-      );
-      this.addButton("cancel", "Cancel");
-    }
-    this.fixLayout();
+            );
   }
 }
 
@@ -743,174 +765,178 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
   }
 }
 
-// wait for Snap! to be ready and get references
-function waitForSnapReady() {
-  return new Promise((resolve) => {
-    const check = setInterval(() => {
-      if (typeof world !== "undefined" && world.children.length > 0) {
-        clearInterval(check);
-        resolve();
-      }
-    }, 100);
-  });
-}
-
-// attach hooks for menu hooks functions
-function attachMenuHooks(ide) {
-  function applyHooks(menu, name) {
-    window.__crackle__.loadedMods.forEach((mod) => {
-      mod.menuHooks.forEach((hook) => {
-        if (hook.name == name) hook.func(menu);
-      });
+(async function () {
+  // wait for Snap! to be ready and get references
+  function waitForSnapReady() {
+    return new Promise((resolve) => {
+      const check = setInterval(() => {
+        if (typeof world !== "undefined" && world.children.length > 0) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 100);
     });
   }
 
-  // hook MenuMorph to call hooks for different menus
-  MenuMorph.prototype._popup = MenuMorph.prototype.popup;
-  MenuMorph.prototype.popup = function (world, pos) {
-    if (this.target) {
-      if (window.__crackle__.currentMenu)
-        applyHooks(this, window.__crackle__.currentMenu);
+  // attach hooks for menu hooks functions
+  function attachMenuHooks(ide) {
+    function applyHooks(menu, name) {
+      window.__crackle__.loadedMods.forEach((mod) => {
+        mod.menuHooks.forEach((hook) => {
+          if (hook.name == name) hook.func(menu);
+        });
+      });
     }
 
-    return this._popup(world, pos);
-  };
-
-  // projectMenu
-  IDE_Morph.prototype.projectMenu = new Proxy(IDE_Morph.prototype.projectMenu, {
-    apply(target, ctx, args) {
-      window.__crackle__.currentMenu = "projectMenu";
-      Reflect.apply(...arguments); // This calls the original function
-      window.__crackle__.currentMenu = null;
-    },
-  });
-
-  // settingsMenu
-  IDE_Morph.prototype.settingsMenu = new Proxy(
-    IDE_Morph.prototype.settingsMenu,
-    {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "settingsMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
-    },
-  );
-
-  // cloudMenu (or userMenu, in Snavanced)
-  if (IDE_Morph.prototype.userMenu) {
-    IDE_Morph.prototype.userMenu = new Proxy(IDE_Morph.prototype.userMenu, {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "cloudMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
-    });
-  }
-  if (IDE_Morph.prototype.cloudMenu) {
-    IDE_Morph.prototype.cloudMenu = new Proxy(IDE_Morph.prototype.cloudMenu, {
-      apply(target, ctx, args) {
-        window.__crackle__.currentMenu = "cloudMenu";
-        Reflect.apply(...arguments); // This calls the original function
-        window.__crackle__.currentMenu = null;
-      },
-    });
-  }
-
-  // snapMenu
-  IDE_Morph.prototype.snapMenu = new Proxy(IDE_Morph.prototype.snapMenu, {
-    apply(target, ctx, args) {
-      window.__crackle__.currentMenu = "snapMenu";
-      Reflect.apply(...arguments); // This calls the original function
-      window.__crackle__.currentMenu = null;
-    },
-  });
-
-  // scriptsMenu
-  ScriptsMorph.prototype.userMenu = new Proxy(ScriptsMorph.prototype.userMenu, {
-    apply(target, ctx, args) {
-      window.__crackle__.currentMenu = "scriptsMenu";
-      let menu = Reflect.apply(target, ctx, args); // This calls the original function
-      window.__crackle__.currentMenu = null;
-      return menu;
-    },
-  });
-
-  // paletteMenu
-  //
-  // NOTE: If a user opens a category before loading a mod
-  // that uses paletteMenu, the hook will not take effect.
-  //
-  // TODO: Remove any palette cache on hooks of this
-  // and refresh the current palette
-  SpriteMorph.prototype.freshPalette = new Proxy(
-    SpriteMorph.prototype.freshPalette,
-    {
-      apply(target, ctx, args) {
-        let palette = Reflect.apply(...arguments); // This calls the original function
-
-        palette.userMenu = new Proxy(palette.userMenu, {
-          apply(target, ctx, args) {
-            let menu = Reflect.apply(...arguments);
-            applyHooks(menu, "paletteMenu");
-            return menu;
-          },
-        });
-
-        return palette;
-      },
-    },
-  );
-}
-
-// Attach event handlers to the IDE for mod events
-function attachEventHandlers(ide) {
-  // projectCreating and projectCreated
-
-  // this.backup tells the user about unsaved changes,
-  // so we need to manually modify it here so the event
-  // only gets called when backup actually calls the
-  // callback
-  ide.createNewProject = function () {
-    this.backup(() => {
-      if (
-        Mod.dispatchEvent(new Event("projectCreating", { cancelable: true }))
-      ) {
-        this.newProject();
-
-        Mod.dispatchEvent(new Event("projectCreated"));
+    // hook MenuMorph to call hooks for different menus
+    MenuMorph.prototype._popup = MenuMorph.prototype.popup;
+    MenuMorph.prototype.popup = function (world, pos) {
+      if (this.target) {
+        if (window.__crackle__.currentMenu)
+          applyHooks(this, window.__crackle__.currentMenu);
       }
-    });
-  };
 
-  // categoryCreating and categoryCreated
-  IDE_Morph.prototype.addPaletteCategory = new Proxy(
-    IDE_Morph.prototype.addPaletteCategory,
-    {
-      apply(target, ctx, args) {
-        if (
-          Mod.dispatchEvent(
-            new CustomEvent("categoryCreating", {
-              cancelable: true,
-              detail: { name: args[0], color: args[1] },
-            }),
-          )
-        ) {
+      return this._popup(world, pos);
+    };
+
+    // projectMenu
+    IDE_Morph.prototype.projectMenu = new Proxy(
+      IDE_Morph.prototype.projectMenu,
+      {
+        apply(target, ctx, args) {
+          window.__crackle__.currentMenu = "projectMenu";
           Reflect.apply(...arguments); // This calls the original function
-
-          Mod.dispatchEvent(
-            new CustomEvent("categoryCreated", {
-              detail: { name: args[0], color: args[1] },
-            }),
-          );
-        }
+          window.__crackle__.currentMenu = null;
+        },
       },
-    },
-  );
-}
-(async function () {
-  // console.log("CrackleSDK is loading..."); 
-  // nope! Snavanced modifies the console.log function to deal with morphic!
+    );
+
+    // settingsMenu
+    IDE_Morph.prototype.settingsMenu = new Proxy(
+      IDE_Morph.prototype.settingsMenu,
+      {
+        apply(target, ctx, args) {
+          window.__crackle__.currentMenu = "settingsMenu";
+          Reflect.apply(...arguments); // This calls the original function
+          window.__crackle__.currentMenu = null;
+        },
+      },
+    );
+
+    // cloudMenu (or userMenu, in Snavanced)
+    if (IDE_Morph.prototype.userMenu) {
+      IDE_Morph.prototype.userMenu = new Proxy(IDE_Morph.prototype.userMenu, {
+        apply(target, ctx, args) {
+          window.__crackle__.currentMenu = "cloudMenu";
+          Reflect.apply(...arguments); // This calls the original function
+          window.__crackle__.currentMenu = null;
+        },
+      });
+    }
+    if (IDE_Morph.prototype.cloudMenu) {
+      IDE_Morph.prototype.cloudMenu = new Proxy(IDE_Morph.prototype.cloudMenu, {
+        apply(target, ctx, args) {
+          window.__crackle__.currentMenu = "cloudMenu";
+          Reflect.apply(...arguments); // This calls the original function
+          window.__crackle__.currentMenu = null;
+        },
+      });
+    }
+
+    // snapMenu
+    IDE_Morph.prototype.snapMenu = new Proxy(IDE_Morph.prototype.snapMenu, {
+      apply(target, ctx, args) {
+        window.__crackle__.currentMenu = "snapMenu";
+        Reflect.apply(...arguments); // This calls the original function
+        window.__crackle__.currentMenu = null;
+      },
+    });
+
+    // scriptsMenu
+    ScriptsMorph.prototype.userMenu = new Proxy(
+      ScriptsMorph.prototype.userMenu,
+      {
+        apply(target, ctx, args) {
+          window.__crackle__.currentMenu = "scriptsMenu";
+          let menu = Reflect.apply(target, ctx, args); // This calls the original function
+          window.__crackle__.currentMenu = null;
+          return menu;
+        },
+      },
+    );
+
+    // paletteMenu
+    //
+    // NOTE: If a user opens a category before loading a mod
+    // that uses paletteMenu, the hook will not take effect.
+    //
+    // TODO: Remove any palette cache on hooks of this
+    // and refresh the current palette
+    SpriteMorph.prototype.freshPalette = new Proxy(
+      SpriteMorph.prototype.freshPalette,
+      {
+        apply(target, ctx, args) {
+          let palette = Reflect.apply(...arguments); // This calls the original function
+
+          palette.userMenu = new Proxy(palette.userMenu, {
+            apply(target, ctx, args) {
+              let menu = Reflect.apply(...arguments);
+              applyHooks(menu, "paletteMenu");
+              return menu;
+            },
+          });
+
+          return palette;
+        },
+      },
+    );
+  }
+
+  // Attach event handlers to the IDE for mod events
+  function attachEventHandlers(ide) {
+    // projectCreating and projectCreated
+
+    // this.backup tells the user about unsaved changes,
+    // so we need to manually modify it here so the event
+    // only gets called when backup actually calls the
+    // callback
+    ide.createNewProject = function () {
+      this.backup(() => {
+        if (
+          Mod.dispatchEvent(new Event("projectCreating", { cancelable: true }))
+        ) {
+          this.newProject();
+
+          Mod.dispatchEvent(new Event("projectCreated"));
+        }
+      });
+    };
+
+    // categoryCreating and categoryCreated
+    IDE_Morph.prototype.addPaletteCategory = new Proxy(
+      IDE_Morph.prototype.addPaletteCategory,
+      {
+        apply(target, ctx, args) {
+          if (
+            Mod.dispatchEvent(
+              new CustomEvent("categoryCreating", {
+                cancelable: true,
+                detail: { name: args[0], color: args[1] },
+              }),
+            )
+          ) {
+            Reflect.apply(...arguments); // This calls the original function
+
+            Mod.dispatchEvent(
+              new CustomEvent("categoryCreated", {
+                detail: { name: args[0], color: args[1] },
+              }),
+            );
+          }
+        },
+      },
+    );
+  }
 
   const BUTTON_OFFSET = 5; // pixels between buttons
   await waitForSnapReady();
@@ -1145,9 +1171,7 @@ function attachEventHandlers(ide) {
       },
       settings() {
         const dlg = new DialogBoxMorph(),
-          body = new AlignmentMorph("column", 5);
-
-        body = new CrackleMorph(window.__crackle__, false);
+          body = new CrackleMorph(window.__crackle__, false);
         body.setupSettings();
 
         dlg.key = "settings";
@@ -1236,8 +1260,11 @@ function attachEventHandlers(ide) {
       // action on click - show mod menu
       action() {
         const menu = new MenuMorph(modButton),
-        world = this.world(),
-        hiddenColor = window.__crackle__.snap.snap == "Split" ? new Color(255, 100, 100) : new Color(100, 0, 0)
+          world = this.world(),
+          hiddenColor =
+            window.__crackle__.snap.snap == "Split"
+              ? new Color(255, 100, 100)
+              : new Color(100, 0, 0);
         if (IDE_Morph.prototype.ideRender) {
           menu.bgColor = IDE_Morph.prototype.getControlBarColor();
           IDE_Morph.prototype.ideRender(menu);
@@ -1270,14 +1297,14 @@ function attachEventHandlers(ide) {
             () => modButton.loadMod(true),
             "load a temporary addon from code" +
               (window.__crackle__.isDev ? "" : ", mainly for development"),
-            hiddenColor,
+            window.__crackle__.isDev ? null : hiddenColor,
           );
           menu.addItem(
             "Load temporary addon from file...",
             () => modButton.loadModFile(true),
             "load a temporary addon from file" +
               (window.__crackle__.isDev ? "" : ", mainly for development"),
-             hiddenColor,
+            window.__crackle__.isDev ? null : hiddenColor,
           );
         }
         menu.addLine();
