@@ -106,7 +106,7 @@ class API {
 
   requireSnaps(...names) {
     if (!names.includes(this.snap.snap)) {
-      let msg = `Mod "${this.mod.NAME}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
+      let msg = `Addon "${this.mod.NAME}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
       this.inform(msg, "Incompatible Snap");
       throw new Error("snap not compatible");
     }
@@ -115,8 +115,8 @@ class API {
   suggestSnaps(...names) {
     if (!names.includes(this.snap.snap)) {
       this.inform(
-        `This mod is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
-        The mod might still work; continue at your own risk.`,
+        `This addon is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
+        The addon might still work; continue at your own risk.`,
         "Sparkle",
       );
     }
@@ -130,12 +130,21 @@ class API {
       throw new Error("snap not compatible");
     }
   }
+
+  storage = {
+    set: (key, value) => {
+      localStorage.setItem(`${this.mod.id}-${key}`, value);
+    },
+    get: (key, defaultValue) => {
+      return localStorage.getItem(`${this.mod.id}-${key}`) ?? defaultValue;
+    },
+  };
 }
 
 // A Mod, loaded from code
 class Mod extends EventTarget {
   static ID = "unknown-mod";
-  static NAME = "Unknown Mod";
+  static NAME = "Unknown Addon";
   static DESCRIPTION = "No description avaiable.";
   static VERSION = "1.0";
   static AUTHOR = "John Doe";
@@ -397,7 +406,7 @@ class CrackleMorph extends ScrollFrameMorph {
         this,
         () => {
           new DialogBoxMorph().inform(
-            `Mod Information`,
+            `Addon Information`,
             `Name: ${mod.NAME}\n` +
               `ID: ${mod.ID}\n` +
               `Description: ${mod.DESCRIPTION}\n` +
@@ -557,7 +566,7 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
     this.tab = "import"; // for vertical
     this.path =
       "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/";
-    this.labelString = "Import Mod";
+    this.labelString = "Import Addon";
     this.key = "crackle import mods";
     fetch(this.path + "mods.json")
       .then((x) => x.json())
@@ -578,24 +587,20 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
 
     this.addBody(this.container);
     if (this.buttons.children.length == 0) {
-      this.addButton(
-        "ok",
-        "Import",
-        true,
-      );
+      this.addButton("ok", "Import", true);
       this.addButton("cancel", "Cancel");
     }
     this.fixLayout();
   }
   ok() {
     fetch(this.path + "mods/" + this.container.selected.id + ".js")
-            .then((x) => x.text())
-            .then(
-              (mod) => (
-                this.action(mod, this.container.selected.name),
-                this.vertical || this.destroy()
-              ),
-            );
+      .then((x) => x.text())
+      .then(
+        (mod) => (
+          this.action(mod, this.container.selected.name),
+          this.vertical || this.destroy()
+        ),
+      );
   }
 }
 

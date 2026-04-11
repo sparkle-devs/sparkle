@@ -46,6 +46,9 @@ This section describes the variables/functions that can be invoked from `this.ap
     * `cloudMenu` - Menu from cloud button
     * `scriptsMenu` - Menu when you right-click on a scripting area
     * `snapMenu` - Menu when you click the Snap! logo
+* `storage` - An object with procedures for storing data, local for each mod:
+    * `get` - Gets a property, second parameter is a default value if the property is non-existent
+    * `set` - Sets a property
 
 ## `this` in `main`
 The object stored in `this` is a `Mod` object. This object supports events using EventTarget. You add event listeners with `addEventListener`, just like with DOM elements. What follows is a list of possible events that you can add listeners for:
