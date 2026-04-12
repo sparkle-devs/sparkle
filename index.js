@@ -44,12 +44,19 @@ class API {
     this.snap = this.crackle.snap;
     this.storage = {
       set: (key, value) => {
-        let data = JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) || {};
+        let data =
+          JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) || {};
         data[key] = value;
-        this.crackle.storage.set(`sparkle-${this.mod.ID}`, JSON.stringify(data))
+        this.crackle.storage.set(
+          `sparkle-${this.mod.ID}`,
+          JSON.stringify(data),
+        );
       },
       get: (key, defaultValue) => {
-        return (JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) || {})[key] ?? defaultValue;
+        return (
+          (JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) ||
+            {})[key] ?? defaultValue
+        );
       },
     };
   }
@@ -192,8 +199,10 @@ class CrackleMorph extends ScrollFrameMorph {
     super();
     this.crackle = crackle;
     this.vertical = vertical || false;
-    this.type = "import";
+    this.type = null;
     this.myPadding = DialogBoxMorph.prototype.padding;
+    this.acceptsDrops = false;
+    this.contents.acceptsDrops = false;
   }
 
   setupLibraries(list) {
@@ -385,10 +394,9 @@ class CrackleMorph extends ScrollFrameMorph {
     const myself = this;
     this.setColor(new Color(20, 20, 20));
     if (!this.vertical) {
-      this.setExtent(new Point(400, 200));
+      //this.setExtent(new Point(400, 200));
     }
-    this.acceptsDrops = false;
-    this.contents.acceptsDrops = false;
+
     const oddColor = new Color(20, 20, 20);
     const evenColor = new Color(40, 40, 40);
     let useOdd = false;
@@ -498,7 +506,7 @@ class CrackleMorph extends ScrollFrameMorph {
         labelFrame.fixLayout(true);
         label.rerender();
       };
-      modMorph.step = () => modMorph.bounds.setWidth(myself.width());
+      // modMorph.step = () => modMorph.bounds.setWidth(myself.width());
       modMorph.fixLayout();
 
       // jens... plz fix...
@@ -517,7 +525,10 @@ class CrackleMorph extends ScrollFrameMorph {
     }
   }
   fixManageLayout() {
-    this.contents.children.forEach((child) => child.fixLayout());
+    this.contents.children.forEach(
+      (child) => (child.bounds.setWidth(this.width()), child.fixLayout()),
+    );
+    this.contents.fixLayout();
   }
   buildSettings() {
     if (this.settings) {
@@ -598,7 +609,7 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
 
     this.addBody(this.container);
     if (this.buttons.children.length == 0) {
-      this.addButton("ok", "Import", true);
+      this.addButton("ok", "Import");
       this.addButton("cancel", "Cancel");
     }
     this.fixLayout();
@@ -776,6 +787,50 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
     }
 
     // refresh a shallow shadow
+    this.removeShadow();
+    this.addShadow();
+  }
+}
+
+class ResizableDialogBoxMorph extends DialogBoxMorph {
+  constructor(env, action) {
+    super(env, action);
+  }
+  fixLayout(done) {
+    var titleHeight = fontHeight(this.titleFontSize) + this.titlePadding * 2,
+      thin = this.padding / 2,
+      inputField = this.filterField;
+
+    if (this.body) {
+      this.body.setPosition(
+        this.position().add(
+          new Point(this.padding, titleHeight + this.padding),
+        ),
+      );
+      this.body.setExtent(
+        new Point(
+          this.width() - this.padding * 2,
+          this.height() -
+            this.padding * 3 - // top, bottom, filterfield, button padding
+            titleHeight -
+            this.buttons.height(),
+        ),
+      );
+    }
+
+    if (this.label) {
+      this.label.setCenter(this.center());
+      this.label.setTop(this.top() + (titleHeight - this.label.height()) / 2);
+    }
+
+    if (this.buttons) {
+      this.buttons.fixLayout();
+      window.__crackle__.snap.snap === "Split"
+        ? this.buttons.setRight(this.right() - this.padding)
+        : this.buttons.setCenter(this.center());
+      this.buttons.setBottom(this.bottom() - this.padding);
+    }
+
     this.removeShadow();
     this.addShadow();
   }
@@ -1260,12 +1315,15 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
 
       // manage loaded mods dialog
       manageLoadedMods() {
-        const dlg = new DialogBoxMorph();
+        const dlg = new ResizableDialogBoxMorph();
         dlg.key = "manageLoadedMods";
         dlg.labelString = "Manage Loaded Mods";
         dlg.createLabel();
 
         const list = new CrackleMorph(window.__crackle__, false);
+        list.setExtent(new Point(400, 200));
+        dlg.bounds.setExtent(new Point(428, 301));
+        dlg.handle = new HandleMorph(dlg, 428, 301, dlg.corner, dlg.corner);
         list.setupManager(() => (dlg.destroy(), this.manageLoadedMods()));
         dlg.addBody(list);
         dlg.addButton("ok", "OK");
