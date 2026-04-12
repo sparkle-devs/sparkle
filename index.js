@@ -40,15 +40,16 @@ class API {
     this.mod = mod;
     this.world = world;
     this.ide = world.children[0];
-    this.snap = window.__crackle__.snap;
+    this.crackle = window.__crackle__;
+    this.snap = this.crackle.snap;
     this.storage = {
       set: (key, value) => {
-        let data = JSON.parse(localStorage.getItem(`sparkle-${this.mod.ID}`)) || {};
+        let data = JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) || {};
         data[key] = value;
-        localStorage.setItem(`sparkle-${this.mod.ID}`, JSON.stringify(data))
+        this.crackle.storage.set(`sparkle-${this.mod.ID}`, JSON.stringify(data))
       },
       get: (key, defaultValue) => {
-        return (JSON.parse(localStorage.getItem(`sparkle-${this.mod.ID}`)) || {})[key] ?? defaultValue;
+        return (JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) || {})[key] ?? defaultValue;
       },
     };
   }
@@ -155,7 +156,7 @@ class API {
 class Mod extends EventTarget {
   static ID = "unknown-mod";
   static NAME = "Unknown Addon";
-  static DESCRIPTION = "No description avaiable.";
+  static DESCRIPTION = "No description available.";
   static VERSION = "1.0";
   static AUTHOR = "John Doe";
   static DEPENDS = [];
@@ -1139,7 +1140,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
   window.__crackle__.loadSettings();
 
   // adjust the project label position to be after the mod button
-  // this is needed because the fixLayout for the IDE doesnt know
+  // this is needed because the fixLayout for the IDE doesn't know
   // about our new button, so it puts it after the normal place
   function adjustLabel(modButton) {
     controlBar.label.setPosition(
