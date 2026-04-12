@@ -41,6 +41,16 @@ class API {
     this.world = world;
     this.ide = world.children[0];
     this.snap = window.__crackle__.snap;
+    this.storage = {
+      set: (key, value) => {
+        let data = JSON.parse(localStorage.getItem(`sparkle-${this.mod.ID}`)) || {};
+        data[key] = value;
+        localStorage.setItem(`sparkle-${this.mod.ID}`, JSON.stringify(data))
+      },
+      get: (key, defaultValue) => {
+        return (JSON.parse(localStorage.getItem(`sparkle-${this.mod.ID}`)) || {})[key] ?? defaultValue;
+      },
+    };
   }
 
   showMsg(msg) {
@@ -139,15 +149,6 @@ class API {
       throw new Error("snap not compatible");
     }
   }
-
-  storage = {
-    set: (key, value) => {
-      localStorage.setItem(`${this.mod.id}-${key}`, value);
-    },
-    get: (key, defaultValue) => {
-      return localStorage.getItem(`${this.mod.id}-${key}`) ?? defaultValue;
-    },
-  };
 }
 
 // A Mod, loaded from code
