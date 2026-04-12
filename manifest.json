@@ -14,7 +14,7 @@
         "*://mojavesoft.org/ide/snap",
         "*://alessandrito123.github.io/Snavanced/snap.html"
       ],
-      "js": ["reload.js", "index.js"],
+      "js": ["index.js"],
       "world": "MAIN"
     }
   ],
