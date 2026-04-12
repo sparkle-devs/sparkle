@@ -22,6 +22,10 @@
     SOFTWARE.
 */
 
+if (window.__crackle__) {
+  throw new Error("Another instance of Sparkle is already running; quitting!");
+}
+
 function commaOr(...items) {
   if (items.length == 0) return "";
   if (items.length == 1) return items[0];
