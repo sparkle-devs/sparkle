@@ -10,8 +10,6 @@
         "*://snap.berkeley.edu/snap/dev/snap.html",
         "*://e016.github.io/split-mod/split.html",
         "*://codingisfun2831t.github.io/split-mod-prs/split.html",
-        "*://mojavesoft.net/ide/snap",
-        "*://mojavesoft.org/ide/snap",
         "*://alessandrito123.github.io/Snavanced/snap.html"
       ],
       "js": ["index.js"],
