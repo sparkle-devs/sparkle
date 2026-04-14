@@ -7,6 +7,11 @@ return class extends Mod {
     AUTHOR = "Your Name"; // author
     DEPENDS = []; // dependencies (mod ids, useful for libraries)
     DO_MENU = true; // whether to add a menu item
+    OPTIONS_FORMAT = [
+        { id: "number", name: "A number", type: "number", default: 3 },
+        null,
+        { id: "helloTest", name: "A String", type: "string", default: "Hello!" },
+    ]; // format for options
 
     // Main function - gets ran when the mod is loaded
     main() {
@@ -16,7 +21,7 @@ return class extends Mod {
         // Example adding a menu item - see morphic.js's MenuMorph
         // for more info on menus
         this.menu.addItem("Say hello", () => {
-            api.inform("Hello, world!", "Example Mod");
+            api.inform("Hello, world! My number is: " + this.options.number, "Example Mod");
         });
 
         // Example of using events

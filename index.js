@@ -176,6 +176,23 @@ class Mod extends EventTarget {
     this.menuHooks = [];
   }
 
+  setupOptions() {
+    if (this.OPTIONS_FORMAT) {
+      this.options = JSON.parse(window.__crackle__.storage.get(`sparkle-${this.ID}-options`));
+      if (!this.options) {
+        this.options = {};
+        this.OPTIONS_FORMAT.forEach(
+          (format) => {
+            if (format?.id) {
+              this.options[format.id] = format.default;
+            }
+          }
+        );
+        console.warn(this.options);
+      }
+    }
+  }
+
   static findModById(id) {
     return window.__crackle__.loadedMods.find((mod) => mod.ID == id);
   }
@@ -220,6 +237,12 @@ class CrackleMorph extends ScrollFrameMorph {
   }
   setupSettings() {
     this.type = "settings";
+    this.buildContents();
+    this.fixLayout();
+  }
+  setupModOptions(mod) {
+    this.type = "options";
+    this.mod = mod
     this.buildContents();
     this.fixLayout();
   }
@@ -464,11 +487,23 @@ class CrackleMorph extends ScrollFrameMorph {
         },
         crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
       );
-      autoloadButton.setColor(new Color(250, 250, 100));
+      autoloadButton.setColor(new Color(100, 250, 100));
       if (crackle.isDev) {
         modMorph.addChild(autoloadButton);
       }
       modMorph.autoloadButton = autoloadButton;
+
+      const optionsButton = new PushButtonMorph(
+        this,
+        () => {
+          myself.crackle.showModOptions(mod)
+        },
+        "Options",
+      );
+
+      optionsButton.setColor(new Color(250, 250, 0));
+      modMorph.addChild(optionsButton);
+      modMorph.optionsButton = optionsButton;
 
       const deleteButton = new PushButtonMorph(
         this,
@@ -494,11 +529,19 @@ class CrackleMorph extends ScrollFrameMorph {
       modMorph.fixLayout = function () {
         this.deleteButton.setTop(this.top() + 2);
         this.deleteButton.setRight(this.right() - 2);
+        this.optionsButton.setTop(this.top() + 2);
+        if (Object.keys(mod.OPTIONS_FORMAT || {}).length === 0) {
+          this.optionsButton.hide();
+          this.optionsButton.setLeft(this.deleteButton.left());
+        } else {
+          this.optionsButton.show();
+          this.optionsButton.setRight(this.deleteButton.left() - 3);
+        }
         this.autoloadButton.setTop(this.top() + 2);
-        this.autoloadButton.setRight(this.deleteButton.left() - 3);
+        this.autoloadButton.setRight(this.optionsButton.left() - 3);
         this.infoButton.setTop(this.top() + 2);
         this.infoButton.setRight(
-          (crackle.isDev ? this.autoloadButton : this.deleteButton).left() - 3,
+          (crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3,
         );
         labelFrame.setPosition(this.position());
         labelFrame.bounds.corner.x = this.infoButton.left() - 3;
@@ -511,6 +554,7 @@ class CrackleMorph extends ScrollFrameMorph {
 
       // jens... plz fix...
       MorphicPreferences.isFlat && (infoButton.label.shadowColor = null);
+      MorphicPreferences.isFlat && (optionsButton.label.shadowColor = null);
       MorphicPreferences.isFlat && (autoloadButton.label.shadowColor = null);
       MorphicPreferences.isFlat && (deleteButton.label.shadowColor = null);
       return modMorph;
@@ -563,6 +607,9 @@ class CrackleMorph extends ScrollFrameMorph {
       case "settings":
         this.buildSettings();
         break;
+      case "options":
+        this.buildOptions();
+        break;
     }
   }
 
@@ -575,6 +622,9 @@ class CrackleMorph extends ScrollFrameMorph {
         break;
       case "manage":
         this.fixManageLayout();
+        break;
+      case "options":
+        this.fixOptionsLayout();
         break;
     }
   }
@@ -1071,12 +1121,14 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       if (mod.DO_MENU) mod.menu = new MenuMorph();
 
       try {
+        console.warn(mod, Object.keys(mod));
+        mod.setupOptions();
         mod.main();
       } catch (e) {
         ide.showMessage(
           `Failed to load addon:\n${e}. Check the console for more details.`,
         );
-        console.log(e);
+        console.error(e);
       }
       return mod;
     },
@@ -1179,6 +1231,20 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
           isDev: window.__crackle__.isDev,
         }),
       );
+    },
+
+    showModOptions(mod) {
+      const dlg = new DialogBoxMorph(),
+      modMorph = new CrackleMorph(window.__crackle__, false);
+      modMorph.setupModOptions(mod);
+      dlg.key = mod.ID + "-options";
+      dlg.labelString = mod.NAME + " Options"
+      dlg.createLabel();
+      dlg.addBody(modMorph);
+      dlg.addButton("ok", "OK");
+      dlg.addButton("ok", "Apply");
+      dlg.addButton("cancel", "Cancel");
+      dlg.popUp();
     },
 
     storage: {
