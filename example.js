@@ -8,11 +8,11 @@ return class extends Mod {
     DEPENDS = []; // dependencies (mod ids, useful for libraries)
     DO_MENU = true; // whether to add a menu item
     OPTIONS_FORMAT = [
+        "HEADING 1", // Headings
         { id: "number", name: "A number", type: "number", default: 3 },
-        null,
+        null, // spacer
         { id: "helloTest", name: "Hello String", type: "string", default: "Hello!" },
         { id: "color", name: "A color", type: "color", default: new Color(255, 0, 128)},
-        "HEADING 1",
     ]; // format for options
 
     // Main function - gets ran when the mod is loaded
