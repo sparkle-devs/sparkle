@@ -178,16 +178,28 @@ class Mod extends EventTarget {
 
   setupOptions() {
     if (this.OPTIONS_FORMAT) {
-      this.options = JSON.parse(window.__crackle__.storage.get(`sparkle-${this.ID}-options`));
+      this.options = JSON.parse(
+        window.__crackle__.storage.get(`sparkle-${this.ID}-options`),
+      );
+      Object.keys(this.options).forEach((o) => {
+        if (
+          JSON.stringify(Object.keys(this.options[o])) === '["r","g","b","a"]'
+        ) {
+          this.options[o] = new Color(
+            this.options[o].r,
+            this.options[o].g,
+            this.options[o].b,
+            this.options[o].a,
+          );
+        }
+      });
       if (!this.options) {
         this.options = {};
-        this.OPTIONS_FORMAT.forEach(
-          (format) => {
-            if (format?.id) {
-              this.options[format.id] = format.default;
-            }
+        this.OPTIONS_FORMAT.forEach((format) => {
+          if (format?.id) {
+            this.options[format.id] = format.default;
           }
-        );
+        });
         console.warn(this.options);
       }
     }
@@ -242,7 +254,7 @@ class CrackleMorph extends ScrollFrameMorph {
   }
   setupModOptions(mod) {
     this.type = "options";
-    this.mod = mod
+    this.mod = mod;
     this.buildContents();
     this.fixLayout();
   }
@@ -496,7 +508,7 @@ class CrackleMorph extends ScrollFrameMorph {
       const optionsButton = new PushButtonMorph(
         this,
         () => {
-          myself.crackle.showModOptions(mod)
+          myself.crackle.showModOptions(mod);
         },
         "Options",
       );
@@ -557,6 +569,8 @@ class CrackleMorph extends ScrollFrameMorph {
       MorphicPreferences.isFlat && (optionsButton.label.shadowColor = null);
       MorphicPreferences.isFlat && (autoloadButton.label.shadowColor = null);
       MorphicPreferences.isFlat && (deleteButton.label.shadowColor = null);
+
+      modMorph.acceptsDrops = false;
       return modMorph;
     }
 
@@ -595,6 +609,137 @@ class CrackleMorph extends ScrollFrameMorph {
       this.setHeight(Math.min(this.settings.height(), 150));
     }
     this.addContents(this.settings);
+  }
+  buildOptions() {
+    if (this.settings) {
+      this.settings.destroy();
+    }
+    this.newOptions = { ...this.mod.options };
+    this.settings = new AlignmentMorph("column", 5);
+    this.settings.alignment = "left";
+    this.mod.OPTIONS_FORMAT.forEach((format) => {
+      if (format?.id) {
+        let morph,
+          label = new StringMorph(
+            format.name,
+            12,
+            "sans-serif",
+            true,
+            null,
+            false,
+            false,
+            null,
+            BLACK,
+          );
+
+        if (format.type === "boolean") {
+          morph = new ToggleMorph(
+            "checkbox",
+            null,
+            () => (this.newOptions[format.id] = morph.state), // action,
+            null, // label
+            () => this.newOptions[format.id], //query
+          );
+        } else if (format.type === "number") {
+          morph = new InputFieldMorph(`${this.newOptions[format.id]}`, true);
+          morph.doContrastingColor = true;
+          morph.reactToInput = () => {
+            this.newOptions[format.id] = +morph.getValue();
+          };
+        } else if (format.type === "color") {
+          morph = new BoxMorph(2, 1);
+          morph.setColor(this.newOptions[format.id]);
+          morph.setExtent(new Point(22, 22));
+          morph.mouseClickLeft = () => {
+            var hand = world.hand,
+              posInDocument = getDocumentPositionOf(world.worldCanvas),
+              mouseMoveBak = hand.processMouseMove,
+              mouseDownBak = hand.processMouseDown,
+              mouseUpBak = hand.processMouseUp,
+              pal = new ColorPaletteMorph(null, new Point(160, 100));
+
+            world.add(pal);
+            pal.setPosition(morph.topRight().add(new Point(this.edge, 0)));
+
+            hand.processMouseMove = (event) => {
+              var clr = world.getGlobalPixelColor(hand.position());
+              hand.setPosition(
+                new Point(
+                  event.pageX - posInDocument.x,
+                  event.pageY - posInDocument.y,
+                ),
+              );
+              if (!clr.a) {
+                // ignore transparent,
+                // needed for retina-display support
+                return;
+              }
+              morph.setColor(clr);
+              this.newOptions[format.id] = clr.copy();
+            };
+
+            hand.processMouseDown = nop;
+
+            hand.processMouseUp = () => {
+              pal.destroy();
+              hand.processMouseMove = mouseMoveBak;
+              hand.processMouseDown = mouseDownBak;
+              hand.processMouseUp = mouseUpBak;
+            };
+          };
+        } else {
+          morph = new InputFieldMorph(`${this.newOptions[format.id]}`);
+          morph.doContrastingColor = true;
+          this.newOptions[format.id] = morph.getValue();
+          morph.reactToInput = () => {
+            this.newOptions[format.id] = `${morph.getValue()}`;
+          };
+        }
+        let total = new AlignmentMorph("row", 5);
+        total.alignment = "left";
+        total.add(label);
+        total.add(morph);
+        total.fixLayout();
+        this.settings.add(total);
+      } else if (typeof format === "string") {
+        let morph = new StringMorph(
+            format,
+            15,
+            "sans-serif",
+            false,
+            null,
+            false,
+            false,
+            null,
+            BLACK,
+          );
+        this.settings.add(morph);
+      } else if (format === null) {
+        let morph = new Morph();
+        morph.alpha = 0;
+        morph.setExtent(new Point(200, 5));
+        this.settings.add(morph);
+      };
+    });
+    this.settings.fixLayout();
+
+    this.alpha = 0;
+    if (!this.vertical) {
+      this.setWidth(200);
+      this.setHeight(Math.min(this.settings.height(), 150));
+    }
+    this.addContents(this.settings);
+  }
+  ok() {
+    this.mod.options = this.newOptions;
+    this.crackle.saveModOptions(this.mod);
+  }
+  fixOptionsLayout() {
+    this.settings.fixLayout();
+    this.settings.setWidth(200);
+    this.setHeight(this.settings.height());
+    this.setWidth(this.settings.width());
+    this.contents.adjustBounds();
   }
   buildContents() {
     switch (this.type) {
@@ -1235,16 +1380,27 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
 
     showModOptions(mod) {
       const dlg = new DialogBoxMorph(),
-      modMorph = new CrackleMorph(window.__crackle__, false);
+        modMorph = new CrackleMorph(window.__crackle__, false);
+
       modMorph.setupModOptions(mod);
       dlg.key = mod.ID + "-options";
-      dlg.labelString = mod.NAME + " Options"
+      dlg.labelString = mod.NAME + " Options";
+      dlg.action = modMorph.ok;
       dlg.createLabel();
       dlg.addBody(modMorph);
-      dlg.addButton("ok", "OK");
-      dlg.addButton("ok", "Apply");
+      dlg.addButton(() => (modMorph.ok(), dlg.destroy()), "OK");
+      dlg.addButton(() => modMorph.ok(), "Apply");
       dlg.addButton("cancel", "Cancel");
-      dlg.popUp();
+      dlg.popUp(world);
+      dlg.fixLayout();
+      console.warn(dlg);
+    },
+
+    saveModOptions(mod) {
+      this.storage.set(
+        `sparkle-${mod.ID}-options`,
+        JSON.stringify(mod.options),
+      );
     },
 
     storage: {

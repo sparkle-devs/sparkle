@@ -10,7 +10,9 @@ return class extends Mod {
     OPTIONS_FORMAT = [
         { id: "number", name: "A number", type: "number", default: 3 },
         null,
-        { id: "helloTest", name: "A String", type: "string", default: "Hello!" },
+        { id: "helloTest", name: "Hello String", type: "string", default: "Hello!" },
+        { id: "color", name: "A color", type: "color", default: new Color(255, 0, 128)},
+        "HEADING 1",
     ]; // format for options
 
     // Main function - gets ran when the mod is loaded
@@ -37,7 +39,7 @@ return class extends Mod {
         api.registerMenuHook("projectMenu", (menu) => {
             menu.addLine();
             menu.addItem("Example Mod - Say hello", () => {
-                alert("hi");
+                alert(this.options.helloTest);
             })
         });
     }
