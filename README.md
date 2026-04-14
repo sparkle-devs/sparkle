@@ -1,10 +1,8 @@
 # Sparkle
 > [!WARNING]
-> In Sparkle v0.3 and later, some older addons written for Crackle may suddenly break. If this happens, remove them from Sparkle and contact the developers for assistance.
+> Starting with Sparkle v0.4, Sparkle will become an internal component of [Jameson](https://mojavesoft.net/ide/), and the version provided by the Sparkle browser extension will cease to operate; conflicts may occur when running an older version of Sparkle on the latest Jameson version after that point.
 >
-> If you're a developer, you should read [MIGRATION.md](doc/MIGRATION.md) for tips on how to migrate your code.
-> 
-> All of the addons in the `SparkleMods` repository have already been upgraded for your convenience.
+> These changes will go into effect circa April 19th, 2026.
 > 
 <img width=512 height=128 src=sparkle-text-2-nocurve.png>
 
