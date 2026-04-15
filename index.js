@@ -610,29 +610,9 @@ class CrackleMorph extends ScrollFrameMorph {
     }
     this.addContents(this.settings);
   }
-  buildOptions() {
-    if (this.settings) {
-      this.settings.destroy();
-    }
-    this.newOptions = { ...this.mod.options };
-    this.settings = new AlignmentMorph("column", 5);
-    this.settings.alignment = "left";
-    this.mod.OPTIONS_FORMAT.forEach((format) => {
-      if (format?.id) {
-        let morph,
-          label = new StringMorph(
-            format.name,
-            12,
-            "sans-serif",
-            true,
-            null,
-            false,
-            false,
-            null,
-            BLACK,
-          );
-
-        if (format.type === "boolean") {
+  buildOptionMorph(format, options) {
+    let morph;
+    if (format.type === "boolean") {
           morph = new ToggleMorph(
             "checkbox",
             null,
@@ -695,6 +675,31 @@ class CrackleMorph extends ScrollFrameMorph {
             this.newOptions[format.id] = `${morph.getValue()}`;
           };
         }
+    return morph;
+  }
+  buildOptions() {
+    if (this.settings) {
+      this.settings.destroy();
+    }
+    this.newOptions = { ...this.mod.options };
+    this.settings = new AlignmentMorph("column", 5);
+    this.settings.alignment = "left";
+    this.mod.OPTIONS_FORMAT.forEach((format) => {
+      if (format?.id) {
+        let morph,
+          label = new StringMorph(
+            format.name,
+            12,
+            "sans-serif",
+            true,
+            null,
+            false,
+            false,
+            null,
+            BLACK,
+          );
+
+        morph = this.buildOptionMorph(format, this.mod.options)
         let total = new AlignmentMorph("row", 5);
         total.alignment = "left";
         total.add(label);
