@@ -66,46 +66,61 @@ Addons have have an `OPTIONS_FORMAT` array will have an "Options" button in the 
 
 ```js
 [
-    "HEADING 1", // Headings
-    {
-      id: "number",
-      name: "A number",
-      type: "number",
-      default: 3,
-      // optional
-      min: 1,
+  "HEADING 1", // Headings
+  {
+    id: "number",
+    name: "A number",
+    type: "number",
+    default: 3,
+    // optional
+    min: 1,
+  },
+  {
+    id: "slider",
+    name: "A number slider",
+    type: "number",
+    default: 3,
+    // optional, both min and max will make the input into a slider
+    min: 1,
+    max: 4,
+    resolution: 0.1,
+  },
+  null, // spacer
+  {
+    id: "helloTest",
+    name: "Hello String",
+    type: "string",
+    default: "Hello!",
+  },
+  {
+    id: "dropDown",
+    name: "Hi Dropdown",
+    type: "string",
+    default: "hello",
+    menu: {
+      Hello: "hello",
+      Example: "example",
+      Sparkle: "sparkle",
     },
-    {
-      id: "slider",
-      name: "A number slider",
-      type: "number",
-      default: 2,
-      // optional, both min and max will make the input into a slider
-      min: 1,
-      max: 4,
-      resolution: 0.1
-    },
-    null, // spacer
-    {
-      id: "helloTest",
-      name: "Hello String",
-      type: "string",
-      default: "Hello!",
-    },
-    {
-      id: "color",
-      name: "A color",
-      type: "color",
-      default: new Color(255, 0, 128),
-    },
-    {
-      id: "everyHello",
-      name: "All Category Hellos",
-      type: "string",
-      // numbers and strings can have arrays as defaults
-      default: ["hi", "hello", "sick", "howdy"],
-    },
-  ]
+    readOnly: true,
+  },
+  {
+    id: "color",
+    name: "A color",
+    type: "color",
+    default: new Color(255, 0, 128),
+  },
+  {
+    id: "everyHello",
+    name: "All Category Hellos",
+    type: "string",
+    // numbers and strings can have arrays as defaults
+    default: ["hi", "hello", "sick", "howdy"],
+    // optional, for arrays
+    minLength: 1,
+    maxLength: 5,
+  },
+]
 ```
 
 when the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
@@ -114,31 +129,38 @@ when the addon is loaded, the option data is loaded into the `options` property,
 {
     number: 3,
     slider: 2,
-    helloTest: "Hello!"
+    helloTest: "Hello!",
+    dropdown: "hello",
     color: new Color(255, 0, 128),
     everyHello: ["hi", "hello", "sick", "howdy"],
 }
 ```
 
-Addon options are automatically saved by Sparkle.
+Addon options are automatically saved and deleted by Sparkle.
 
 ## `this` in `main`
+
 The object stored in `this` is a `Mod` object. This object supports events using EventTarget. You add event listeners with `addEventListener`, just like with DOM elements. What follows is a list of possible events that you can add listeners for:
 
 ### Events
-* `projectCreating` - Triggered whenever the current project is about to be replaced with a new one. You can cancel this action by calling "preventDefault" on it.
-* `projectCreated` - Triggered after a project is created, if it was not cancelled by another event
-* `categoryCreating` - Triggered whenever a new category is about to be created. You can cancel this action by calling "preventDefault" on it. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
-* `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
+
+- `projectCreating` - Triggered whenever the current project is about to be replaced with a new one. You can cancel this action by calling "preventDefault" on it.
+- `projectCreated` - Triggered after a project is created, if it was not cancelled by another event
+- `categoryCreating` - Triggered whenever a new category is about to be created. You can cancel this action by calling "preventDefault" on it. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
+- `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
 
 ## "Snap" detection
+
 One very interesting feature in Sparkle is its cross-modness. This means, that not only can you run Sparkle and make addons for Snap!, you can also use it on other Snap! mods!
 
 The current term for a Snap! mod (including Snap! itself) is simply a "Snap".
 
 There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making an addon for [Split](https://www.github.com/e016/split-mod) that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
 
-* `requireSnaps`: Require either one of a set of snaps to run your addon
-* `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
-* `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
-````
+- `requireSnaps`: Require either one of a set of snaps to run your addon
+- `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
+- `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
+
+```
+
+```

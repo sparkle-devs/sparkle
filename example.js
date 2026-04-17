@@ -35,6 +35,18 @@ return class extends Mod {
       default: "Hello!",
     },
     {
+      id: "dropDown",
+      name: "Hi Dropdown",
+      type: "string",
+      default: "hello",
+      menu: {
+        "Hello": "hello",
+        "Example": "example",
+        "Sparkle": "sparkle",
+      },
+      readOnly: true,
+    },
+    {
       id: "color",
       name: "A color",
       type: "color",
@@ -46,6 +58,9 @@ return class extends Mod {
       type: "string",
       // numbers and strings can have arrays as defaults
       default: ["hi", "hello", "sick", "howdy"],
+      // optional, for arrays
+      minLength: 1,
+      maxLength: 5,
     },
   ]; // format for options
 

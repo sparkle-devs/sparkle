@@ -181,18 +181,20 @@ class Mod extends EventTarget {
       this.options = JSON.parse(
         window.__crackle__.storage.get(`sparkle-${this.ID}-options`),
       );
-      Object.keys(this.options).forEach((o) => {
-        if (
-          JSON.stringify(Object.keys(this.options[o])) === '["r","g","b","a"]'
-        ) {
-          this.options[o] = new Color(
-            this.options[o].r,
-            this.options[o].g,
-            this.options[o].b,
-            this.options[o].a,
-          );
-        }
-      });
+      if (this.options) {
+        Object.keys(this.options).forEach((o) => {
+          if (
+            JSON.stringify(Object.keys(this.options[o])) === '["r","g","b","a"]'
+          ) {
+            this.options[o] = new Color(
+              this.options[o].r,
+              this.options[o].g,
+              this.options[o].b,
+              this.options[o].a,
+            );
+          }
+        });
+      }
       if (!this.options) {
         this.options = {};
         this.OPTIONS_FORMAT.forEach((format) => {
@@ -200,7 +202,6 @@ class Mod extends EventTarget {
             this.options[format.id] = format.default;
           }
         });
-        console.warn(this.options);
       }
     }
   }
@@ -618,52 +619,75 @@ class CrackleMorph extends ScrollFrameMorph {
         null,
         () => setter(morph.state), // action,
         null, // label
-        getter, //query
+        getter, // query
       );
-    } else if (format.type === "number" && !isNil(format.min) && !isNil(format.max)) {
+    } else if (
+      format.type === "number" &&
+      !isNil(format.min) &&
+      !isNil(format.max)
+    ) {
       if (!format.resolution) {
         format.resolution = 1e-3;
       }
       morph = new AlignmentMorph("row", 5);
-      const slider = new SliderMorph(+format.min / format.resolution, +format.max / format.resolution, +getter() / format.resolution, 2, "horizontal"),
-      text = new StringMorph(
-            `${+getter()}`,
-            10,
-            "sans-serif",
-            false,
-            null,
-            false,
-            false,
-            null,
-            BLACK,
-          );
-      slider.setExtent(new Point(100, 10));
+      const slider = new SliderMorph(
+          +format.min / format.resolution,
+          +format.max / format.resolution,
+          +getter() / format.resolution,
+          2,
+          "horizontal",
+        ),
+        setResolution = (x) => {
+          return x
+            .toFixed(Math.floor(Math.log(1 / format.resolution) - 1))
+            .toString();
+        },
+        text = new StringMorph(
+          `${setResolution(+getter())}`,
+          10,
+          "sans-serif",
+          false,
+          null,
+          false,
+          false,
+          null,
+          BLACK,
+        );
+      slider.setExtent(new Point(100, 12));
       slider.updateValue();
       slider.action = () => {
-        text.text = (slider.value * format.resolution).toString();
+        text.text = setResolution(slider.value * format.resolution);
         text.changed();
         text.fixLayout();
         text.rerender();
         setter(slider.value * format.resolution);
-      }
+        morph.fixLayout();
+        let parent = morph.parent;
+        while (parent) {
+          if (parent) {
+            parent.fixLayout();
+          }
+          parent = parent.parent;
+        }
+      };
       morph.add(slider);
       morph.add(text);
       morph.fixLayout();
     } else if (format.type === "number") {
-      morph = new InputFieldMorph(`${getter()}`, true);
+      morph = new InputFieldMorph(`${getter()}`, true, format.menu, format.readOnly);
       morph.doContrastingColor = true;
       morph.reactToInput = () => {
         setter(+morph.getValue());
       };
       morph.accept = () => {
-        if (!isNil(format.min) && (+morph.getValue() < +format.min)) {
+        if (!isNil(format.min) && +morph.getValue() < +format.min) {
           morph.setContents(`${format.min}`);
           setter(+format.min);
-        };
-        if (!isNil(format.max) && (+morph.getValue() > +format.max)) {
+        }
+        if (!isNil(format.max) && +morph.getValue() > +format.max) {
           morph.setContents(`${format.max}`);
           setter(+format.max);
-        };
+        }
       };
     } else if (format.type === "color") {
       morph = new BoxMorph(2, 1);
@@ -707,7 +731,7 @@ class CrackleMorph extends ScrollFrameMorph {
         };
       };
     } else {
-      morph = new InputFieldMorph(`${getter()}`);
+      morph = new InputFieldMorph(`${getter()}`, false, format.menu, format.readOnly);
       morph.doContrastingColor = true;
       setter(morph.getValue());
       morph.reactToInput = () => {
@@ -720,7 +744,12 @@ class CrackleMorph extends ScrollFrameMorph {
     if (this.settings) {
       this.settings.destroy();
     }
-    this.newOptions = { ...this.mod.options };
+    this.newOptions = this.mod.options;
+    Object.keys(this.newOptions).forEach((key) => {
+      if (Array.isArray(this.newOptions[key])) {
+        this.newOptions[key] = [...this.newOptions[key]];
+      }
+    });
     this.settings = new AlignmentMorph("column", 5);
     this.settings.alignment = "left";
     this.mod.OPTIONS_FORMAT.forEach((format) => {
@@ -744,13 +773,15 @@ class CrackleMorph extends ScrollFrameMorph {
               if (!Array.isArray(myself.newOptions[format.id])) {
                 myself.newOptions[format.id] = [];
               }
+              if (myself.newOptions[format.id].length > format.maxLength) {
+                remakeLayout();
+                return;
+              };
               myself.newOptions[format.id].push(
                 format.default[
-                  (myself.newOptions[format.id].length) %
-                    format.default.length
+                  myself.newOptions[format.id].length % format.default.length
                 ],
               );
-              console.warn(myself.newOptions[format.id]);
               remakeLayout();
             },
             "+",
@@ -758,6 +789,10 @@ class CrackleMorph extends ScrollFrameMorph {
           less = new PushButtonMorph(
             this,
             () => {
+              if (myself.newOptions[format.id].length - 1 < format.minLength) {
+                remakeLayout();
+                return;
+              }
               myself.newOptions[format.id].pop();
               remakeLayout();
             },
@@ -1394,7 +1429,6 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       if (mod.DO_MENU) mod.menu = new MenuMorph();
 
       try {
-        console.warn(mod, Object.keys(mod));
         mod.setupOptions();
         mod.main();
       } catch (e) {
@@ -1438,6 +1472,9 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       if (!isNil(this.autoloadMods[id])) {
         this.autoload.delete(id);
       }
+
+      // remove settings
+      this.storage.remove(`sparkle-${id}-options`);
     },
 
     autoload: {
@@ -1521,7 +1558,6 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       dlg.addButton("cancel", "Cancel");
       dlg.popUp(world);
       dlg.fixLayout();
-      console.warn(dlg);
     },
 
     saveModOptions(mod) {
@@ -1534,6 +1570,9 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
     storage: {
       set(key, value) {
         localStorage.setItem(key, value);
+      },
+      remove(key) {
+        localStorage.removeItem(key);
       },
       get(key) {
         return localStorage.getItem(key);
@@ -1571,7 +1610,6 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
     ) {
       modButton = controlBar.settingsButton.fullCopy();
       controlBar.modButton = modButton;
-      //console.warn(controlBar.modButton);
       controlBar.addChild(modButton);
     }
 
