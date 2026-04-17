@@ -80,7 +80,7 @@ return class extends Mod {
 
     // Example of using events
     this.addEventListener("categoryCreating", (e) => {
-      if (this.options.everyHello.includes(e.detail.name.toLowercase())) {
+      if (this.options.everyHello.includes(e.detail.name.toLowerCase())) {
         api.inform("I dont accept your hello.", "Example Mod");
 
         e.preventDefault();

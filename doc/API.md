@@ -120,7 +120,7 @@ Addons have have an `OPTIONS_FORMAT` array will have an "Options" button in the 
     minLength: 1,
     maxLength: 5,
   },
-]
+];
 ```
 
 when the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
@@ -148,6 +148,7 @@ The object stored in `this` is a `Mod` object. This object supports events using
 - `projectCreated` - Triggered after a project is created, if it was not cancelled by another event
 - `categoryCreating` - Triggered whenever a new category is about to be created. You can cancel this action by calling "preventDefault" on it. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
 - `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
+- `optionsChanged` - Triggered after changing the options of a mod. Useful if you want to change something on the fly after setting new options.
 
 ## "Snap" detection
 

@@ -674,7 +674,12 @@ class CrackleMorph extends ScrollFrameMorph {
       morph.add(text);
       morph.fixLayout();
     } else if (format.type === "number") {
-      morph = new InputFieldMorph(`${getter()}`, true, format.menu, format.readOnly);
+      morph = new InputFieldMorph(
+        `${getter()}`,
+        true,
+        format.menu,
+        format.readOnly,
+      );
       morph.doContrastingColor = true;
       morph.reactToInput = () => {
         setter(+morph.getValue());
@@ -731,7 +736,12 @@ class CrackleMorph extends ScrollFrameMorph {
         };
       };
     } else {
-      morph = new InputFieldMorph(`${getter()}`, false, format.menu, format.readOnly);
+      morph = new InputFieldMorph(
+        `${getter()}`,
+        false,
+        format.menu,
+        format.readOnly,
+      );
       morph.doContrastingColor = true;
       setter(morph.getValue());
       morph.reactToInput = () => {
@@ -776,7 +786,7 @@ class CrackleMorph extends ScrollFrameMorph {
               if (myself.newOptions[format.id].length > format.maxLength) {
                 remakeLayout();
                 return;
-              };
+              }
               myself.newOptions[format.id].push(
                 format.default[
                   myself.newOptions[format.id].length % format.default.length
@@ -895,6 +905,9 @@ class CrackleMorph extends ScrollFrameMorph {
   }
   ok() {
     this.mod.options = this.newOptions;
+    this.mod.dispatchEvent(
+      new CustomEvent("optionsChanged"),
+    );
     this.crackle.saveModOptions(this.mod);
   }
   fixOptionsLayout() {
@@ -1218,15 +1231,15 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
     }
 
     // hook MenuMorph to call hooks for different menus
-    MenuMorph.prototype._popup = MenuMorph.prototype.popup;
-    MenuMorph.prototype.popup = function (world, pos) {
-      if (this.target) {
-        if (window.__crackle__.currentMenu)
-          applyHooks(this, window.__crackle__.currentMenu);
-      }
-
-      return this._popup(world, pos);
-    };
+    MenuMorph.prototype.popup = new Proxy(MenuMorph.prototype.popup, {
+      apply(target, ctx, args) {
+        if (ctx.target) {
+          if (window.__crackle__.currentMenu)
+            applyHooks(ctx, window.__crackle__.currentMenu);
+        }
+        return Reflect.apply(...arguments);
+      },
+    });
 
     // projectMenu
     IDE_Morph.prototype.projectMenu = new Proxy(
