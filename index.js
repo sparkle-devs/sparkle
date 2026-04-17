@@ -610,71 +610,110 @@ class CrackleMorph extends ScrollFrameMorph {
     }
     this.addContents(this.settings);
   }
-  buildOptionMorph(format, options) {
+  buildOptionMorph(format, getter, setter) {
     let morph;
     if (format.type === "boolean") {
-          morph = new ToggleMorph(
-            "checkbox",
+      morph = new ToggleMorph(
+        "checkbox",
+        null,
+        () => setter(morph.state), // action,
+        null, // label
+        getter, //query
+      );
+    } else if (format.type === "number" && !isNil(format.min) && !isNil(format.max)) {
+      if (!format.resolution) {
+        format.resolution = 1e-3;
+      }
+      morph = new AlignmentMorph("row", 5);
+      const slider = new SliderMorph(+format.min / format.resolution, +format.max / format.resolution, +getter(), 2, "horizontal"),
+      text = new StringMorph(
+            `${getter()}`,
+            10,
+            "sans-serif",
+            false,
             null,
-            () => (this.newOptions[format.id] = morph.state), // action,
-            null, // label
-            () => this.newOptions[format.id], //query
+            false,
+            false,
+            null,
+            BLACK,
           );
-        } else if (format.type === "number") {
-          morph = new InputFieldMorph(`${this.newOptions[format.id]}`, true);
-          morph.doContrastingColor = true;
-          morph.reactToInput = () => {
-            this.newOptions[format.id] = +morph.getValue();
-          };
-        } else if (format.type === "color") {
-          morph = new BoxMorph(2, 1);
-          morph.setColor(this.newOptions[format.id]);
-          morph.setExtent(new Point(22, 22));
-          morph.mouseClickLeft = () => {
-            var hand = world.hand,
-              posInDocument = getDocumentPositionOf(world.worldCanvas),
-              mouseMoveBak = hand.processMouseMove,
-              mouseDownBak = hand.processMouseDown,
-              mouseUpBak = hand.processMouseUp,
-              pal = new ColorPaletteMorph(null, new Point(160, 100));
+      slider.setExtent(new Point(100, 10));
+      slider.updateValue();
+      slider.action = () => {
+        text.text = (slider.value * format.resolution).toString();
+        text.changed();
+        text.fixLayout();
+        text.rerender();
+        setter(slider.value * format.resolution);
+      }
+      morph.add(slider);
+      morph.add(text);
+      morph.fixLayout();
+    } else if (format.type === "number") {
+      morph = new InputFieldMorph(`${getter()}`, true);
+      morph.doContrastingColor = true;
+      morph.reactToInput = () => {
+        setter(+morph.getValue());
+      };
+      morph.accept = () => {
+        if (!isNil(format.min) && (+morph.getValue() < +format.min)) {
+          morph.setContents(`${format.min}`);
+          setter(+format.min);
+        };
+        if (!isNil(format.max) && (+morph.getValue() > +format.max)) {
+          morph.setContents(`${format.max}`);
+          setter(+format.max);
+        };
+      };
+    } else if (format.type === "color") {
+      morph = new BoxMorph(2, 1);
+      morph.setColor(getter());
+      morph.setExtent(new Point(22, 22));
+      morph.mouseClickLeft = () => {
+        var hand = world.hand,
+          posInDocument = getDocumentPositionOf(world.worldCanvas),
+          mouseMoveBak = hand.processMouseMove,
+          mouseDownBak = hand.processMouseDown,
+          mouseUpBak = hand.processMouseUp,
+          pal = new ColorPaletteMorph(null, new Point(160, 100));
 
-            world.add(pal);
-            pal.setPosition(morph.topRight().add(new Point(this.edge, 0)));
+        world.add(pal);
+        pal.setPosition(morph.topRight().add(new Point(this.edge, 0)));
 
-            hand.processMouseMove = (event) => {
-              var clr = world.getGlobalPixelColor(hand.position());
-              hand.setPosition(
-                new Point(
-                  event.pageX - posInDocument.x,
-                  event.pageY - posInDocument.y,
-                ),
-              );
-              if (!clr.a) {
-                // ignore transparent,
-                // needed for retina-display support
-                return;
-              }
-              morph.setColor(clr);
-              this.newOptions[format.id] = clr.copy();
-            };
+        hand.processMouseMove = (event) => {
+          var clr = world.getGlobalPixelColor(hand.position());
+          hand.setPosition(
+            new Point(
+              event.pageX - posInDocument.x,
+              event.pageY - posInDocument.y,
+            ),
+          );
+          if (!clr.a) {
+            // ignore transparent,
+            // needed for retina-display support
+            return;
+          }
+          morph.setColor(clr);
+          setter(clr.copy());
+        };
 
-            hand.processMouseDown = nop;
+        hand.processMouseDown = nop;
 
-            hand.processMouseUp = () => {
-              pal.destroy();
-              hand.processMouseMove = mouseMoveBak;
-              hand.processMouseDown = mouseDownBak;
-              hand.processMouseUp = mouseUpBak;
-            };
-          };
-        } else {
-          morph = new InputFieldMorph(`${this.newOptions[format.id]}`);
-          morph.doContrastingColor = true;
-          this.newOptions[format.id] = morph.getValue();
-          morph.reactToInput = () => {
-            this.newOptions[format.id] = `${morph.getValue()}`;
-          };
-        }
+        hand.processMouseUp = () => {
+          pal.destroy();
+          hand.processMouseMove = mouseMoveBak;
+          hand.processMouseDown = mouseDownBak;
+          hand.processMouseUp = mouseUpBak;
+        };
+      };
+    } else {
+      morph = new InputFieldMorph(`${getter()}`);
+      morph.doContrastingColor = true;
+      setter(morph.getValue());
+      morph.reactToInput = () => {
+        setter(`${morph.getValue()}`);
+      };
+    }
     return morph;
   }
   buildOptions() {
@@ -685,7 +724,86 @@ class CrackleMorph extends ScrollFrameMorph {
     this.settings = new AlignmentMorph("column", 5);
     this.settings.alignment = "left";
     this.mod.OPTIONS_FORMAT.forEach((format) => {
-      if (format?.id) {
+      if (format?.id && Array.isArray(format.default)) {
+        const myself = this;
+        let list,
+          label = new StringMorph(
+            format.name,
+            12,
+            "sans-serif",
+            true,
+            null,
+            false,
+            false,
+            null,
+            BLACK,
+          ),
+          plus = new PushButtonMorph(
+            this,
+            () => {
+              if (!Array.isArray(myself.newOptions[format.id])) {
+                myself.newOptions[format.id] = [];
+              }
+              myself.newOptions[format.id].push(
+                format.default[
+                  (myself.newOptions[format.id].length) %
+                    format.default.length
+                ],
+              );
+              console.warn(myself.newOptions[format.id]);
+              remakeLayout();
+            },
+            "+",
+          ),
+          less = new PushButtonMorph(
+            this,
+            () => {
+              myself.newOptions[format.id].pop();
+              remakeLayout();
+            },
+            "-",
+          ),
+          buttonGroup = new AlignmentMorph("row", 5);
+        buttonGroup.alignment = "left";
+        buttonGroup.add(plus);
+        buttonGroup.add(less);
+        buttonGroup.fixLayout();
+        list = new AlignmentMorph("column", 5);
+        list.alignment = "left";
+
+        let total = new AlignmentMorph("column", 5);
+        total.alignment = "left";
+        total.add(label);
+        total.add(list);
+        total.add(buttonGroup);
+        this.settings.add(total);
+
+        let remakeLayout = () => {
+          while (list.children.length > 0) {
+            list.children.forEach((child) => child.destroy());
+          }
+          list.color = PushButtonMorph.prototype.color;
+          for (let i = 0; i < this.newOptions[format.id].length; i++) {
+            list.add(
+              this.buildOptionMorph(
+                Object.assign(Object.assign({}, format), {
+                  default: this.newOptions[format.id][i],
+                }),
+                () => this.newOptions[format.id][i],
+                (x) => (this.newOptions[format.id][i] = x),
+              ),
+            );
+          }
+          list.fixLayout();
+          total.fixLayout();
+          this.fixLayout();
+          if (this.parent) {
+            this.parent.fixLayout();
+          }
+        };
+
+        remakeLayout();
+      } else if (format?.id) {
         let morph,
           label = new StringMorph(
             format.name,
@@ -699,8 +817,13 @@ class CrackleMorph extends ScrollFrameMorph {
             BLACK,
           );
 
-        morph = this.buildOptionMorph(format, this.mod.options)
+        morph = this.buildOptionMorph(
+          format,
+          () => this.newOptions[format.id],
+          (x) => (this.newOptions[format.id] = x),
+        );
         let total = new AlignmentMorph("row", 5);
+        total.color = PushButtonMorph.prototype.color;
         total.alignment = "left";
         total.add(label);
         total.add(morph);
@@ -708,23 +831,23 @@ class CrackleMorph extends ScrollFrameMorph {
         this.settings.add(total);
       } else if (typeof format === "string") {
         let morph = new StringMorph(
-            format,
-            15,
-            "sans-serif",
-            false,
-            null,
-            false,
-            false,
-            null,
-            BLACK,
-          );
+          format,
+          15,
+          "sans-serif",
+          false,
+          null,
+          false,
+          false,
+          null,
+          BLACK,
+        );
         this.settings.add(morph);
       } else if (format === null) {
         let morph = new Morph();
         morph.alpha = 0;
         morph.setExtent(new Point(200, 5));
         this.settings.add(morph);
-      };
+      }
     });
     this.settings.fixLayout();
 

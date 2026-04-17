@@ -67,11 +67,45 @@ Addons have have an `OPTIONS_FORMAT` array will have an "Options" button in the 
 ```js
 [
     "HEADING 1", // Headings
-    { id: "number", name: "A number", type: "number", default: 3 },
+    {
+      id: "number",
+      name: "A number",
+      type: "number",
+      default: 3,
+      // optional
+      min: 1,
+    },
+    {
+      id: "slider",
+      name: "A number slider",
+      type: "number",
+      default: 2,
+      // optional, both min and max will make the input into a slider
+      min: 1,
+      max: 4,
+      resolution: 0.1
+    },
     null, // spacer
-    { id: "helloTest", name: "Hello String", type: "string", default: "Hello!" },
-    { id: "color", name: "A color", type: "color", default: new Color(255, 0, 128)},
-]
+    {
+      id: "helloTest",
+      name: "Hello String",
+      type: "string",
+      default: "Hello!",
+    },
+    {
+      id: "color",
+      name: "A color",
+      type: "color",
+      default: new Color(255, 0, 128),
+    },
+    {
+      id: "everyHello",
+      name: "All Category Hellos",
+      type: "string",
+      // numbers and strings can have arrays as defaults
+      default: ["hi", "hello", "sick", "howdy"],
+    },
+  ]
 ```
 
 when the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
@@ -79,8 +113,10 @@ when the addon is loaded, the option data is loaded into the `options` property,
 ```js
 {
     number: 3,
+    slider: 2,
     helloTest: "Hello!"
-    color: new Color(255, 0, 128)
+    color: new Color(255, 0, 128),
+    everyHello: ["hi", "hello", "sick", "howdy"],
 }
 ```
 

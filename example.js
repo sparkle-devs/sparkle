@@ -15,8 +15,17 @@ return class extends Mod {
       type: "number",
       default: 3,
       // optional
-      min: 1, 
+      min: 1,
+    },
+    {
+      id: "slider",
+      name: "A number slider",
+      type: "number",
+      default: 3,
+      // optional, both min and max will make the input into a slider
+      min: 1,
       max: 4,
+      resolution: 0.1
     },
     null, // spacer
     {
@@ -36,7 +45,7 @@ return class extends Mod {
       name: "All Category Hellos",
       type: "string",
       // numbers and strings can have arrays as defaults
-      default: [],
+      default: ["hi", "hello", "sick", "howdy"],
     },
   ]; // format for options
 
@@ -56,7 +65,7 @@ return class extends Mod {
 
     // Example of using events
     this.addEventListener("categoryCreating", (e) => {
-      if (e.detail.name == "Hello") {
+      if (this.options.everyHello.includes(e.detail.name.toLowercase())) {
         api.inform("I dont accept your hello.", "Example Mod");
 
         e.preventDefault();
