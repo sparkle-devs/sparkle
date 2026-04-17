@@ -625,9 +625,9 @@ class CrackleMorph extends ScrollFrameMorph {
         format.resolution = 1e-3;
       }
       morph = new AlignmentMorph("row", 5);
-      const slider = new SliderMorph(+format.min / format.resolution, +format.max / format.resolution, +getter(), 2, "horizontal"),
+      const slider = new SliderMorph(+format.min / format.resolution, +format.max / format.resolution, +getter() / format.resolution, 2, "horizontal"),
       text = new StringMorph(
-            `${getter()}`,
+            `${+getter()}`,
             10,
             "sans-serif",
             false,
