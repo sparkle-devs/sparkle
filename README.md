@@ -1,8 +1,6 @@
 # Sparkle
 > [!WARNING]
-> Starting with Sparkle v0.4, Sparkle will become an internal component of [Jameson](https://mojavesoft.net/ide/), and the version provided by the Sparkle browser extension will cease to operate; conflicts may occur when running an older version of Sparkle on the latest Jameson version after that point.
->
-> These changes will go into effect circa April 19th, 2026.
+> Starting with Sparkle v0.4, Sparkle has become an internal component of [Jameson](https://mojavesoft.net/ide/), and the version provided by the Sparkle browser extension no longer executes in Jameson tabs; conflicts may occur when running an older version of Sparkle on the latest Jameson version after that point.
 > 
 <img width=512 height=128 src=sparkle-text-2-nocurve.png>
 
