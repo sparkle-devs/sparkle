@@ -1,5 +1,5 @@
 "use strict";
-/* 
+/*
     Sparkle - A modding framework for Snap! and its forks
     
     Copyright (c) 2025-2026 Mojavesoft Group
