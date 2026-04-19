@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master", "code-formatting" ]
     paths:
-      - main.js
+      - index.js
 
 jobs:
   build:
@@ -17,11 +17,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Format main.js
+    - name: Format index.js
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm -g install js-beautify && js-beautify -r main.js --config .formatting.json
+    - run: npm -g install js-beautify && js-beautify -r index.js --config .formatting.json
     
     - name: Commit changes
       uses: EndBug/add-and-commit@v10 # You can change this to use a specific version.
@@ -29,7 +29,7 @@ jobs:
       with:
         # The arguments for the `git add` command (see the paragraph below for more info)
         # Default: '.'
-        add: 'main.js'
+        add: 'index.js'
     
         # The name of the user that will be displayed as the author of the commit.
         # Default: depends on the default_author input
@@ -54,7 +54,7 @@ jobs:
     
         # The message for the commit.
         # Default: 'Commit from GitHub Actions (name of the workflow)'
-        message: 'Regenerate mods.json automatically'
+        message: 'Regenerate index.js automatically'
     
         # The way the action should handle pathspec errors from the add and remove commands. Three options are available:
         # - ignore -> errors will be logged but the step won't fail
