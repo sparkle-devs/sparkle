@@ -1207,8 +1207,7 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
   }
 }
 
-(async function () {
-  // wait for Snap! to be ready and get references
+ // wait for Snap! to be ready and get references
   function waitForSnapReady() {
     return new Promise((resolve) => {
       const check = setInterval(() => {
@@ -1220,6 +1219,7 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
     });
   }
 
+(async function () {
   // attach hooks for menu hooks functions
   function attachMenuHooks(ide) {
     function applyHooks(menu, name) {
