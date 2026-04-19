@@ -1,4 +1,4 @@
-return class extends Mod {
+return class extends Mod { 
   // Metadata
   ID = "example-mod"; // the id of the mod
   NAME = "Example Mod"; // human-readable name
