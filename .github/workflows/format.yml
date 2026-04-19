@@ -5,6 +5,7 @@ on:
     branches: [ "master", "code-formatting" ]
     paths:
       - index.js
+      - example.js
 
 jobs:
   build:
@@ -17,7 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Format index.js
+    - name: Format JavaScript code
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
@@ -29,7 +30,7 @@ jobs:
       with:
         # The arguments for the `git add` command (see the paragraph below for more info)
         # Default: '.'
-        add: 'index.js'
+        add: 'index.js example.js'
     
         # The name of the user that will be displayed as the author of the commit.
         # Default: depends on the default_author input
@@ -54,7 +55,7 @@ jobs:
     
         # The message for the commit.
         # Default: 'Commit from GitHub Actions (name of the workflow)'
-        message: 'Regenerate index.js automatically'
+        message: 'Format JavaScript code'
     
         # The way the action should handle pathspec errors from the add and remove commands. Three options are available:
         # - ignore -> errors will be logged but the step won't fail
