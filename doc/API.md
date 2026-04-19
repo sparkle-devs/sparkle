@@ -62,7 +62,7 @@ This section describes the variables/functions that can be invoked from `this.ap
 
 ## `mod.options` and `OPTIONS_FORMAT`
 
-Addons have have an `OPTIONS_FORMAT` array will have an "Options" button in the addon manager. It usually looks something like this:
+Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon manager. It usually looks something like this:
 
 ```js
 [
