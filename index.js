@@ -1387,7 +1387,7 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
 
   // create the __crackle__ object
   window.__crackle__ = {
-    version: "0.3",
+    version: "0.4",
     source: "https://github.com/Mojavesoft-Group/sparkle/releases",
     loadedMods: [],
     extraApi: {},
