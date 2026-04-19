@@ -39,7 +39,7 @@ For mod creators, check out [the API documentation](doc/API.md) so you can make 
 ## History
 In 2025, @codingisfun2831t started work on a piece of software called [Snap!Mods](https://forum.snap.berkeley.edu/t/snap-mods/20347). Later on; he, with the help of @tethrarxitet, started work on a successor project, named [Crackle](https://github.com/CrackleTeam/CrackleSDK).
 
-Shortly after, @pppdud began writing the first version of Sparkle (which mostly took code from Crackle and simplified the UI), now known as `sparkle-old`. After getting frustrated by the rapid pace of development at Crackle, he refocused and started attempting to send his changes upstream.
+Shortly after, @pppdud began writing the first version of Sparkle (which mostly took code from Crackle and simplified the UI), now known as `sparkle-old`. After getting frustrated by the rapid pace of feature-breaking development at Crackle, he refocused and started attempting to send his changes upstream.
 
 On March 24th, 2026, @pppdud, @codingisfun2831t, and @e016 discussed the future of Crackle. The owner at that point, @tethrarxitet, was inactive, so the other developers agreed to create a new fork, which is now known as the modern-day Sparkle.
 
