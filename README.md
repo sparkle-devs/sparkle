@@ -1,7 +1,7 @@
 # Sparkle
 <img width=512 height=128 src=sparkle-text-2-nocurve.png>
 
-[History](HISTORY.md) | [License](LICENSE)
+[History](README.md#History) | [License](LICENSE)
 
 A modding framework for Snap!, made by [@tethrarxitet](https://forum.snap.berkeley.edu/u/tethrarxitet), [@codingisfun2831t](https://forum.snap.berkeley.edu/u/codingisfun2831t), [@e016](https://forum.snap.berkeley.edu/u/d016), and [@PPPDUD](https://www.github.com/PPPDUD) among others.
 
