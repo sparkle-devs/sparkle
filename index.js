@@ -176,6 +176,36 @@ class Mod extends EventTarget {
     this.menuHooks = [];
   }
 
+  setupOptions() {
+    if (this.OPTIONS_FORMAT) {
+      this.options = JSON.parse(
+        window.__crackle__.storage.get(`sparkle-${this.ID}-options`),
+      );
+      if (this.options) {
+        Object.keys(this.options).forEach((o) => {
+          if (
+            JSON.stringify(Object.keys(this.options[o])) === '["r","g","b","a"]'
+          ) {
+            this.options[o] = new Color(
+              this.options[o].r,
+              this.options[o].g,
+              this.options[o].b,
+              this.options[o].a,
+            );
+          }
+        });
+      }
+      if (!this.options) {
+        this.options = {};
+        this.OPTIONS_FORMAT.forEach((format) => {
+          if (format?.id) {
+            this.options[format.id] = format.default;
+          }
+        });
+      }
+    }
+  }
+
   static findModById(id) {
     return window.__crackle__.loadedMods.find((mod) => mod.ID == id);
   }
@@ -220,6 +250,12 @@ class CrackleMorph extends ScrollFrameMorph {
   }
   setupSettings() {
     this.type = "settings";
+    this.buildContents();
+    this.fixLayout();
+  }
+  setupModOptions(mod) {
+    this.type = "options";
+    this.mod = mod;
     this.buildContents();
     this.fixLayout();
   }
@@ -464,11 +500,23 @@ class CrackleMorph extends ScrollFrameMorph {
         },
         crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
       );
-      autoloadButton.setColor(new Color(250, 250, 100));
+      autoloadButton.setColor(new Color(100, 250, 100));
       if (crackle.isDev) {
         modMorph.addChild(autoloadButton);
       }
       modMorph.autoloadButton = autoloadButton;
+
+      const optionsButton = new PushButtonMorph(
+        this,
+        () => {
+          myself.crackle.showModOptions(mod);
+        },
+        "Options",
+      );
+
+      optionsButton.setColor(new Color(250, 250, 0));
+      modMorph.addChild(optionsButton);
+      modMorph.optionsButton = optionsButton;
 
       const deleteButton = new PushButtonMorph(
         this,
@@ -494,11 +542,19 @@ class CrackleMorph extends ScrollFrameMorph {
       modMorph.fixLayout = function () {
         this.deleteButton.setTop(this.top() + 2);
         this.deleteButton.setRight(this.right() - 2);
+        this.optionsButton.setTop(this.top() + 2);
+        if (Object.keys(mod.OPTIONS_FORMAT || {}).length === 0) {
+          this.optionsButton.hide();
+          this.optionsButton.setLeft(this.deleteButton.left());
+        } else {
+          this.optionsButton.show();
+          this.optionsButton.setRight(this.deleteButton.left() - 3);
+        }
         this.autoloadButton.setTop(this.top() + 2);
-        this.autoloadButton.setRight(this.deleteButton.left() - 3);
+        this.autoloadButton.setRight(this.optionsButton.left() - 3);
         this.infoButton.setTop(this.top() + 2);
         this.infoButton.setRight(
-          (crackle.isDev ? this.autoloadButton : this.deleteButton).left() - 3,
+          (crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3,
         );
         labelFrame.setPosition(this.position());
         labelFrame.bounds.corner.x = this.infoButton.left() - 3;
@@ -511,8 +567,11 @@ class CrackleMorph extends ScrollFrameMorph {
 
       // jens... plz fix...
       MorphicPreferences.isFlat && (infoButton.label.shadowColor = null);
+      MorphicPreferences.isFlat && (optionsButton.label.shadowColor = null);
       MorphicPreferences.isFlat && (autoloadButton.label.shadowColor = null);
       MorphicPreferences.isFlat && (deleteButton.label.shadowColor = null);
+
+      modMorph.acceptsDrops = false;
       return modMorph;
     }
 
@@ -552,6 +611,312 @@ class CrackleMorph extends ScrollFrameMorph {
     }
     this.addContents(this.settings);
   }
+  buildOptionMorph(format, getter, setter) {
+    let morph;
+    if (format.type === "boolean") {
+      morph = new ToggleMorph(
+        "checkbox",
+        null,
+        () => setter(morph.state), // action,
+        null, // label
+        getter, // query
+      );
+    } else if (
+      format.type === "number" &&
+      !isNil(format.min) &&
+      !isNil(format.max)
+    ) {
+      if (!format.resolution) {
+        format.resolution = 1e-3;
+      }
+      morph = new AlignmentMorph("row", 5);
+      const slider = new SliderMorph(
+          +format.min / format.resolution,
+          +format.max / format.resolution,
+          +getter() / format.resolution,
+          2,
+          "horizontal",
+        ),
+        setResolution = (x) => {
+          return x
+            .toFixed(Math.floor(Math.log(1 / format.resolution) - 1))
+            .toString();
+        },
+        text = new StringMorph(
+          `${setResolution(+getter())}`,
+          10,
+          "sans-serif",
+          false,
+          null,
+          false,
+          false,
+          null,
+          BLACK,
+        );
+      slider.setExtent(new Point(100, 12));
+      slider.updateValue();
+      slider.action = () => {
+        text.text = setResolution(slider.value * format.resolution);
+        text.changed();
+        text.fixLayout();
+        text.rerender();
+        setter(slider.value * format.resolution);
+        morph.fixLayout();
+        let parent = morph.parent;
+        while (parent) {
+          if (parent) {
+            parent.fixLayout();
+          }
+          parent = parent.parent;
+        }
+      };
+      morph.add(slider);
+      morph.add(text);
+      morph.fixLayout();
+    } else if (format.type === "number") {
+      morph = new InputFieldMorph(
+        `${getter()}`,
+        true,
+        format.menu,
+        format.readOnly,
+      );
+      morph.doContrastingColor = true;
+      morph.reactToInput = () => {
+        setter(+morph.getValue());
+      };
+      morph.accept = () => {
+        if (!isNil(format.min) && +morph.getValue() < +format.min) {
+          morph.setContents(`${format.min}`);
+          setter(+format.min);
+        }
+        if (!isNil(format.max) && +morph.getValue() > +format.max) {
+          morph.setContents(`${format.max}`);
+          setter(+format.max);
+        }
+      };
+    } else if (format.type === "color") {
+      morph = new BoxMorph(2, 1);
+      morph.setColor(getter());
+      morph.setExtent(new Point(22, 22));
+      morph.mouseClickLeft = () => {
+        var hand = world.hand,
+          posInDocument = getDocumentPositionOf(world.worldCanvas),
+          mouseMoveBak = hand.processMouseMove,
+          mouseDownBak = hand.processMouseDown,
+          mouseUpBak = hand.processMouseUp,
+          pal = new ColorPaletteMorph(null, new Point(160, 100));
+
+        world.add(pal);
+        pal.setPosition(morph.topRight().add(new Point(this.edge, 0)));
+
+        hand.processMouseMove = (event) => {
+          var clr = world.getGlobalPixelColor(hand.position());
+          hand.setPosition(
+            new Point(
+              event.pageX - posInDocument.x,
+              event.pageY - posInDocument.y,
+            ),
+          );
+          if (!clr.a) {
+            // ignore transparent,
+            // needed for retina-display support
+            return;
+          }
+          morph.setColor(clr);
+          setter(clr.copy());
+        };
+
+        hand.processMouseDown = nop;
+
+        hand.processMouseUp = () => {
+          pal.destroy();
+          hand.processMouseMove = mouseMoveBak;
+          hand.processMouseDown = mouseDownBak;
+          hand.processMouseUp = mouseUpBak;
+        };
+      };
+    } else {
+      morph = new InputFieldMorph(
+        `${getter()}`,
+        false,
+        format.menu,
+        format.readOnly,
+      );
+      morph.doContrastingColor = true;
+      setter(morph.getValue());
+      morph.reactToInput = () => {
+        setter(`${morph.getValue()}`);
+      };
+    }
+    return morph;
+  }
+  buildOptions() {
+    if (this.settings) {
+      this.settings.destroy();
+    }
+    this.newOptions = this.mod.options;
+    Object.keys(this.newOptions).forEach((key) => {
+      if (Array.isArray(this.newOptions[key])) {
+        this.newOptions[key] = [...this.newOptions[key]];
+      }
+    });
+    this.settings = new AlignmentMorph("column", 5);
+    this.settings.alignment = "left";
+    this.mod.OPTIONS_FORMAT.forEach((format) => {
+      if (format?.id && Array.isArray(format.default)) {
+        const myself = this;
+        let list,
+          label = new StringMorph(
+            format.name,
+            12,
+            "sans-serif",
+            true,
+            null,
+            false,
+            false,
+            null,
+            BLACK,
+          ),
+          plus = new PushButtonMorph(
+            this,
+            () => {
+              if (!Array.isArray(myself.newOptions[format.id])) {
+                myself.newOptions[format.id] = [];
+              }
+              if (myself.newOptions[format.id].length > format.maxLength) {
+                remakeLayout();
+                return;
+              }
+              myself.newOptions[format.id].push(
+                format.default[
+                  myself.newOptions[format.id].length % format.default.length
+                ],
+              );
+              remakeLayout();
+            },
+            "+",
+          ),
+          less = new PushButtonMorph(
+            this,
+            () => {
+              if (myself.newOptions[format.id].length - 1 < format.minLength) {
+                remakeLayout();
+                return;
+              }
+              myself.newOptions[format.id].pop();
+              remakeLayout();
+            },
+            "-",
+          ),
+          buttonGroup = new AlignmentMorph("row", 5);
+        buttonGroup.alignment = "left";
+        buttonGroup.add(plus);
+        buttonGroup.add(less);
+        buttonGroup.fixLayout();
+        list = new AlignmentMorph("column", 5);
+        list.alignment = "left";
+
+        let total = new AlignmentMorph("column", 5);
+        total.alignment = "left";
+        total.add(label);
+        total.add(list);
+        total.add(buttonGroup);
+        this.settings.add(total);
+
+        let remakeLayout = () => {
+          while (list.children.length > 0) {
+            list.children.forEach((child) => child.destroy());
+          }
+          list.color = PushButtonMorph.prototype.color;
+          for (let i = 0; i < this.newOptions[format.id].length; i++) {
+            list.add(
+              this.buildOptionMorph(
+                Object.assign(Object.assign({}, format), {
+                  default: this.newOptions[format.id][i],
+                }),
+                () => this.newOptions[format.id][i],
+                (x) => (this.newOptions[format.id][i] = x),
+              ),
+            );
+          }
+          list.fixLayout();
+          total.fixLayout();
+          this.fixLayout();
+          if (this.parent) {
+            this.parent.fixLayout();
+          }
+        };
+
+        remakeLayout();
+      } else if (format?.id) {
+        let morph,
+          label = new StringMorph(
+            format.name,
+            12,
+            "sans-serif",
+            true,
+            null,
+            false,
+            false,
+            null,
+            BLACK,
+          );
+
+        morph = this.buildOptionMorph(
+          format,
+          () => this.newOptions[format.id],
+          (x) => (this.newOptions[format.id] = x),
+        );
+        let total = new AlignmentMorph("row", 5);
+        total.color = PushButtonMorph.prototype.color;
+        total.alignment = "left";
+        total.add(label);
+        total.add(morph);
+        total.fixLayout();
+        this.settings.add(total);
+      } else if (typeof format === "string") {
+        let morph = new StringMorph(
+          format,
+          15,
+          "sans-serif",
+          false,
+          null,
+          false,
+          false,
+          null,
+          BLACK,
+        );
+        this.settings.add(morph);
+      } else if (format === null) {
+        let morph = new Morph();
+        morph.alpha = 0;
+        morph.setExtent(new Point(200, 5));
+        this.settings.add(morph);
+      }
+    });
+    this.settings.fixLayout();
+
+    this.alpha = 0;
+    if (!this.vertical) {
+      this.setWidth(200);
+      this.setHeight(Math.min(this.settings.height(), 150));
+    }
+    this.addContents(this.settings);
+  }
+  ok() {
+    this.mod.options = this.newOptions;
+    this.mod.dispatchEvent(
+      new CustomEvent("optionsChanged"),
+    );
+    this.crackle.saveModOptions(this.mod);
+  }
+  fixOptionsLayout() {
+    this.settings.fixLayout();
+    this.settings.setWidth(200);
+    this.setHeight(this.settings.height());
+    this.setWidth(this.settings.width());
+    this.contents.adjustBounds();
+  }
   buildContents() {
     switch (this.type) {
       case "import":
@@ -562,6 +927,9 @@ class CrackleMorph extends ScrollFrameMorph {
         break;
       case "settings":
         this.buildSettings();
+        break;
+      case "options":
+        this.buildOptions();
         break;
     }
   }
@@ -575,6 +943,9 @@ class CrackleMorph extends ScrollFrameMorph {
         break;
       case "manage":
         this.fixManageLayout();
+        break;
+      case "options":
+        this.fixOptionsLayout();
         break;
     }
   }
@@ -860,15 +1231,15 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
     }
 
     // hook MenuMorph to call hooks for different menus
-    MenuMorph.prototype._popup = MenuMorph.prototype.popup;
-    MenuMorph.prototype.popup = function (world, pos) {
-      if (this.target) {
-        if (window.__crackle__.currentMenu)
-          applyHooks(this, window.__crackle__.currentMenu);
-      }
-
-      return this._popup(world, pos);
-    };
+    MenuMorph.prototype.popup = new Proxy(MenuMorph.prototype.popup, {
+      apply(target, ctx, args) {
+        if (ctx.target) {
+          if (window.__crackle__.currentMenu)
+            applyHooks(ctx, window.__crackle__.currentMenu);
+        }
+        return Reflect.apply(...arguments);
+      },
+    });
 
     // projectMenu
     IDE_Morph.prototype.projectMenu = new Proxy(
@@ -1071,12 +1442,13 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       if (mod.DO_MENU) mod.menu = new MenuMorph();
 
       try {
+        mod.setupOptions();
         mod.main();
       } catch (e) {
         ide.showMessage(
           `Failed to load addon:\n${e}. Check the console for more details.`,
         );
-        console.log(e);
+        console.error(e);
       }
       return mod;
     },
@@ -1113,6 +1485,9 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       if (!isNil(this.autoloadMods[id])) {
         this.autoload.delete(id);
       }
+
+      // remove settings
+      this.storage.remove(`sparkle-${id}-options`);
     },
 
     autoload: {
@@ -1181,9 +1556,36 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
       );
     },
 
+    showModOptions(mod) {
+      const dlg = new DialogBoxMorph(),
+        modMorph = new CrackleMorph(window.__crackle__, false);
+
+      modMorph.setupModOptions(mod);
+      dlg.key = mod.ID + "-options";
+      dlg.labelString = mod.NAME + " Options";
+      dlg.action = modMorph.ok;
+      dlg.createLabel();
+      dlg.addBody(modMorph);
+      dlg.addButton(() => (modMorph.ok(), dlg.destroy()), "OK");
+      dlg.addButton(() => modMorph.ok(), "Apply");
+      dlg.addButton("cancel", "Cancel");
+      dlg.popUp(world);
+      dlg.fixLayout();
+    },
+
+    saveModOptions(mod) {
+      this.storage.set(
+        `sparkle-${mod.ID}-options`,
+        JSON.stringify(mod.options),
+      );
+    },
+
     storage: {
       set(key, value) {
         localStorage.setItem(key, value);
+      },
+      remove(key) {
+        localStorage.removeItem(key);
       },
       get(key) {
         return localStorage.getItem(key);
@@ -1221,7 +1623,6 @@ class ResizableDialogBoxMorph extends DialogBoxMorph {
     ) {
       modButton = controlBar.settingsButton.fullCopy();
       controlBar.modButton = modButton;
-      //console.warn(controlBar.modButton);
       controlBar.addChild(modButton);
     }
 
