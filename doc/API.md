@@ -123,7 +123,7 @@ Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon
 ];
 ```
 
-when the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
+When the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
 
 ```js
 {
