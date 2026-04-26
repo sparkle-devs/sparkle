@@ -1403,7 +1403,7 @@ function waitForSnapReady() {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        version: "0.4",
+        version: "0.5",
         source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
