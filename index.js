@@ -86,6 +86,9 @@ class API {
 
         let proxy = new Proxy(originalFunction, {
             apply(target, ctx, args) {
+                if (!window.__crackle__.wrappedFunctions.get(FUNCTION_ID)) {
+                  return Reflect.apply(target, ctx, args);
+                }
                 if (
                     window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.overwrites
                     ?.length == 0
@@ -453,11 +456,28 @@ class CrackleMorph extends ScrollFrameMorph {
             const modMorph = new Morph();
             modMorph.setExtent(new Point(400, rowHeight));
             modMorph.setColor(useOdd ? oddColor : evenColor);
-
+            const enableTick = new ToggleMorph(
+              "checkbox",
+              null,
+              () => {
+                if (crackle.disabledMods[mod.ID]) {
+                  crackle.enableMod(mod.ID);
+                } else {
+                  crackle.disableMod(mod.ID);
+                };
+                enableTick.hint = crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable";
+              },
+              null,
+              () => !crackle.disabledMods[mod.ID],
+              null,
+              crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable"
+            );
+            enableTick.setPosition(new Point(5, 5));
+            modMorph.add(enableTick);
             const labelFrame = new FrameMorph();
             console.log(mod);
             const label = new TextMorph(`${mod.NAME} (${mod.ID})`);
-            label.setPosition(new Point(10, 5));
+            label.setPosition(new Point(0, 5));
             label.setColor(new Color(240, 240, 240));
             labelFrame.setExtent(modMorph.extent());
             labelFrame.add(label);
@@ -535,16 +555,13 @@ class CrackleMorph extends ScrollFrameMorph {
                 "Delete",
             );
             deleteButton.setColor(new Color(250, 100, 100));
-            deleteButton.setTop(2);
-            deleteButton.setRight(modMorph.right() - 5);
-            autoloadButton.setTop(2);
-            autoloadButton.setRight(deleteButton.left() - 5);
-            infoButton.setTop(2);
-            infoButton.setRight(
-                (crackle.isDev ? autoloadButton : deleteButton).left() - 5,
-            );
             modMorph.deleteButton = deleteButton;
             modMorph.addChild(deleteButton);
+
+            if (mod.preloaded) {
+              deleteButton.hide();
+              autoloadButton.hide();
+            }
 
             useOdd = !useOdd;
             modMorph.fixLayout = function() {
@@ -559,12 +576,20 @@ class CrackleMorph extends ScrollFrameMorph {
                     this.optionsButton.setRight(this.deleteButton.left() - 3);
                 }
                 this.autoloadButton.setTop(this.top() + 2);
+                if (!this.deleteButton.isVisible) {
+                  if (this.optionsButton.isVisible) {
+                    this.optionsButton.setRight(this.deleteButton.right());
+                  } else {
+                    this.optionsButton.setLeft(this.right());
+                  }
+                  this.autoloadButton.setRight(this.deleteButton.right());
+                };
                 this.autoloadButton.setRight(this.optionsButton.left() - 3);
                 this.infoButton.setTop(this.top() + 2);
                 this.infoButton.setRight(
-                    (crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3,
+                    (crackle.isDev && this.autoloadButton.isVisible ? this.autoloadButton : this.optionsButton).left() - 3,
                 );
-                labelFrame.setPosition(this.position());
+                labelFrame.setPosition(this.position().add(new Point(25, 0)));
                 labelFrame.bounds.corner.x = this.infoButton.left() - 3;
                 labelFrame.bounds.corner.y = this.bottom();
                 labelFrame.fixLayout(true);
@@ -1227,11 +1252,40 @@ function waitForSnapReady() {
     });
 }
 
+function waitForSnapReady() {
+    return new Promise((resolve) => {
+        const check = setInterval(() => {
+            if (typeof world !== "undefined" && world.children.length > 0) {
+                clearInterval(check);
+                resolve();
+            }
+        }, 100);
+    });
+}
+
+function preloadAddonFromPath(path) {
+  return () => {
+    fetch(path).then( (x) =>
+      {
+        if (!x.ok) {
+          return "";
+        };
+        return x.text();
+      }
+    ).then((code) => {
+      window.__crackle__.preloadMod(code);
+    })
+  }
+}
+
 (async function() {
     // attach hooks for menu hooks functions
     function attachMenuHooks(ide) {
         function applyHooks(menu, name) {
             window.__crackle__.loadedMods.forEach((mod) => {
+                if (window.__crackle__.disabledMods[mod.ID]) {
+                  return
+                };
                 mod.menuHooks.forEach((hook) => {
                     if (hook.name == name) hook.func(menu);
                 });
@@ -1407,6 +1461,7 @@ function waitForSnapReady() {
         source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
+        disabledMods: {},
         autoloadMods: {},
         modCodes: {},
         allEventTargets: {},
@@ -1459,7 +1514,9 @@ function waitForSnapReady() {
 
             try {
                 mod.setupOptions();
-                mod.main();
+                if (!this.disabledMods[mod.ID]) {
+                  mod.main();
+                }
             } catch (e) {
                 ide.showMessage(
                     `Failed to load addon:\n${e}. Check the console for more details.`,
@@ -1476,26 +1533,28 @@ function waitForSnapReady() {
             return mod;
         },
 
+        preloadMod(code) {
+          if (!code) {
+            return;
+          }
+          const mod = this.loadMod(code);
+          mod.preloaded = true;
+          return mod;
+        },
+
         // Delete a mod by its ID
         deleteMod(id) {
             let mod = Mod.findModById(id);
-            if (mod.cleanupFunc) mod.cleanupFunc();
+            if (mod.cleanupFunc && !this.disabledMods[id]) mod.cleanupFunc();
 
             window.__crackle__.loadedMods = window.__crackle__.loadedMods.filter(
                 (mod) => mod.ID != id,
             );
 
-            // remove wraps
-            window.__crackle__.wrappedFunctions.forEach((value, key) => {
-                if (value.functions[id]) {
-                    delete value.functions[id];
-                    value.overwrites = value.overwrites.filter((modId) => modId != id);
-                    if (Object.keys(value).length == 0) {
-                        window.__crackle__.wrappedFunctions.delete(key);
-                    }
-                }
-            });
-            delete window.__crackle__.allEventTargets[id];
+            this.removeModAttachments(id)
+
+            delete this.disabledMods[id];
+            
             // remove autoload
             delete this.modCodes[id];
             if (!isNil(this.autoloadMods[id])) {
@@ -1504,6 +1563,43 @@ function waitForSnapReady() {
 
             // remove settings
             this.storage.remove(`sparkle-${id}-options`);
+        },
+
+        removeModAttachments(id) {
+          // remove wraps
+            window.__crackle__.wrappedFunctions.forEach((value, key) => {
+                if (value.functions[id]) {
+                    delete value.functions[id];
+                    value.overwrites = value.overwrites.filter((modId) => modId != id);
+                    if (value.overwrites.length == 0 && Object.keys(value.functions).length == 0) {
+                        window.__crackle__.wrappedFunctions.delete(key);
+                    }
+                }
+            });
+            if (id in window.__crackle__.allEventTargets) {
+              delete window.__crackle__.allEventTargets[id];
+            }
+        },
+
+        enableMod(id) {
+          const mod = Mod.findModById(id);
+          this.disabledMods[id] = false;
+          this.saveDisabled();
+          if (mod.DO_MENU) mod.menu = new MenuMorph();
+          mod.main();
+        },
+        disableMod(id) {
+          const mod = Mod.findModById(id);
+          this.disabledMods[id] = true;
+          this.saveDisabled();
+          mod.cleanupFunc && mod.cleanupFunc();
+          this.removeModAttachments(id);
+        },
+        saveDisabled() {
+          this.storage.set("crackle_disabled_mods", JSON.stringify(this.disabledMods));
+        },
+        loadDisabled() {
+          this.disabledMods = JSON.parse(this.storage.get("crackle_disabled_mods") || "{}");
         },
 
         autoload: {
@@ -1538,6 +1634,7 @@ function waitForSnapReady() {
 
             loadAuto: async function(ide) {
                 window.__crackle__.autoloadMods = this.load();
+                window.__crackle__.loadDisabled();
 
                 for (const id of Object.keys(window.__crackle__.autoloadMods)) {
                     const mod = window.__crackle__.autoloadMods[id];
@@ -1803,7 +1900,7 @@ function waitForSnapReady() {
 
                 let menus = {};
                 for (let mod of window.__crackle__.loadedMods) {
-                    if (mod.DO_MENU) {
+                    if (mod.DO_MENU && !window.__crackle__.disabledMods[mod.ID]) {
                         menus[mod.NAME] = mod.menu;
                     }
                 }
@@ -1822,6 +1919,7 @@ function waitForSnapReady() {
 
         // customize the button appearance
         modButton.children[0].name = "cross";
+        modButton.hint = modButton.hint && "Sparkle";
 
         if (window.__crackle__.snap.snap === "Split") {
             modButton.children[1].text = "Sparkle";
