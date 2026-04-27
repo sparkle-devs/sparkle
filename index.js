@@ -87,11 +87,11 @@ class API {
     let proxy = new Proxy(originalFunction, {
       apply(target, ctx, args) {
         if (!window.__crackle__.wrappedFunctions.get(FUNCTION_ID)) {
-            return Reflect.apply(target, ctx, args);
+          return Reflect.apply(target, ctx, args);
         }
         if (
-          window.__crackle__.wrappedFunctions
-          .get(FUNCTION_ID)?.overwrites?.length == 0
+          window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.overwrites
+            ?.length == 0
         ) {
           Reflect.apply(target, ctx, args); // This calls the original function
         }
@@ -461,7 +461,8 @@ class CrackleMorph extends ScrollFrameMorph {
           } else {
             crackle.disableMod(mod.ID);
           }
-          enableBox.hint = (crackle.disabledMods[mod.ID] ? "Enable " : "Disable ") + mod.NAME;
+          enableBox.hint =
+            (crackle.disabledMods[mod.ID] ? "Enable " : "Disable ") + mod.NAME;
         },
         null,
         () => !crackle.disabledMods[mod.ID],
@@ -501,34 +502,34 @@ class CrackleMorph extends ScrollFrameMorph {
       modMorph.addChild(infoButton);
       modMorph.infoButton = infoButton;
 
-            const autoloadButton = new PushButtonMorph(
-                this,
-                () => {
-                    if (crackle.autoload.isAutoloaded(mod.ID)) {
-                        crackle.autoload.delete(mod.ID);
-                        world.children[0].showMessage(
-                            `${mod.NAME} will no longer run on startup again.`,
-                        );
-                    } else {
-                        crackle.autoload.add(mod.ID);
-                        world.children[0].showMessage(
-                            `${mod.NAME} will now run every time you open ${crackle.snap.snap}!`,
-                        );
-                    }
-                    autoloadButton.labelString = crackle.autoload.isAutoloaded(mod.ID) ?
-                        "Un-autoload" :
-                        "Autoload";
-                    autoloadButton.createLabel();
-                    autoloadButton.fixLayout();
-                    modMorph.fixLayout();
-                },
-                crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
+      const autoloadButton = new PushButtonMorph(
+        this,
+        () => {
+          if (crackle.autoload.isAutoloaded(mod.ID)) {
+            crackle.autoload.delete(mod.ID);
+            world.children[0].showMessage(
+              `${mod.NAME} will no longer run on startup again.`,
             );
-            autoloadButton.setColor(new Color(250, 250, 0));
-            if (crackle.isDev) {
-                modMorph.addChild(autoloadButton);
-            }
-            modMorph.autoloadButton = autoloadButton;
+          } else {
+            crackle.autoload.add(mod.ID);
+            world.children[0].showMessage(
+              `${mod.NAME} will now run every time you open ${crackle.snap.snap}!`,
+            );
+          }
+          autoloadButton.labelString = crackle.autoload.isAutoloaded(mod.ID)
+            ? "Un-autoload"
+            : "Autoload";
+          autoloadButton.createLabel();
+          autoloadButton.fixLayout();
+          modMorph.fixLayout();
+        },
+        crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
+      );
+      autoloadButton.setColor(new Color(250, 250, 0));
+      if (crackle.isDev) {
+        modMorph.addChild(autoloadButton);
+      }
+      modMorph.autoloadButton = autoloadButton;
 
       const optionsButton = new PushButtonMorph(
         this,
@@ -538,9 +539,9 @@ class CrackleMorph extends ScrollFrameMorph {
         "Options",
       );
 
-            optionsButton.setColor(new Color(163, 135, 252));
-            modMorph.addChild(optionsButton);
-            modMorph.optionsButton = optionsButton;
+      optionsButton.setColor(new Color(163, 135, 252));
+      modMorph.addChild(optionsButton);
+      modMorph.optionsButton = optionsButton;
 
       const deleteButton = new PushButtonMorph(
         this,
@@ -567,23 +568,23 @@ class CrackleMorph extends ScrollFrameMorph {
           this.optionsButton.hide();
           this.optionsButton.setLeft(this.deleteButton.left());
           if (!this.deleteButton.isVisible) {
-              this.optionsButton.setLeft(this.right());
+            this.optionsButton.setLeft(this.right());
           }
         } else {
           this.optionsButton.show();
           this.optionsButton.setRight(this.deleteButton.left() - 3);
           if (!this.deleteButton.isVisible) {
-              this.optionsButton.setRight(this.right() - 2);
+            this.optionsButton.setRight(this.right() - 2);
           }
-        };
+        }
         this.autoloadButton.setTop(this.top() + 2);
         this.autoloadButton.setRight(this.optionsButton.left() - 3);
         if (!this.deleteButton.isVisible) {
-              this.autoloadButton.setLeft(this.right() - 2);
-        };
+          this.autoloadButton.setLeft(this.right() - 2);
+        }
         this.infoButton.setTop(this.top() + 2);
         this.infoButton.setRight(
-          ((crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3),
+          (crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3,
         );
         labelFrame.setPosition(this.position().add(new Point(30, 0)));
         labelFrame.bounds.corner.x = this.infoButton.left() - 3;
@@ -1247,15 +1248,15 @@ function waitForSnapReady() {
 }
 
 function preloadAddonFromPath(path) {
-    return () => {
-        try {
-            fetch(path).then((x) => x.text()).then((modCode) => {
-                window.__crackle__.preloadMod(modCode);
-            });
-        } catch (e) {
-            console.error(`Failed to preload addon from ${path}:`, e);
-        }
-    }
+  return () => {
+    fetch(path).then((x) => {
+        if (!x.ok) throw new Error("Failed to fetch mod: " + x.statusText);
+        return x.text();
+      })
+      .then((modCode) => {
+        window.__crackle__.preloadMod(modCode);
+      });
+  };
 }
 
 (async function () {
@@ -1513,9 +1514,9 @@ function preloadAddonFromPath(path) {
     },
 
     preloadMod(code) {
-        const mod = this.loadMod(code);
-        mod.preloaded = true;
-        return mod;
+      const mod = this.loadMod(code);
+      mod.preloaded = true;
+      return mod;
     },
 
     // Delete a mod by its ID
@@ -1898,6 +1899,7 @@ function preloadAddonFromPath(path) {
 
     // customize the button appearance
     modButton.children[0].name = "cross";
+    modButton.hint = modButton.hint && "Sparkle";
 
     if (window.__crackle__.snap.snap === "Split") {
       modButton.children[1].text = "Sparkle";
