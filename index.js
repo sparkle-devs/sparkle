@@ -1993,5 +1993,3 @@ function preloadAddonFromPath(path) {
     attachMenuHooks(ide);
     await window.__crackle__.autoload.loadAuto(ide);
 })();
-waitForSnapReady().then(preloadAddonFromPath("https://raw.githubusercontent.com/Mojavesoft-Group/sparklemods/refs/heads/master/mods/better-flat-design.js"));
-waitForSnapReady().then(preloadAddonFromPath("https://raw.githubusercontent.com/Mojavesoft-Group/sparkle/refs/heads/main/example.js"));
