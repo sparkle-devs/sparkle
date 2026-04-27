@@ -87,7 +87,7 @@ class API {
         let proxy = new Proxy(originalFunction, {
             apply(target, ctx, args) {
                 if (!window.__crackle__.wrappedFunctions.get(FUNCTION_ID)) {
-                  return Reflect.apply(target, ctx, args);
+                    return Reflect.apply(target, ctx, args);
                 }
                 if (
                     window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.overwrites
@@ -457,20 +457,20 @@ class CrackleMorph extends ScrollFrameMorph {
             modMorph.setExtent(new Point(400, rowHeight));
             modMorph.setColor(useOdd ? oddColor : evenColor);
             const enableTick = new ToggleMorph(
-              "checkbox",
-              null,
-              () => {
-                if (crackle.disabledMods[mod.ID]) {
-                  crackle.enableMod(mod.ID);
-                } else {
-                  crackle.disableMod(mod.ID);
-                };
-                enableTick.hint = crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable";
-              },
-              null,
-              () => !crackle.disabledMods[mod.ID],
-              null,
-              crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable"
+                "checkbox",
+                null,
+                () => {
+                    if (crackle.disabledMods[mod.ID]) {
+                        crackle.enableMod(mod.ID);
+                    } else {
+                        crackle.disableMod(mod.ID);
+                    };
+                    enableTick.hint = crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable";
+                },
+                null,
+                () => !crackle.disabledMods[mod.ID],
+                null,
+                crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable"
             );
             enableTick.setPosition(new Point(5, 5));
             modMorph.add(enableTick);
@@ -559,8 +559,8 @@ class CrackleMorph extends ScrollFrameMorph {
             modMorph.addChild(deleteButton);
 
             if (mod.preloaded) {
-              deleteButton.hide();
-              autoloadButton.hide();
+                deleteButton.hide();
+                autoloadButton.hide();
             }
 
             useOdd = !useOdd;
@@ -577,12 +577,12 @@ class CrackleMorph extends ScrollFrameMorph {
                 }
                 this.autoloadButton.setTop(this.top() + 2);
                 if (!this.deleteButton.isVisible) {
-                  if (this.optionsButton.isVisible) {
-                    this.optionsButton.setRight(this.deleteButton.right());
-                  } else {
-                    this.optionsButton.setLeft(this.right());
-                  }
-                  this.autoloadButton.setRight(this.deleteButton.right());
+                    if (this.optionsButton.isVisible) {
+                        this.optionsButton.setRight(this.deleteButton.right());
+                    } else {
+                        this.optionsButton.setLeft(this.right());
+                    }
+                    this.autoloadButton.setRight(this.deleteButton.right());
                 };
                 this.autoloadButton.setRight(this.optionsButton.left() - 3);
                 this.infoButton.setTop(this.top() + 2);
@@ -1264,18 +1264,17 @@ function waitForSnapReady() {
 }
 
 function preloadAddonFromPath(path) {
-  return () => {
-    fetch(path).then( (x) =>
-      {
-        if (!x.ok) {
-          return "";
-        };
-        return x.text();
-      }
-    ).then((code) => {
-      window.__crackle__.preloadMod(code);
-    })
-  }
+    return () => {
+        fetch(path).then((x) =>
+        {
+            if (!x.ok) {
+                return "";
+            };
+            return x.text();
+        }).then((code) => {
+            window.__crackle__.preloadMod(code);
+        })
+    }
 }
 
 (async function() {
@@ -1284,7 +1283,7 @@ function preloadAddonFromPath(path) {
         function applyHooks(menu, name) {
             window.__crackle__.loadedMods.forEach((mod) => {
                 if (window.__crackle__.disabledMods[mod.ID]) {
-                  return
+                    return
                 };
                 mod.menuHooks.forEach((hook) => {
                     if (hook.name == name) hook.func(menu);
@@ -1515,7 +1514,7 @@ function preloadAddonFromPath(path) {
             try {
                 mod.setupOptions();
                 if (!this.disabledMods[mod.ID]) {
-                  mod.main();
+                    mod.main();
                 }
             } catch (e) {
                 ide.showMessage(
@@ -1534,12 +1533,12 @@ function preloadAddonFromPath(path) {
         },
 
         preloadMod(code) {
-          if (!code) {
-            return;
-          }
-          const mod = this.loadMod(code);
-          mod.preloaded = true;
-          return mod;
+            if (!code) {
+                return;
+            }
+            const mod = this.loadMod(code);
+            mod.preloaded = true;
+            return mod;
         },
 
         // Delete a mod by its ID
@@ -1554,7 +1553,7 @@ function preloadAddonFromPath(path) {
             this.removeModAttachments(id)
 
             delete this.disabledMods[id];
-            
+
             // remove autoload
             delete this.modCodes[id];
             if (!isNil(this.autoloadMods[id])) {
@@ -1566,7 +1565,7 @@ function preloadAddonFromPath(path) {
         },
 
         removeModAttachments(id) {
-          // remove wraps
+            // remove wraps
             window.__crackle__.wrappedFunctions.forEach((value, key) => {
                 if (value.functions[id]) {
                     delete value.functions[id];
@@ -1577,29 +1576,29 @@ function preloadAddonFromPath(path) {
                 }
             });
             if (id in window.__crackle__.allEventTargets) {
-              delete window.__crackle__.allEventTargets[id];
+                delete window.__crackle__.allEventTargets[id];
             }
         },
 
         enableMod(id) {
-          const mod = Mod.findModById(id);
-          this.disabledMods[id] = false;
-          this.saveDisabled();
-          if (mod.DO_MENU) mod.menu = new MenuMorph();
-          mod.main();
+            const mod = Mod.findModById(id);
+            this.disabledMods[id] = false;
+            this.saveDisabled();
+            if (mod.DO_MENU) mod.menu = new MenuMorph();
+            mod.main();
         },
         disableMod(id) {
-          const mod = Mod.findModById(id);
-          this.disabledMods[id] = true;
-          this.saveDisabled();
-          mod.cleanupFunc && mod.cleanupFunc();
-          this.removeModAttachments(id);
+            const mod = Mod.findModById(id);
+            this.disabledMods[id] = true;
+            this.saveDisabled();
+            mod.cleanupFunc && mod.cleanupFunc();
+            this.removeModAttachments(id);
         },
         saveDisabled() {
-          this.storage.set("crackle_disabled_mods", JSON.stringify(this.disabledMods));
+            this.storage.set("crackle_disabled_mods", JSON.stringify(this.disabledMods));
         },
         loadDisabled() {
-          this.disabledMods = JSON.parse(this.storage.get("crackle_disabled_mods") || "{}");
+            this.disabledMods = JSON.parse(this.storage.get("crackle_disabled_mods") || "{}");
         },
 
         autoload: {
