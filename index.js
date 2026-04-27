@@ -465,9 +465,12 @@ class CrackleMorph extends ScrollFrameMorph {
                 } else {
                   crackle.disableMod(mod.ID);
                 };
+                enableTick.hint = crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable";
               },
               null,
-              () => !crackle.disabledMods[mod.ID]
+              () => !crackle.disabledMods[mod.ID],
+              null,
+              crackle.disabledMods[mod.ID] ? "check to enable" : "check to disable"
             );
             enableTick.setPosition(new Point(5, 5));
             modMorph.add(enableTick);
@@ -1916,6 +1919,7 @@ function preloadAddonFromPath(path) {
 
         // customize the button appearance
         modButton.children[0].name = "cross";
+        modButton.hint = modButton.hint && "Sparkle";
 
         if (window.__crackle__.snap.snap === "Split") {
             modButton.children[1].text = "Sparkle";
