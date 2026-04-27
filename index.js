@@ -551,14 +551,10 @@ class CrackleMorph extends ScrollFrameMorph {
         "Delete",
       );
       deleteButton.setColor(new Color(250, 100, 100));
-      deleteButton.setTop(2);
-      deleteButton.setRight(modMorph.right() - 5);
-      autoloadButton.setTop(2);
-      autoloadButton.setRight(deleteButton.left() - 5);
-      infoButton.setTop(2);
-      infoButton.setRight(
-        (crackle.isDev ? autoloadButton : deleteButton).left() - 5,
-      );
+      if (mod.preloaded) {
+        deleteButton.hide();
+        autoloadButton.hide();
+      }
       modMorph.deleteButton = deleteButton;
       modMorph.addChild(deleteButton);
 
@@ -582,9 +578,12 @@ class CrackleMorph extends ScrollFrameMorph {
         };
         this.autoloadButton.setTop(this.top() + 2);
         this.autoloadButton.setRight(this.optionsButton.left() - 3);
+        if (!this.deleteButton.isVisible) {
+              this.autoloadButton.setLeft(this.right() - 2);
+        };
         this.infoButton.setTop(this.top() + 2);
         this.infoButton.setRight(
-          (crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3,
+          ((crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3),
         );
         labelFrame.setPosition(this.position().add(new Point(30, 0)));
         labelFrame.bounds.corner.x = this.infoButton.left() - 3;
@@ -1247,6 +1246,18 @@ function waitForSnapReady() {
   });
 }
 
+function preloadAddonFromPath(path) {
+    return () => {
+        try {
+            fetch(path).then((x) => x.text()).then((modCode) => {
+                window.__crackle__.preloadMod(modCode);
+            });
+        } catch (e) {
+            console.error(`Failed to preload addon from ${path}:`, e);
+        }
+    }
+}
+
 (async function () {
   // attach hooks for menu hooks functions
   function attachMenuHooks(ide) {
@@ -1499,6 +1510,12 @@ function waitForSnapReady() {
       const mod = this.loadMod(code);
       this.autoload.add(mod.ID);
       return mod;
+    },
+
+    preloadMod(code) {
+        const mod = this.loadMod(code);
+        mod.preloaded = true;
+        return mod;
     },
 
     // Delete a mod by its ID
