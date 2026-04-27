@@ -1250,10 +1250,13 @@ function waitForSnapReady() {
 function preloadAddonFromPath(path) {
   return () => {
     fetch(path).then((x) => {
-        if (!x.ok) throw new Error("Failed to fetch mod: " + x.statusText);
+        if (!x.ok) {
+            return "";
+        };
         return x.text();
       })
       .then((modCode) => {
+        console.warn(modCode);
         window.__crackle__.preloadMod(modCode);
       });
   };
@@ -1514,9 +1517,12 @@ function preloadAddonFromPath(path) {
     },
 
     preloadMod(code) {
-      const mod = this.loadMod(code);
-      mod.preloaded = true;
-      return mod;
+        if (!code) {
+            return null;
+        }
+        const mod = this.loadMod(code);
+        mod.preloaded = true;
+        return mod;
     },
 
     // Delete a mod by its ID
