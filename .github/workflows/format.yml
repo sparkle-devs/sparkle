@@ -2,7 +2,7 @@ name: Auto-format JavaScript
 
 on:
   push:
-    branches: [ "master", "code-formatting" ]
+    branches: [ "main", "code-formatting" ]
     paths:
       - index.js
       - example.js

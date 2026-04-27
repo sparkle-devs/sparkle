@@ -501,34 +501,34 @@ class CrackleMorph extends ScrollFrameMorph {
       modMorph.addChild(infoButton);
       modMorph.infoButton = infoButton;
 
-      const autoloadButton = new PushButtonMorph(
-        this,
-        () => {
-          if (crackle.autoload.isAutoloaded(mod.ID)) {
-            crackle.autoload.delete(mod.ID);
-            world.children[0].showMessage(
-              `${mod.NAME} will no longer run on startup again.`,
+            const autoloadButton = new PushButtonMorph(
+                this,
+                () => {
+                    if (crackle.autoload.isAutoloaded(mod.ID)) {
+                        crackle.autoload.delete(mod.ID);
+                        world.children[0].showMessage(
+                            `${mod.NAME} will no longer run on startup again.`,
+                        );
+                    } else {
+                        crackle.autoload.add(mod.ID);
+                        world.children[0].showMessage(
+                            `${mod.NAME} will now run every time you open ${crackle.snap.snap}!`,
+                        );
+                    }
+                    autoloadButton.labelString = crackle.autoload.isAutoloaded(mod.ID) ?
+                        "Un-autoload" :
+                        "Autoload";
+                    autoloadButton.createLabel();
+                    autoloadButton.fixLayout();
+                    modMorph.fixLayout();
+                },
+                crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
             );
-          } else {
-            crackle.autoload.add(mod.ID);
-            world.children[0].showMessage(
-              `${mod.NAME} will now run every time you open ${crackle.snap.snap}!`,
-            );
-          }
-          autoloadButton.labelString = crackle.autoload.isAutoloaded(mod.ID)
-            ? "Un-autoload"
-            : "Autoload";
-          autoloadButton.createLabel();
-          autoloadButton.fixLayout();
-          modMorph.fixLayout();
-        },
-        crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
-      );
-      autoloadButton.setColor(new Color(100, 250, 100));
-      if (crackle.isDev) {
-        modMorph.addChild(autoloadButton);
-      }
-      modMorph.autoloadButton = autoloadButton;
+            autoloadButton.setColor(new Color(250, 250, 0));
+            if (crackle.isDev) {
+                modMorph.addChild(autoloadButton);
+            }
+            modMorph.autoloadButton = autoloadButton;
 
       const optionsButton = new PushButtonMorph(
         this,
@@ -538,9 +538,9 @@ class CrackleMorph extends ScrollFrameMorph {
         "Options",
       );
 
-      optionsButton.setColor(new Color(250, 250, 0));
-      modMorph.addChild(optionsButton);
-      modMorph.optionsButton = optionsButton;
+            optionsButton.setColor(new Color(163, 135, 252));
+            modMorph.addChild(optionsButton);
+            modMorph.optionsButton = optionsButton;
 
       const deleteButton = new PushButtonMorph(
         this,

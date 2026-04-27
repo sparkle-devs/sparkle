@@ -62,7 +62,7 @@ This section describes the variables/functions that can be invoked from `this.ap
 
 ## `mod.options` and `OPTIONS_FORMAT`
 
-Addons have have an `OPTIONS_FORMAT` array will have an "Options" button in the addon manager. It usually looks something like this:
+Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon manager. It usually looks something like this:
 
 ```js
 [
@@ -123,7 +123,7 @@ Addons have have an `OPTIONS_FORMAT` array will have an "Options" button in the 
 ];
 ```
 
-when the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
+When the addon is loaded, the option data is loaded into the `options` property, which contains just the options data:
 
 ```js
 {
@@ -161,7 +161,3 @@ There are functions that allow you to require, suggest OR disallow a specfic Sna
 - `requireSnaps`: Require either one of a set of snaps to run your addon
 - `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
 - `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
-
-```
-
-```
