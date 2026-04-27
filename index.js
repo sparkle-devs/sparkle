@@ -570,10 +570,16 @@ class CrackleMorph extends ScrollFrameMorph {
         if (Object.keys(mod.OPTIONS_FORMAT || {}).length === 0) {
           this.optionsButton.hide();
           this.optionsButton.setLeft(this.deleteButton.left());
+          if (!this.deleteButton.isVisible) {
+              this.optionsButton.setLeft(this.right());
+          }
         } else {
           this.optionsButton.show();
           this.optionsButton.setRight(this.deleteButton.left() - 3);
-        }
+          if (!this.deleteButton.isVisible) {
+              this.optionsButton.setRight(this.right() - 2);
+          }
+        };
         this.autoloadButton.setTop(this.top() + 2);
         this.autoloadButton.setRight(this.optionsButton.left() - 3);
         this.infoButton.setTop(this.top() + 2);
@@ -1419,7 +1425,7 @@ function waitForSnapReady() {
 
   // create the __crackle__ object
   window.__crackle__ = {
-    version: "0.4",
+    version: "0.5",
     source: "https://github.com/Mojavesoft-Group/sparkle/releases",
     loadedMods: [],
     extraApi: {},
@@ -1447,7 +1453,7 @@ function waitForSnapReady() {
       }
 
       // Split?
-      if (typeof window.SplitVersion !== "undefined") {
+      if (window.SplitVersion) {
         return {
           snap: "Split",
           version: window.SplitVersion,
@@ -1546,6 +1552,7 @@ function waitForSnapReady() {
       this.disabledMods[id] = false;
       this.saveDisabled();
       console.warn(mod.main);
+      if (mod.DO_MENU) mod.menu = new MenuMorph();
       mod.main();
     },
 
@@ -1855,7 +1862,7 @@ function waitForSnapReady() {
 
         let menus = {};
         for (let mod of window.__crackle__.loadedMods) {
-          if (mod.DO_MENU) {
+          if (mod.DO_MENU && !window.__crackle__.disabledMods[mod.ID]) {
             menus[mod.NAME] = mod.menu;
           }
         }
