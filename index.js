@@ -579,12 +579,12 @@ class CrackleMorph extends ScrollFrameMorph {
         }
         this.autoloadButton.setTop(this.top() + 2);
         this.autoloadButton.setRight(this.optionsButton.left() - 3);
-        if (!this.deleteButton.isVisible) {
+        if (!this.deleteButton.isVisible && !this.autoloadButton.isVisible) {
           this.autoloadButton.setLeft(this.right() - 2);
         }
         this.infoButton.setTop(this.top() + 2);
         this.infoButton.setRight(
-          (crackle.isDev ? this.autoloadButton : this.optionsButton).left() - 3,
+          (crackle.isDev && this.autoloadButton.isVisible ? this.autoloadButton : this.optionsButton).left() - 3,
         );
         labelFrame.setPosition(this.position().add(new Point(30, 0)));
         labelFrame.bounds.corner.x = this.infoButton.left() - 3;
@@ -1249,10 +1249,11 @@ function waitForSnapReady() {
 
 function preloadAddonFromPath(path) {
   return () => {
-    fetch(path).then((x) => {
+    fetch(path)
+      .then((x) => {
         if (!x.ok) {
-            return "";
-        };
+          return "";
+        }
         return x.text();
       })
       .then((modCode) => {
@@ -1517,12 +1518,12 @@ function preloadAddonFromPath(path) {
     },
 
     preloadMod(code) {
-        if (!code) {
-            return null;
-        }
-        const mod = this.loadMod(code);
-        mod.preloaded = true;
-        return mod;
+      if (!code) {
+        return null;
+      }
+      const mod = this.loadMod(code);
+      mod.preloaded = true;
+      return mod;
     },
 
     // Delete a mod by its ID
