@@ -528,7 +528,7 @@ class CrackleMorph extends ScrollFrameMorph {
                 },
                 crackle.autoload.isAutoloaded(mod.ID) ? "Un-autoload" : "Autoload",
             );
-            autoloadButton.setColor(new Color(250, 250, 0));
+            autoloadButton.setColor(new Color(250, 250, 100));
             if (crackle.isDev) {
                 modMorph.addChild(autoloadButton);
             }
