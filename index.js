@@ -1252,17 +1252,6 @@ function waitForSnapReady() {
     });
 }
 
-function waitForSnapReady() {
-    return new Promise((resolve) => {
-        const check = setInterval(() => {
-            if (typeof world !== "undefined" && world.children.length > 0) {
-                clearInterval(check);
-                resolve();
-            }
-        }, 100);
-    });
-}
-
 function preloadAddonFromPath(path) {
     return () => {
         fetch(path).then((x) =>
