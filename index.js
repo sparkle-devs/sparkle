@@ -303,15 +303,15 @@ class CrackleMorph extends ScrollFrameMorph {
                 this.notesText.rerender();
             }
         };
-        
-            this.mods.fixLayout = nop;
-            this.mods.edge = InputFieldMorph.prototype.edge / (this.crackle.snap.snap == "Split" ? 2 : 1);
-            this.mods.fontSize = InputFieldMorph.prototype.fontSize;
-            this.mods.typeInPadding = InputFieldMorph.prototype.typeInPadding;
-            this.mods.contrast = InputFieldMorph.prototype.contrast;
-            this.mods.render = InputFieldMorph.prototype.render;
-            this.mods.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
-            this.mods.color = PushButtonMorph.prototype.color;
+
+        this.mods.fixLayout = nop;
+        this.mods.edge = InputFieldMorph.prototype.edge / (this.crackle.snap.snap == "Split" ? 2 : 1);
+        this.mods.fontSize = InputFieldMorph.prototype.fontSize;
+        this.mods.typeInPadding = InputFieldMorph.prototype.typeInPadding;
+        this.mods.contrast = InputFieldMorph.prototype.contrast;
+        this.mods.render = InputFieldMorph.prototype.render;
+        this.mods.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
+        this.mods.color = PushButtonMorph.prototype.color;
 
         this.addContents(this.mods);
         this.fixListFieldItemColors();
@@ -378,15 +378,15 @@ class CrackleMorph extends ScrollFrameMorph {
         this.notesField.padding = 3;
         this.notesField.setContents(this.notesText);
 
-            this.notesText.color = PushButtonMorph.prototype.labelColor;
-            this.notesField.fixLayout = nop;
-            this.notesField.edge = InputFieldMorph.prototype.edge / (this.crackle.snap.snap == "Split" ? 2 : 1);
-            this.notesField.fontSize = InputFieldMorph.prototype.fontSize;
-            this.notesField.typeInPadding = InputFieldMorph.prototype.typeInPadding;
-            this.notesField.contrast = InputFieldMorph.prototype.contrast;
-            this.notesField.render = InputFieldMorph.prototype.render;
-            this.notesField.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
-            this.notesField.color = PushButtonMorph.prototype.color;
+        this.notesText.color = PushButtonMorph.prototype.labelColor;
+        this.notesField.fixLayout = nop;
+        this.notesField.edge = InputFieldMorph.prototype.edge / (this.crackle.snap.snap == "Split" ? 2 : 1);
+        this.notesField.fontSize = InputFieldMorph.prototype.fontSize;
+        this.notesField.typeInPadding = InputFieldMorph.prototype.typeInPadding;
+        this.notesField.contrast = InputFieldMorph.prototype.contrast;
+        this.notesField.render = InputFieldMorph.prototype.render;
+        this.notesField.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
+        this.notesField.color = PushButtonMorph.prototype.color;
 
         this.addContents(this.magnifyingGlass);
         this.addContents(this.filterField);
