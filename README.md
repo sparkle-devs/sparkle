@@ -1,6 +1,4 @@
 # Sparkle
-> [!NOTE]
-> We're looking for more developers! If you want to join, please leave a comment at issue #25,  _More developers needed!_. Vibecoders will not be accepted unless they can demonstrate their competence in producing manmade code for Sparkle.
 <img width=512 height=128 src=sparkle-text-2-nocurve.png>
 
 [History](README.md#History) | [License](LICENSE)
