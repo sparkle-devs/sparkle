@@ -1589,7 +1589,7 @@ function preloadAddonFromPath(path) {
                 let data = window.__crackle__.storage.get("crackle_autoload_mods");
                 if (!data || data == "[]")
                     (window.__crackle__.storage.set("crackle_autoload_mods", "{}"),
-                        (data = {}));
+                        (data = "{}"));
 
                 return JSON.parse(data) || {};
             },
