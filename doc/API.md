@@ -46,9 +46,7 @@ This section describes the variables/functions that can be invoked from `this.ap
 
 ### Functions
 
-- `showMsg` - Show a basic message to the user.
 - `addApi` - Add an extra API to the API object of each new addon.
-- `inform` - Inform the user of something, with a title.
 - `wrapFunction` - Lets you add extra code that runs after a function. Sparkle automatically discards each wrap when deleting an addon!
 - `registerMenuHook` - Attach a menu hook. The first argument is the menu name, and the second one is a function which accepts a `MenuMorph` as its first argument. Here's a list of possible menu names:
   - `projectMenu` - Menu from file button
@@ -59,6 +57,11 @@ This section describes the variables/functions that can be invoked from `this.ap
 - `storage` - An object with procedures for storing data, local for each mod:
   - `get` - Gets a property, second parameter is a default value if the property is non-existent
   - `set` - Sets a property
+
+### Deprecated APIs
+These APIs are no longer supported in Sparkle and will cease to function in the near future. Please avoid using these in production code.
+- `inform`: Deprecated starting with version v0.7 because it's a small wrapper around Snap!'s `this.ide.inform`
+- `showMsg`: Deprecated starting with version v0.7 because it has the exact same behavior as Snap!'s `this.ide.showMessage`
 
 ## `mod.options` and `OPTIONS_FORMAT`
 
