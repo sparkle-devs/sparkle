@@ -12,7 +12,7 @@
         "*://codingisfun2831t.github.io/split-mod-prs/split.html",
         "*://alessandrito123.github.io/Snavanced/snap.html"
       ],
-      "js": ["index.js"],
+      "js": ["sparkle.js", "ext.js"],
       "world": "MAIN"
     }
   ],
