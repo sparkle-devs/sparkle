@@ -61,7 +61,7 @@ class API {
         };
     }
 
-    
+
 
     addApi(name, obj) {
         API.prototype[name] = obj;
