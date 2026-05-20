@@ -71,12 +71,17 @@ class API {
         this.ide.inform(title || "Information", text);
     }
 
-    wrapFunction(object, name, wrapper, overwrite) {
+    wrapFunction(object, name, wrapper, overwrite, importance) {
+        wrapper.importance = importance || 0;
         const originalFunction = object[name];
         if (originalFunction[window.__crackle__.crackleSymbol]) {
             originalFunction[window.__crackle__.crackleSymbol].functions[
                 this.mod.ID
             ] = wrapper;
+            if (overwrite) {
+                let overwrites = originalFunction[window.__crackle__.crackleSymbol].overwrites;
+                !overwrites.includes(this.mod.ID) && overwrites.push(this.mod.ID);
+            };
             return originalFunction;
         }
 
@@ -84,12 +89,12 @@ class API {
 
         let proxy = new Proxy(originalFunction, {
             apply(target, ctx, args) {
+                let overwrites = window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.overwrites || [];
                 if (!window.__crackle__.wrappedFunctions.get(FUNCTION_ID)) {
                     return Reflect.apply(target, ctx, args);
                 }
                 if (
-                    window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.overwrites
-                    ?.length == 0
+                    overwrites.length == 0
                 ) {
                     Reflect.apply(target, ctx, args); // This calls the original function
                 }
@@ -102,8 +107,19 @@ class API {
                 let wrappers =
                     window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.functions;
                 if (wrappers) {
-                    for (let wrapper of Object.values(wrappers)) {
-                        wrapper.apply(ctx, args);
+                    let sortedWrappers = Object.values(window.__crackle__.wrappedFunctions.get(FUNCTION_ID).functions).sort(
+                        (wrap, wrap2) => wrap2.importance - wrap.importance
+                    ),
+                    i = 0;
+                    for (let wrapper of sortedWrappers) {
+                        let returnValue = wrapper.apply(ctx, args);
+                        if (i === 0 && overwrites.length > 0) {
+                            return returnValue;
+                        }
+                        if (i === sortedWrappers.length - 1) {
+                            return returnValue;
+                        }
+                        i++;
                     }
                 }
             },
@@ -122,10 +138,11 @@ class API {
         };
         if (overwrite) {
             wrapData.overwrites = [this.mod.ID];
-        }
+        };
         window.__crackle__.wrappedFunctions.set(FUNCTION_ID, wrapData);
 
         object[name] = proxy;
+        return proxy;
     }
 
     registerMenuHook(name, func) {
@@ -1550,11 +1567,14 @@ function preloadAddonFromPath(path) {
             window.__crackle__.wrappedFunctions.forEach((value, key) => {
                 if (value.functions[id]) {
                     delete value.functions[id];
-                    value.overwrites = value.overwrites.filter((modId) => modId != id);
-                    if (value.overwrites.length == 0 && Object.keys(value.functions).length == 0) {
-                        window.__crackle__.wrappedFunctions.delete(key);
-                    }
                 }
+                if (!value.overwrites) {
+                    value.overwrites = [];
+                }
+                value.overwrites = value.overwrites.filter((modId) => modId != id);
+                if (value.overwrites.length == 0 && Object.keys(value.functions).length == 0) {
+                    window.__crackle__.wrappedFunctions.delete(key);
+                };
             });
             if (id in window.__crackle__.allEventTargets) {
                 delete window.__crackle__.allEventTargets[id];
