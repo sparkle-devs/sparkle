@@ -1742,6 +1742,8 @@ class Sparkle {
         // create mod button
         IDE_Morph.prototype.createModButton = function() {
             const controlBar = this.controlBar;
+            let myself = this;
+
             let modButton;
             if (controlBar.modButton) {
                 controlBar.modButton.destroy();
@@ -1803,9 +1805,9 @@ class Sparkle {
                                 } else {
                                     mod = this.addMod(input);
                                 }
-                                ide.showMessage(`Addon loaded successfully!`);
+                                myself.showMessage(`Addon loaded successfully!`);
                             } catch (e) {
-                                ide.showMessage(
+                                myself.showMessage(
                                     `Failed to load addon:\n${e}. Check the console for more details.`,
                                 );
                                 console.log(e);
@@ -1836,9 +1838,9 @@ class Sparkle {
                                 } else {
                                     mod = this.sparkle.addMod(e.target.result);
                                 }
-                                ide.showMessage(`Addon "${mod.NAME}" loaded successfully!`);
+                                myself.showMessage(`Addon "${mod.NAME}" loaded successfully!`);
                             } catch (e) {
-                                ide.showMessage(`Failed to load addon:\n${e}`);
+                                myself.showMessage(`Failed to load addon:\n${e}`);
                             }
                         };
                         reader.readAsText(file);
