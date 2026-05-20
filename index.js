@@ -41,6 +41,7 @@ class API {
         this.ide = world.children[0];
         this.crackle = window.__crackle__;
         this.snap = this.crackle.snap;
+        this.showMsg = this.ide.showMessage;
         this.storage = {
             set: (key, value) => {
                 let data =
@@ -60,7 +61,7 @@ class API {
         };
     }
 
-    this.showMsg = this.ide.showMessage;
+    
 
     addApi(name, obj) {
         API.prototype[name] = obj;
