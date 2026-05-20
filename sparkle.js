@@ -1355,7 +1355,7 @@ class Sparkle {
         // remove autoload
         delete this.modCodes[id];
         if (!isNil(this.autoloadMods[id])) {
-            this.delete(id);
+            this.deleteAutoload(id);
         }
 
         // remove settings
