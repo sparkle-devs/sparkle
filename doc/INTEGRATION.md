@@ -16,6 +16,6 @@ waitForSnapReady().then(alert("Loaded!"));
 ~~~
 
 ## Modifying snap.html
-In order to make Sparkle automatically load as a component of your fork, open the `snap.html` file, create a new line after the last `<script>...</script>` tag, and paste in the following code: `<script>script src="src/sparkle.js"></script>`.
+In order to make Sparkle automatically load as a component of your fork, open the `snap.html` file, create a new line after the last `<script>...</script>` tag, and paste in the following code: `<script src="src/sparkle.js"></script>`.
 
 Congratulations! You've integrated your fork with Sparkle!
