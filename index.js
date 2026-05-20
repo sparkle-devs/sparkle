@@ -61,9 +61,7 @@ class API {
         };
     }
 
-    showMsg(msg) {
-        this.ide.showMessage(msg);
-    }
+    this.showMsg = this.ide.showMessage;
 
     addApi(name, obj) {
         API.prototype[name] = obj;
