@@ -61,15 +61,15 @@ class API {
         };
     }
 
-    this.showMsg = this.ide.showMessage;
+    //this.showMsg = this.ide.showMessage; showMsg API is removed starting with v0.8.
 
     addApi(name, obj) {
         API.prototype[name] = obj;
     }
 
-    inform(text, title) {
+    /*inform(text, title) {
         this.ide.inform(title || "Information", text);
-    }
+    }*/ // inform API is removed starting with v0.8.
 
     wrapFunction(object, name, wrapper, overwrite, importance) {
         wrapper.importance = importance || 0;
