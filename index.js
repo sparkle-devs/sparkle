@@ -108,9 +108,9 @@ class API {
                     window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.functions;
                 if (wrappers) {
                     let sortedWrappers = Object.values(window.__crackle__.wrappedFunctions.get(FUNCTION_ID).functions).sort(
-                        (wrap, wrap2) => wrap2.importance - wrap.importance
-                    ),
-                    i = 0;
+                            (wrap, wrap2) => wrap2.importance - wrap.importance
+                        ),
+                        i = 0;
                     for (let wrapper of sortedWrappers) {
                         let returnValue = wrapper.apply(ctx, args);
                         if (i === 0 && overwrites.length > 0) {
