@@ -21,7 +21,6 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-
 if (window.__crackle__) {
     throw new Error("Another instance of Sparkle is already running; quitting!");
 }
