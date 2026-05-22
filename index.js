@@ -1262,7 +1262,6 @@ function waitForSnapReady() {
 }
 
 function preloadAddonFromPath(path) {
-    return () => {
         fetch(path).then((x) =>
         {
             if (!x.ok) {
@@ -1272,7 +1271,6 @@ function preloadAddonFromPath(path) {
         }).then((code) => {
             window.__crackle__.preloadMod(code);
         })
-    }
 }
 
 (async function() {
