@@ -1262,15 +1262,15 @@ function waitForSnapReady() {
 }
 
 function preloadAddonFromPath(path) {
-        fetch(path).then((x) =>
-        {
-            if (!x.ok) {
-                return "";
-            };
-            return x.text();
-        }).then((code) => {
-            window.__crackle__.preloadMod(code);
-        })
+    fetch(path).then((x) =>
+    {
+        if (!x.ok) {
+            return "";
+        };
+        return x.text();
+    }).then((code) => {
+        window.__crackle__.preloadMod(code);
+    })
 }
 
 (async function() {
