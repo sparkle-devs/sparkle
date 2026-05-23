@@ -17,8 +17,11 @@ Go to `about:debugging`, go to `This Firefox`, click `Load Temporary Add-on...` 
 ### Chrome
 First, go to [chrome://extensions/](chrome://extensions/). There should be a "Developer mode" options. Simply press that, and then go to the "Manage Extensions" option. There should now be a "Load unpacked" button at the top left. Import your Sparkle folder in there, and see the results.
 
+### Jameson
+[Jameson](https://mojavesoft.net/ide/) comes with Sparkle by default and does not require a browser extension.
+
 ## How to use
-When launching Snap! or one of its forks with Sparkle open, you should see a new button being added to the title bar:
+When launching Snap! or one of its forks with Sparkle installed, you should see a new button being added to the title bar:
 
 ![Snap! Topbar buttons, but with the new Addon button](doc/Buttons.png)
 
