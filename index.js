@@ -21,7 +21,6 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-
 if (window.__crackle__) {
     throw new Error("Another instance of Sparkle is already running; quitting!");
 }
@@ -42,6 +41,7 @@ class API {
         this.ide = world.children[0];
         this.crackle = window.__crackle__;
         this.snap = this.crackle.snap;
+        this.showMsg = this.ide.showMessage;
         this.storage = {
             set: (key, value) => {
                 let data =
@@ -1262,17 +1262,15 @@ function waitForSnapReady() {
 }
 
 function preloadAddonFromPath(path) {
-    return () => {
-        fetch(path).then((x) =>
-        {
-            if (!x.ok) {
-                return "";
-            };
-            return x.text();
-        }).then((code) => {
-            window.__crackle__.preloadMod(code);
-        })
-    }
+    fetch(path).then((x) =>
+    {
+        if (!x.ok) {
+            return "";
+        };
+        return x.text();
+    }).then((code) => {
+        window.__crackle__.preloadMod(code);
+    })
 }
 
 (async function() {
@@ -1454,7 +1452,7 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        version: "0.6.1",
+        version: "0.7.0",
         source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},

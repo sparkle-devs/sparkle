@@ -1,4 +1,7 @@
 # Sparkle
+> [!IMPORTANT]
+> Starting with Sparkle v0.8, the recently-deprecated `showMsg` and `inform` addon APIs will be removed. If you are an addon developer, please update your code now or it will break in the near future. All addons in the SparkleAddons repository have already been upgraded for your convenience.
+ 
 <img width=512 height=128 src=sparkle-text-2-nocurve.png>
 
 [History](README.md#History) | [License](LICENSE)
