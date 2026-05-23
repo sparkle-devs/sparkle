@@ -1550,7 +1550,7 @@ function preloadAddonFromPath(path) {
             this.removeModAttachments(id)
 
             delete this.disabledMods[id];
-
+            this.saveDisabled();
             // remove autoload
             delete this.modCodes[id];
             if (!isNil(this.autoloadMods[id])) {
