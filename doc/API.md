@@ -58,10 +58,11 @@ This section describes the variables/functions that can be invoked from `this.ap
   - `get` - Gets a property, second parameter is a default value if the property is non-existent
   - `set` - Sets a property
 
-### Deprecated APIs
-These APIs are no longer supported in Sparkle and will cease to function in the near future. Please avoid using these in production code.
-- `inform`: Deprecated starting with version v0.7 because it's a small wrapper around Snap!'s `this.api.ide.inform`
-- `showMsg`: Deprecated starting with version v0.7 because it has the exact same behavior as Snap!'s `this.api.ide.showMessage`
+### Removed APIs
+Support for these APIs is no longer included in Sparkle.
+- `inform`: Deprecated starting with v0.7 and removed starting with v0.8 because it's a small wrapper around Snap!'s `this.api.ide.inform`
+- `showMsg`: Deprecated starting with v0.7 and removed starting with v0.8 because it has the exact same behavior as Snap!'s `this.api.ide.showMessage`
+
 
 ## `mod.options` and `OPTIONS_FORMAT`
 
