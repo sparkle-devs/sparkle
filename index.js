@@ -1669,7 +1669,7 @@ function preloadAddonFromPath(path) {
         },
 
         showModOptions(mod) {
-            const dlg = new DialogBoxMorph(),
+            const dlg = new ResizableDialogBoxMorph(),
                 modMorph = new CrackleMorph(window.__crackle__, false);
 
             modMorph.setupModOptions(mod);
@@ -1682,6 +1682,9 @@ function preloadAddonFromPath(path) {
             dlg.addButton(() => modMorph.ok(), "Apply");
             dlg.addButton("cancel", "Cancel");
             dlg.popUp(world);
+            modMorph.fixLayout();
+            dlg.bounds.setExtent(new Point(modMorph.width() + 28, modMorph.height() + 101));
+            dlg.handle = new HandleMorph(dlg, dlg.width(), dlg.height(), dlg.corner, dlg.corner);
             dlg.fixLayout();
         },
 
