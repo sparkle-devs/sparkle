@@ -1000,7 +1000,7 @@ class CrackleImportLibraryMorph extends DialogBoxMorph {
         this.container = new CrackleMorph(window.__crackle__, false);
         this.tab = "import"; // for vertical
         this.path =
-            "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/";
+            window.__crackle__.addonRepoPath;
         this.labelString = "Import Addon";
         this.key = "crackle import mods";
         fetch(this.path + "mods.json")
@@ -1462,6 +1462,7 @@ function preloadAddonFromPath(path) {
         allEventTargets: {},
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
+        addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
         snap: (function() {
             // Jameson?
             if (window.isJameson) {
