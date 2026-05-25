@@ -165,7 +165,7 @@ class API {
                 "Sparkle",
                 `This addon is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
         The addon might still work; continue at your own risk.`
-            
+
             );
         }
     }
