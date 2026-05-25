@@ -154,7 +154,7 @@ class API {
     requireSnaps(...names) {
         if (!names.includes(this.snap.snap)) {
             let msg = `Addon "${this.mod.NAME}" requires ${commaOr(...names)}, but you are using ${this.snap.snap}.`;
-            world.children[0](msg, "Incompatible Snap");
+            world.children[0].inform("Incompatible Snap", msg);
             throw new Error("snap not compatible");
         }
     }
@@ -162,9 +162,10 @@ class API {
     suggestSnaps(...names) {
         if (!names.includes(this.snap.snap)) {
             world.children[0].inform(
-                `This addon is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
-        The addon might still work; continue at your own risk.`,
                 "Sparkle",
+                `This addon is designed for ${commaOr(...names)}, but you are using ${this.snap.snap}.
+        The addon might still work; continue at your own risk.`
+            
             );
         }
     }
@@ -172,7 +173,7 @@ class API {
     disallowSnaps(...names) {
         if (names.includes(this.snap.snap)) {
             let msg = `The addon "${this.mod.NAME}" does not work with ${this.snap.snap}. `;
-            world.children[0](msg, "Incompatible Snap");
+            world.children[0].inform("Incompatible Snap", msg);
             window.__crackle__.deleteMod(this.mod.ID ?? this.mod.id);
             throw new Error("snap not compatible");
         }
