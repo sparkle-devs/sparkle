@@ -69,62 +69,65 @@ class API {
         this.ide.inform(title || "Information", text);
     }
 
-    static FUNCTION_ID = Symbol("Function ID");
+    static OBJ_FUNCS_HOOKS = Symbol("Function Hooks")
 
-    wrapFunction(object, name, wrapper, overwrite) {
-        const originalFunction = object[name];
-        if (originalFunction[this.sparkle.sparkleSymbol]) {
-            originalFunction[this.sparkle.sparkleSymbol].functions[
-                this.mod.ID
-            ] = wrapper;
-            return originalFunction;
+    wrapFunction(object, name, callback, type = "after") {
+        if (typeof object[name] !== 'function') {
+            throw new Error("Not a function or doesn't exist.");
         }
 
-        let myself = this;
-        let proxy = new Proxy(originalFunction, {
-            apply(target, ctx, args) {
-                if (!myself.sparkle.wrappedFunctions.get(API.FUNCTION_ID)) {
-                    return Reflect.apply(target, ctx, args);
-                }
-                if (
-                    myself.sparkle.wrappedFunctions.get(API.FUNCTION_ID)?.overwrites
-                    ?.length == 0
-                ) {
-                    Reflect.apply(target, ctx, args); // This calls the original function
-                }
-                // target is the original function (original object)
-                // ctx is the ide object,
-                // args is the arguments that were passed into the function
-
-                // And then sparkle will run all the functions that mods have defined
-
-                let wrappers =
-                    myself.sparkle.wrappedFunctions.get(API.FUNCTION_ID)?.functions;
-                if (wrappers) {
-                    for (let wrapper of Object.values(wrappers)) {
-                        wrapper.apply(ctx, args);
-                    }
-                }
-            },
-            get(target, property, receiver) {
-                if (property === myself.sparkle.sparkleSymbol) {
-                    return myself.sparkle.wrappedFunctions.get(API.FUNCTION_ID);
-                }
-                return Reflect.get(target, property, receiver);
-            },
-        });
-        const wrapData = {
-            target: originalFunction,
-            functions: {
-                [this.mod.ID]: wrapper,
-            },
-        };
-        if (overwrite) {
-            wrapData.overwrites = [this.mod.ID];
+        if (!object[OBJ_FUNCS_HOOKS]) {
+            object[OBJ_FUNCS_HOOKS] = new Map();
         }
-        myself.sparkle.wrappedFunctions.set(API.FUNCTION_ID, wrapData);
 
-        object[name] = proxy;
+        let objHooks = object[OBJ_FUNCS_HOOKS]
+        let isNew = false;
+        if (!objHooks.has(name)) {
+            objHooks.set(name, { before: [], instead: null, after: [], original: object[name] })
+            isNew = true;
+        }
+
+        let hooks = objHooks.get(name)
+
+        if (type == "instead") {
+            hooks.instead = callback;
+        } else {
+            hooks[type].push(callback);
+        }
+
+        if (isNew) {
+            object[name] = function (...args) {
+                const context = {
+                    args: args,
+                    ret: undefined,
+                    cancel: false,
+                    target: this
+                }
+
+                // BEFORE
+                for (const hook of hooks.before) {
+                    hook(context);
+                    if (context.cancel) return context.ret;
+                }
+
+                // INSTEAD / ORIGINAL
+                let result;
+                if (hooks.instead) {
+                    result = hooks.instead(context, hooks.original.bind(context.target));
+                } else {
+                    result = hooks.original.apply(context.target, context.args);
+                }
+
+                if (context.ret === undefined) context.ret = result;
+
+                // AFTER
+                for (const hook of hooks.after) {
+                    hook(context);
+                }
+
+                return context.ret;
+            }
+        }
     }
 
     registerMenuHook(name, func) {
