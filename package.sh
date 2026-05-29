@@ -3,5 +3,5 @@
 mkdir -p dist/
 cd dist/
 rm -f sparkle.zip
-zip -9 sparkle.zip ../icons/* ../LICENSE ../index.js ../manifest.json
+zip -9 sparkle.zip ../icons/* ../LICENSE ../package.js ../manifest.json
 cp ../sparkle.js sparkle.js
