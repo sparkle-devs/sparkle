@@ -36,6 +36,7 @@ function commaOr(...items) {
 // API for mods
 class API {
     constructor(mod) {
+        this.sparkle = window.__crackle__;
         this.mod = mod;
         this.world = world;
         this.ide = world.children[0];
