@@ -1802,9 +1802,9 @@ class Sparkle {
 
                             try {
                                 if (temporary) {
-                                    mod = this.loadMod(input);
+                                    mod = this.sparkle.loadMod(input);
                                 } else {
-                                    mod = this.addMod(input);
+                                    mod = this.sparkle.addMod(input);
                                 }
                                 myself.showMessage(`Addon loaded successfully!`);
                             } catch (e) {
