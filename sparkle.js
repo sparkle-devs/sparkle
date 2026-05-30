@@ -968,7 +968,7 @@ class SparkleImportLibraryMorph extends DialogBoxMorph {
         this.container = new SparkleMorph(sparkle, false);
         this.tab = "import"; // for vertical
         this.path =
-            window.__crackle__.addonRepoPath;
+            sparkle.addonRepoPath;
         this.labelString = "Import Addon";
         this.key = "sparkle import mods";
         fetch(this.path + "mods.json")
