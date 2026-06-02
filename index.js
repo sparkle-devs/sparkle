@@ -728,7 +728,7 @@ class CrackleMorph extends ScrollFrameMorph {
             morph.reactToInput = () => {
                 setter(+morph.getValue());
             };
-            morph.setChoice = function (aStringOrFloat) {
+            morph.setChoice = function(aStringOrFloat) {
                 this.setContents(aStringOrFloat);
                 this.escalateEvent("reactToChoice", aStringOrFloat);
                 setter(+aStringOrFloat)
@@ -796,7 +796,7 @@ class CrackleMorph extends ScrollFrameMorph {
             morph.reactToInput = () => {
                 setter(`${morph.getValue()}`);
             };
-            morph.setChoice = function (aStringOrFloat) {
+            morph.setChoice = function(aStringOrFloat) {
                 this.setContents(aStringOrFloat);
                 this.escalateEvent("reactToChoice", aStringOrFloat);
                 setter(`${aStringOrFloat}`)
