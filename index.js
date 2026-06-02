@@ -466,6 +466,7 @@ class CrackleMorph extends ScrollFrameMorph {
             const modMorph = new Morph();
             modMorph.setExtent(new Point(400, rowHeight));
             modMorph.setColor(useOdd ? oddColor : evenColor);
+            modMorph.acceptsDrops = false;
             const enableTick = new ToggleMorph(
                 "checkbox",
                 null,
@@ -727,6 +728,11 @@ class CrackleMorph extends ScrollFrameMorph {
             morph.reactToInput = () => {
                 setter(+morph.getValue());
             };
+            morph.setChoice = function (aStringOrFloat) {
+                this.setContents(aStringOrFloat);
+                this.escalateEvent("reactToChoice", aStringOrFloat);
+                setter(+aStringOrFloat)
+            };
             morph.accept = () => {
                 if (!isNil(format.min) && +morph.getValue() < +format.min) {
                     morph.setContents(`${format.min}`);
@@ -789,6 +795,11 @@ class CrackleMorph extends ScrollFrameMorph {
             setter(morph.getValue());
             morph.reactToInput = () => {
                 setter(`${morph.getValue()}`);
+            };
+            morph.setChoice = function (aStringOrFloat) {
+                this.setContents(aStringOrFloat);
+                this.escalateEvent("reactToChoice", aStringOrFloat);
+                setter(`${aStringOrFloat}`)
             };
         }
         return morph;
