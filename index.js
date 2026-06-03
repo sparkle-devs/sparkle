@@ -36,6 +36,7 @@ function commaOr(...items) {
 // API for mods
 class API {
     constructor(mod) {
+        this.sparkle = window.__crackle__;
         this.mod = mod;
         this.world = world;
         this.ide = world.children[0];
@@ -178,6 +179,11 @@ class API {
             throw new Error("snap not compatible");
         }
     }
+
+    requestPendingAction(action) {
+        Mod.pendingActions.add(action);
+        return Mod.pendingActions;
+    }
 }
 
 // A Mod, loaded from code
@@ -189,7 +195,7 @@ class Mod extends EventTarget {
     static AUTHOR = "John Doe";
     static DEPENDS = [];
     static DO_MENU = false;
-
+    static pendingActions = new Set();
     constructor() {
         super(); // initialize EventTarget
 
@@ -227,6 +233,11 @@ class Mod extends EventTarget {
         }
     }
 
+    executeAddon(autoloaded) {
+        this.main();
+        if (!autoloaded) {Mod.performAllPendingActions();}
+    }
+
     static findModById(id) {
         return window.__crackle__.loadedMods.find((mod) => mod.ID == id);
     }
@@ -242,6 +253,22 @@ class Mod extends EventTarget {
         );
 
         return ret;
+    }
+
+    static performAllPendingActions() {
+        let tempAPI = new API();
+        if (Mod.pendingActions.has("refreshIDE")) {
+            console.log("Refreshing IDE...");
+            tempAPI.ide.refreshIDE();
+        }
+
+        if (Mod.pendingActions.has("refreshLogo")) {
+            console.log("Refreshing logo...");
+            tempAPI.ide.buildPanes();
+            tempAPI.ide.fixLayout();
+        }
+
+        this.pendingActions.clear();
     }
 }
 
@@ -1463,7 +1490,7 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        version: "0.8.0",
+        version: "0.9.0",
         source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
@@ -1507,7 +1534,7 @@ function preloadAddonFromPath(path) {
         })(),
 
         // load a mod from code, TEMPORARY. use addMod for loading normal mods from the menu or download.
-        loadMod(code) {
+        loadMod(code, autoloaded) {
             let mod = new(Function(code)())();
 
             if (this.loadedMods.some((element) => element.ID == mod.ID)) {
@@ -1522,7 +1549,7 @@ function preloadAddonFromPath(path) {
             try {
                 mod.setupOptions();
                 if (!this.disabledMods[mod.ID]) {
-                    mod.main();
+                    mod.executeAddon(autoloaded);
                 }
             } catch (e) {
                 ide.showMessage(
@@ -1596,7 +1623,7 @@ function preloadAddonFromPath(path) {
             this.disabledMods[id] = false;
             this.saveDisabled();
             if (mod.DO_MENU) mod.menu = new MenuMorph();
-            mod.main();
+            mod.executeAddon(false);
         },
         disableMod(id) {
             const mod = Mod.findModById(id);
@@ -1651,6 +1678,7 @@ function preloadAddonFromPath(path) {
                     try {
                         // TODO: optional fetching of mods
                         window.__crackle__.loadMod(mod, true);
+                        Mod.performAllPendingActions();
                     } catch (e) {
                         ide.showMessage(
                             "Failed to autoload addon, check console for more info",
