@@ -43,7 +43,7 @@ This section describes the variables/functions that can be invoked from `this.ap
 
 - `ide` - The `IDE_Morph` (check Snap!'s `gui.js` for more infomation) Snap! is using. This is the Snap! interface.
 - `world` - The `WorldMorph` object from Snap!.
-- `sparkle` - Sparkle's internal state; handle with care.
+- `crackle` - Sparkle's internal state; handle with care. The data contained within this variable is subject to change at any point.
 
 ### Functions
 
