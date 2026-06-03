@@ -179,6 +179,11 @@ class API {
             throw new Error("snap not compatible");
         }
     }
+
+    requestPendingAction(action) {
+        Mod.pendingActions.add(action);
+        return Mod.pendingActions;
+    }
 }
 
 // A Mod, loaded from code
@@ -190,7 +195,7 @@ class Mod extends EventTarget {
     static AUTHOR = "John Doe";
     static DEPENDS = [];
     static DO_MENU = false;
-    static pendingActions = [];
+    static pendingActions = new Set();
     constructor() {
         super(); // initialize EventTarget
 
@@ -230,7 +235,7 @@ class Mod extends EventTarget {
 
     executeAddon(autoloaded) {
         this.main();
-        if (!autoloaded) {performAllPendingActions();}
+        if (!autoloaded) {Mod.performAllPendingActions();}
     }
 
     static findModById(id) {
@@ -251,11 +256,11 @@ class Mod extends EventTarget {
     }
 
     static performAllPendingActions() {
-        if (Mod.pendingActions.includes("refreshIDE")) {
+        if (Mod.pendingActions.has("refreshIDE")) {
             console.log("Refreshing IDE...");
             new this().api.ide.refreshIDE();
         }
-        this.pendingActions = [];
+        this.pendingActions.clear();
     }
 }
 
@@ -1477,7 +1482,7 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        version: "0.8.0",
+        version: "0.9.0",
         source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
