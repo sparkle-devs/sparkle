@@ -235,7 +235,9 @@ class Mod extends EventTarget {
 
     executeAddon(autoloaded) {
         this.main();
-        if (!autoloaded) {Mod.performAllPendingActions();}
+        if (!autoloaded) {
+            Mod.performAllPendingActions();
+        }
     }
 
     static findModById(id) {
