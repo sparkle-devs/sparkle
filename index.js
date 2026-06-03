@@ -256,10 +256,18 @@ class Mod extends EventTarget {
     }
 
     static performAllPendingActions() {
+        let tempAPI = new API();
         if (Mod.pendingActions.has("refreshIDE")) {
             console.log("Refreshing IDE...");
-            new this().api.ide.refreshIDE();
+            tempAPI.ide.refreshIDE();
         }
+
+        if (Mod.pendingActions.has("refreshLogo")) {
+            console.log("Refreshing logo...");
+            tempAPI.ide.buildPanes();
+            tempAPI.ide.fixLayout();
+        }
+
         this.pendingActions.clear();
     }
 }
