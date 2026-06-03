@@ -58,6 +58,7 @@ This section describes the variables/functions that can be invoked from `this.ap
 - `storage` - An object with procedures for storing data, local for each mod:
   - `get` - Gets a property, second parameter is a default value if the property is non-existent
   - `set` - Sets a property
+- `requestPendingAction` - Informs Sparkle that a task (specified as a string in the first argument) should be performed when all addons are done loading. (Possible values are `"refreshIDE"` and `"refreshLogo"`.)
 
 ### Removed APIs
 Support for these APIs is no longer included in Sparkle.
