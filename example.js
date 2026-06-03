@@ -72,16 +72,17 @@ return class extends Mod {
         // Example adding a menu item - see morphic.js's MenuMorph
         // for more info on menus
         this.menu.addItem("Say hello", () => {
-            api.inform(
-                "Hello, world! My number is: " + this.options.number,
+            api.ide.inform(
                 "Example Mod",
+                "Hello, world! My number is: " + this.options.number
+                
             );
         });
 
         // Example of using events
         this.addEventListener("categoryCreating", (e) => {
             if (this.options.everyHello.includes(e.detail.name.toLowerCase())) {
-                api.inform("I dont accept your hello.", "Example Mod");
+                api.ide.inform( "Example Mod", "I don't accept your hello.");
 
                 e.preventDefault();
             }
