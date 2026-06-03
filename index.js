@@ -235,9 +235,7 @@ class Mod extends EventTarget {
 
     executeAddon(autoloaded) {
         this.main();
-        if (!autoloaded) {
-            Mod.performAllPendingActions();
-        }
+        if (!autoloaded) {Mod.performAllPendingActions();}
     }
 
     static findModById(id) {
@@ -1680,7 +1678,6 @@ function preloadAddonFromPath(path) {
                     try {
                         // TODO: optional fetching of mods
                         window.__crackle__.loadMod(mod, true);
-                        Mod.performAllPendingActions();
                     } catch (e) {
                         ide.showMessage(
                             "Failed to autoload addon, check console for more info",
@@ -1689,6 +1686,7 @@ function preloadAddonFromPath(path) {
                         console.log("Failed to load addon: ", mod, e); // Make this console.log in order to stop a scary "Errors" button from showing up on Chrome
                     }
                 }
+                Mod.performAllPendingActions();
             },
         },
         isDev: false,
