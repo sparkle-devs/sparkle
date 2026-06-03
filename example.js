@@ -75,14 +75,14 @@ return class extends Mod {
             api.ide.inform(
                 "Example Mod",
                 "Hello, world! My number is: " + this.options.number
-                
+
             );
         });
 
         // Example of using events
         this.addEventListener("categoryCreating", (e) => {
             if (this.options.everyHello.includes(e.detail.name.toLowerCase())) {
-                api.ide.inform( "Example Mod", "I don't accept your hello.");
+                api.ide.inform("Example Mod", "I don't accept your hello.");
 
                 e.preventDefault();
             }
