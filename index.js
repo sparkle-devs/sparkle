@@ -179,6 +179,41 @@ class API {
             throw new Error("snap not compatible");
         }
     }
+
+    refreshBlocks() {
+        let recursiveFixLayout = (morph) => {
+            morph.fixLayout();
+            (morph.children).forEach((part) => {
+                recursiveFixLayout(part)
+            })
+        },
+        fixScriptsMorphLayout = (scripts) => {
+            scripts.children.forEach((script) => {
+                recursiveFixLayout(script)
+            })
+        }
+        this.ide.scenes.map((scene) => {
+            scene.sprites.map((sprite) => {
+                fixScriptsMorphLayout(sprite.scripts)
+                sprite.customBlocks.forEach((block) => {
+                    recursiveFixLayout(block.body.expression)
+                })
+            })
+            recursiveFixLayout(scene.stage.scripts)
+            scene.stage.customBlocks.forEach((block) => {
+                recursiveFixLayout(block.body.expression)
+            })
+        });
+        this.ide.flushBlocksCache();
+        this.ide.refreshPalette();
+        this.ide.categories.refreshEmpty();
+
+        this.ide.createCategories();
+        this.ide.categories.refreshEmpty();
+        this.ide.createPaletteHandle();
+        this.ide.categories.fixLayout();
+        this.ide.fixLayout();
+    }
 }
 
 // A Mod, loaded from code
