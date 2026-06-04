@@ -117,6 +117,12 @@ Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon
     default: new Color(255, 0, 128),
   },
   {
+    id: "theBoolean",
+    name: "Useless Checkbox",
+    type: "boolean",
+    default: true,
+  },
+  {
     id: "everyHello",
     name: "All Category Hellos",
     type: "string",

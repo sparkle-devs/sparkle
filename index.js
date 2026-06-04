@@ -689,7 +689,7 @@ class CrackleMorph extends ScrollFrameMorph {
             morph = new ToggleMorph(
                 "checkbox",
                 null,
-                () => setter(morph.state), // action,
+                () => setter(!morph.state), // action,
                 null, // label
                 getter, // query
             );
