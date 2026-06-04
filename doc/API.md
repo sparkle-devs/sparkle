@@ -14,6 +14,7 @@ return class extends Mod {
   DESCRIPTION = "An example addon for Sparkle."; // description
   VERSION = "1.0"; // version
   AUTHOR = "Your Name"; // author
+  CONTRIBUTORS = "N/A"; // non-author contributors to addon (only displayed in Sparkle >=v0.10.0)
   DEPENDS = []; // dependencies (addon ids, useful for libraries)
   DO_MENU = true; // whether to add a menu item
   // format for options dialog

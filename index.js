@@ -198,9 +198,11 @@ class Mod extends EventTarget {
     static pendingActions = new Set();
     constructor() {
         super(); // initialize EventTarget
-
         this.api = new API(this);
         this.menuHooks = [];
+        if (!this.CONTRIBUTORS) {
+            this.CONTRIBUTORS = "N/A"
+        }
     }
 
     setupOptions() {
@@ -533,6 +535,7 @@ class CrackleMorph extends ScrollFrameMorph {
                         `ID: ${mod.ID}\n` +
                         `Description: ${mod.DESCRIPTION}\n` +
                         `Version: ${mod.VERSION}\n` +
+                        `Contributors: ${mod.CONTRIBUTORS}\n` +
                         `Author: ${mod.AUTHOR}`,
                         world,
                     );
