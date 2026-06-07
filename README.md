@@ -48,7 +48,7 @@ On March 24th, 2026, @pppdud, @codingisfun2831t, and @e016 discussed the future 
 
 Under the leadership of the Mojavesoft Group, Sparkle has obtained several features, like [Jameson](https://mojavesoft.net/ide/) support, that were requested multiple times but were never added to the Crackle source code.
 
-And then, on June 6th, 2026, via issue #59, the Sparkle team moved to a separate organization, [sparkle-devs](https://github.com/sparkle-devs), securing the Mojavesoft Group just a bit (if the Sparkle devs ever got hacked, that might expose Mojavesoft Group stuff).
+And then, on June 6th, 2026, via issue #59, the Sparkle team moved to a separate organization, [sparkle-devs](https://github.com/sparkle-devs), following multiple requests from @codingisfun2831t.
 
 ## A note about maintainable free software
 This project is governed by [The Maintainable Free Software Policy v1.0](https://github.com/Mojavesoft-Group/free-software-policies/blob/main/1.0/README.md).
