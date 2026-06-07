@@ -185,6 +185,10 @@ class API {
         Mod.pendingActions.add(action);
         return Mod.pendingActions;
     }
+
+    openSettings() {
+        this.sparkle.showModOptions(this.mod);
+    }
 }
 
 // A Mod, loaded from code
@@ -849,7 +853,42 @@ class CrackleMorph extends ScrollFrameMorph {
         this.settings = new AlignmentMorph("column", 5);
         this.settings.alignment = "left";
         this.mod.OPTIONS_FORMAT.forEach((format) => {
-            if (format?.id && Array.isArray(format.default)) {
+            if (format?.type == "multiSelect") {
+                const myself = this;
+                let label = new StringMorph(
+                        format.name,
+                        12,
+                        "sans-serif",
+                        true,
+                        null,
+                        false,
+                        false,
+                        null,
+                        BLACK,
+                    );
+
+                this.settings.add(label);
+
+                for (const [display, real] of Object.entries(format.options)) {
+                    let checkbox = new ToggleMorph(
+                        "checkbox",
+                        null,
+                        () => {
+                            let current = myself.newOptions[format.id].includes(real);
+
+                            if (current) {
+                                myself.newOptions[format.id] = myself.newOptions[format.id].filter(item => item !== real);
+                            } else {
+                                myself.newOptions[format.id].push(real);
+                            }
+                        }, // action,
+                        display, // label
+                        () => myself.newOptions[format.id].includes(real), // query
+                    );
+
+                    this.settings.add(checkbox);
+                }
+            } else if (format?.id && Array.isArray(format.default)) {
                 const myself = this;
                 let list,
                     label = new StringMorph(
@@ -960,7 +999,7 @@ class CrackleMorph extends ScrollFrameMorph {
                 total.add(morph);
                 total.fixLayout();
                 this.settings.add(total);
-            } else if (typeof format === "string") {
+            } else if (typeof format === "string") { // header
                 let morph = new StringMorph(
                     format,
                     15,
@@ -973,7 +1012,7 @@ class CrackleMorph extends ScrollFrameMorph {
                     BLACK,
                 );
                 this.settings.add(morph);
-            } else if (format === null) {
+            } else if (format === null) { // spacer
                 let morph = new Morph();
                 morph.alpha = 0;
                 morph.setExtent(new Point(200, 5));

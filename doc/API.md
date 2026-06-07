@@ -60,6 +60,7 @@ This section describes the variables/functions that can be invoked from `this.ap
   - `get` - Gets a property, second parameter is a default value if the property is non-existent
   - `set` - Sets a property
 - `requestPendingAction` - Informs Sparkle that a task (specified as a string in the first argument) should be performed when all addons are done loading. (Possible values are `"refreshIDE"` and `"refreshLogo"`.)
+- `openSettings` - Open this mods settings menu.
 
 ### Removed APIs
 Support for these APIs is no longer included in Sparkle.
@@ -133,6 +134,19 @@ Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon
     minLength: 1,
     maxLength: 5,
   },
+  {
+    id: "validHellos",
+    name: "Select all hellos that apply",
+    type: "multiSelect",
+    options: {
+      "Hi": "hi",
+      "Hello": "hello",
+      "Sick": "sick",
+      "Howdy": "howdy",
+    },
+    // what options should toggled by default
+    default: ["hi", "hello", "sick", "howdy"],
+  }
 ];
 ```
 
