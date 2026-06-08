@@ -2,8 +2,7 @@
 /*
     Sparkle - A modding framework for Snap! and its forks
     
-    Copyright (c) 2025-2026 Sparkle Team
-
+    Copyright (c) 2025-2026 Mojavesoft Group
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
@@ -184,6 +183,16 @@ class API {
     requestPendingAction(action) {
         Mod.pendingActions.add(action);
         return Mod.pendingActions;
+    }
+
+    environmentType() {
+        if (window.__TAURI__) {
+            return "tauri";
+        }
+        
+        else {
+            return "web";
+        }
     }
 }
 
@@ -693,7 +702,7 @@ class CrackleMorph extends ScrollFrameMorph {
             morph = new ToggleMorph(
                 "checkbox",
                 null,
-                () => setter(!morph.state), // action,
+                () => setter(morph.state), // action,
                 null, // label
                 getter, // query
             );
@@ -1497,7 +1506,7 @@ function preloadAddonFromPath(path) {
     // create the __crackle__ object
     window.__crackle__ = {
         version: "0.9.0",
-        source: "https://github.com/sparkle-devs/sparkle/releases",
+        source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
         disabledMods: {},
@@ -1506,7 +1515,7 @@ function preloadAddonFromPath(path) {
         allEventTargets: {},
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
-        addonRepoPath: "https://raw.githubusercontent.com/sparkle-devs/SparkleMods/refs/heads/master/",
+        addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
         snap: (function() {
             // Jameson?
             if (window.isJameson) {
