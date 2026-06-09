@@ -874,16 +874,10 @@ class CrackleMorph extends ScrollFrameMorph {
                         "checkbox",
                         null,
                         () => {
-                            let current = myself.newOptions[format.id].includes(real);
-
-                            if (current) {
-                                myself.newOptions[format.id] = myself.newOptions[format.id].filter(item => item !== real);
-                            } else {
-                                myself.newOptions[format.id].push(real);
-                            }
+                            myself.newOptions[format.id][real] = !myself.newOptions[format.id][real];
                         }, // action,
                         display, // label
-                        () => myself.newOptions[format.id].includes(real), // query
+                        () => myself.newOptions[format.id][real], // query
                     );
 
                     this.settings.add(checkbox);

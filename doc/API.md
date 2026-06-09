@@ -134,19 +134,12 @@ Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon
     minLength: 1,
     maxLength: 5,
   },
-  {
-    id: "validHellos",
-    name: "Select all hellos that apply",
-    type: "multiSelect",
-    options: {
-      "Hi": "hi",
-      "Hello": "hello",
-      "Sick": "sick",
-      "Howdy": "howdy",
-    },
-    // what options should toggled by default
-    default: ["hi", "hello", "sick", "howdy"],
-  }
+  default: {
+      "hi": true,
+      "hello": true,
+      "sick": false,
+      "howdy": false,
+  },
 ];
 ```
 

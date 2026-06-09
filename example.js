@@ -78,8 +78,12 @@ return class extends Mod {
                 "Sick": "sick",
                 "Howdy": "howdy",
             },
-            // what options should toggled by default
-            default: ["hi", "hello", "sick", "howdy"],
+            default: {
+                "hi": true,
+                "hello": true,
+                "sick": false,
+                "howdy": false,
+            },
         }
     ]; // format for options
 
@@ -103,7 +107,7 @@ return class extends Mod {
             new DialogBoxMorph(
                 myself,
                 (choice) => {
-                    let valid = myself.options.validHellos.includes(choice);
+                    let valid = myself.options.validHellos[choice];
 
                     new DialogBoxMorph().inform(
                         "Result",
