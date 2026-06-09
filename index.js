@@ -55,7 +55,7 @@ class API {
             get: (key, defaultValue) => {
                 return (
                     (JSON.parse(this.crackle.storage.get(`sparkle-${this.mod.ID}`)) ||
-                    {})[key] ?? defaultValue
+                        {})[key] ?? defaultValue
                 );
             },
         };
@@ -108,8 +108,8 @@ class API {
                     window.__crackle__.wrappedFunctions.get(FUNCTION_ID)?.functions;
                 if (wrappers) {
                     let sortedWrappers = Object.values(window.__crackle__.wrappedFunctions.get(FUNCTION_ID).functions).sort(
-                            (wrap, wrap2) => wrap2.importance - wrap.importance
-                        ),
+                        (wrap, wrap2) => wrap2.importance - wrap.importance
+                    ),
                         i = 0;
                     for (let wrapper of sortedWrappers) {
                         let returnValue = wrapper.apply(ctx, args);
@@ -195,9 +195,31 @@ class API {
         }
     }
 
-    openSettings() {
-        this.sparkle.showModOptions(this.mod);
+    semverIsGreaterThan(a, b) {
+        if (a[0] > b[0]) { // if a's major version > b's major version
+            return true;
+        }
+
+        else if (a[0] < b[0]) {
+            return false;
+        }
+
+        else {
+            if (a[1] > b[1]) { // if a's minor version > b's minor version
+                return true;
+            }
+
+            else if (a[2] > b[2] && a[1] == b[1]) { // if a's patch version > b's patch version AND both have same minor version
+                return true;
+            }
+
+            else {
+                return false
+            }
+        }
     }
+
+
 }
 
 // A Mod, loaded from code
@@ -345,7 +367,7 @@ class CrackleMorph extends ScrollFrameMorph {
         this.mods = new ListMorph(
             this.filteredLibrariesList,
             (element) =>
-            element.name + (element.version ? ` (${element.version})` : ""),
+                element.name + (element.version ? ` (${element.version})` : ""),
             null,
             null,
             "~", // separator
@@ -620,7 +642,7 @@ class CrackleMorph extends ScrollFrameMorph {
             }
 
             useOdd = !useOdd;
-            modMorph.fixLayout = function() {
+            modMorph.fixLayout = function () {
                 this.deleteButton.setTop(this.top() + 2);
                 this.deleteButton.setRight(this.right() - 2);
                 this.optionsButton.setTop(this.top() + 2);
@@ -720,12 +742,12 @@ class CrackleMorph extends ScrollFrameMorph {
             }
             morph = new AlignmentMorph("row", 5);
             const slider = new SliderMorph(
-                    +format.min / format.resolution,
-                    +format.max / format.resolution,
-                    +getter() / format.resolution,
-                    2,
-                    "horizontal",
-                ),
+                +format.min / format.resolution,
+                +format.max / format.resolution,
+                +getter() / format.resolution,
+                2,
+                "horizontal",
+            ),
                 setResolution = (x) => {
                     return x
                         .toFixed(Math.floor(Math.log(1 / format.resolution) - 1))
@@ -773,7 +795,7 @@ class CrackleMorph extends ScrollFrameMorph {
             morph.reactToInput = () => {
                 setter(+morph.getValue());
             };
-            morph.setChoice = function(aStringOrFloat) {
+            morph.setChoice = function (aStringOrFloat) {
                 this.setContents(aStringOrFloat);
                 this.escalateEvent("reactToChoice", aStringOrFloat);
                 setter(+aStringOrFloat)
@@ -841,7 +863,7 @@ class CrackleMorph extends ScrollFrameMorph {
             morph.reactToInput = () => {
                 setter(`${morph.getValue()}`);
             };
-            morph.setChoice = function(aStringOrFloat) {
+            morph.setChoice = function (aStringOrFloat) {
                 this.setContents(aStringOrFloat);
                 this.escalateEvent("reactToChoice", aStringOrFloat);
                 setter(`${aStringOrFloat}`)
@@ -862,36 +884,7 @@ class CrackleMorph extends ScrollFrameMorph {
         this.settings = new AlignmentMorph("column", 5);
         this.settings.alignment = "left";
         this.mod.OPTIONS_FORMAT.forEach((format) => {
-            if (format?.type == "multiSelect") {
-                const myself = this;
-                let label = new StringMorph(
-                    format.name,
-                    12,
-                    "sans-serif",
-                    true,
-                    null,
-                    false,
-                    false,
-                    null,
-                    BLACK,
-                );
-
-                this.settings.add(label);
-
-                for (const [display, real] of Object.entries(format.options)) {
-                    let checkbox = new ToggleMorph(
-                        "checkbox",
-                        null,
-                        () => {
-                            myself.newOptions[format.id][real] = !myself.newOptions[format.id][real];
-                        }, // action,
-                        display, // label
-                        () => myself.newOptions[format.id][real], // query
-                    );
-
-                    this.settings.add(checkbox);
-                }
-            } else if (format?.id && Array.isArray(format.default)) {
+            if (format?.id && Array.isArray(format.default)) {
                 const myself = this;
                 let list,
                     label = new StringMorph(
@@ -917,7 +910,7 @@ class CrackleMorph extends ScrollFrameMorph {
                             }
                             myself.newOptions[format.id].push(
                                 format.default[
-                                    myself.newOptions[format.id].length % format.default.length
+                                myself.newOptions[format.id].length % format.default.length
                                 ],
                             );
                             remakeLayout();
@@ -1002,7 +995,7 @@ class CrackleMorph extends ScrollFrameMorph {
                 total.add(morph);
                 total.fixLayout();
                 this.settings.add(total);
-            } else if (typeof format === "string") { // header
+            } else if (typeof format === "string") {
                 let morph = new StringMorph(
                     format,
                     15,
@@ -1015,7 +1008,7 @@ class CrackleMorph extends ScrollFrameMorph {
                     BLACK,
                 );
                 this.settings.add(morph);
-            } else if (format === null) { // spacer
+            } else if (format === null) {
                 let morph = new Morph();
                 morph.alpha = 0;
                 morph.setExtent(new Point(200, 5));
@@ -1165,7 +1158,7 @@ class VerticalCrackleDialogMorph extends CrackleImportLibraryMorph {
         }
 
         function setTab(tab) {
-            tab.getPressRenderColor = function() {
+            tab.getPressRenderColor = function () {
                 return this.pressColor;
             };
             tab.corner = 10;
@@ -1348,8 +1341,7 @@ function waitForSnapReady() {
 }
 
 function preloadAddonFromPath(path) {
-    fetch(path).then((x) =>
-    {
+    fetch(path).then((x) => {
         if (!x.ok) {
             return "";
         };
@@ -1359,7 +1351,7 @@ function preloadAddonFromPath(path) {
     })
 }
 
-(async function() {
+(async function () {
     // attach hooks for menu hooks functions
     function attachMenuHooks(ide) {
         function applyHooks(menu, name) {
@@ -1485,7 +1477,7 @@ function preloadAddonFromPath(path) {
         // so we need to manually modify it here so the event
         // only gets called when backup actually calls the
         // callback
-        ide.createNewProject = function() {
+        ide.createNewProject = function () {
             this.backup(() => {
                 if (
                     Mod.dispatchEvent(new Event("projectCreating", {
@@ -1549,7 +1541,7 @@ function preloadAddonFromPath(path) {
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
         addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
-        snap: (function() {
+        snap: (function () {
             // Jameson?
             if (window.isJameson) {
                 return {
@@ -1583,7 +1575,7 @@ function preloadAddonFromPath(path) {
 
         // load a mod from code, TEMPORARY. use addMod for loading normal mods from the menu or download.
         loadMod(code, autoloaded) {
-            let mod = new(Function(code)())();
+            let mod = new (Function(code)())();
 
             if (this.loadedMods.some((element) => element.ID == mod.ID)) {
                 ide.showMessage("Addon already loaded, reloading it..");
@@ -1717,7 +1709,7 @@ function preloadAddonFromPath(path) {
                 return !!window.__crackle__.autoloadMods[id];
             },
 
-            loadAuto: async function(ide) {
+            loadAuto: async function (ide) {
                 window.__crackle__.autoloadMods = this.load();
                 window.__crackle__.loadDisabled();
 
@@ -1812,7 +1804,7 @@ function preloadAddonFromPath(path) {
     }
 
     // create mod button
-    IDE_Morph.prototype.createModButton = function() {
+    IDE_Morph.prototype.createModButton = function () {
         const controlBar = this.controlBar;
         let modButton;
         if (controlBar.modButton) {
@@ -1939,9 +1931,9 @@ function preloadAddonFromPath(path) {
                 const menu = new MenuMorph(modButton),
                     world = this.world(),
                     hiddenColor =
-                    window.__crackle__.snap.snap == "Split" ?
-                    new Color(255, 100, 100) :
-                    new Color(100, 0, 0);
+                        window.__crackle__.snap.snap == "Split" ?
+                            new Color(255, 100, 100) :
+                            new Color(100, 0, 0);
                 if (IDE_Morph.prototype.ideRender) {
                     menu.bgColor = IDE_Morph.prototype.getControlBarColor();
                     IDE_Morph.prototype.ideRender(menu);
@@ -2021,7 +2013,7 @@ function preloadAddonFromPath(path) {
 
         controlBar.modButton = modButton;
         const originalUpdateLabel = controlBar.updateLabel;
-        controlBar.updateLabel = function() {
+        controlBar.updateLabel = function () {
             originalUpdateLabel.call(this);
             this.label.setPosition(
                 new Point(
@@ -2046,8 +2038,8 @@ function preloadAddonFromPath(path) {
                 Reflect.apply(...arguments);
                 let btn =
                     window.__crackle__.snap.snap == "Split" ?
-                    ctx.editButton :
-                    ctx.settingsButton;
+                        ctx.editButton :
+                        ctx.settingsButton;
                 ctx.modButton.setPosition(
                     new Point(btn.right() + BUTTON_OFFSET, btn.top()),
                 );
