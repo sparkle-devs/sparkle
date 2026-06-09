@@ -62,7 +62,10 @@ This section describes the variables/functions that can be invoked from `this.ap
 - `requestPendingAction` - Informs Sparkle that a task (specified as a string in the first argument) should be performed when all addons are done loading (possible values are `"refreshIDE"` and `"refreshLogo"`)
 - `openSettings` - Open the addon's settings menu
 - `environmentType` - Returns `"web"` when Sparkle is running in a web browser and `"tauri"` when Sparkle is running in a Tauri environment with the `window.__TAURI__` variable exposed
-- 
+- `semverIsGreaterThan` - Given two 3-item arrays representing a semver version using the format [major, minor, patch], check if the first one is greater than the second one
+- `versionStringFromSemver` - Returns the version string corresponding to a semver array of the format [major, minor, patch]
+
+
 ### Removed APIs
 Support for these APIs is no longer included in Sparkle.
 - `inform`: Deprecated starting with v0.7 and removed starting with v0.8 because it's a small wrapper around Snap!'s `this.api.ide.inform`
