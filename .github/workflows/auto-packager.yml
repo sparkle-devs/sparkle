@@ -1,0 +1,27 @@
+# Trigger this workflow on release
+on:
+  release:
+    types: [published]
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: 'Obtain repository'
+        uses: actions/checkout@v6
+        
+      - name: 'Package Sparkle'
+        run: |
+            cd ${{github.workspace}}
+            chmod +x package.sh
+            ./package.sh
+            gh release upload "${{github.event.release.tag_name}}" dist/*        
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        shell: bash
