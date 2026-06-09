@@ -68,12 +68,30 @@ return class extends Mod {
             minLength: 1,
             maxLength: 5,
         },
+        {
+            id: "validHellos",
+            name: "Select all hellos that apply",
+            type: "multiSelect",
+            options: {
+                "Hi": "hi",
+                "Hello": "hello",
+                "Sick": "sick",
+                "Howdy": "howdy",
+            },
+            default: {
+                "hi": true,
+                "hello": true,
+                "sick": false,
+                "howdy": false,
+            },
+        }
     ]; // format for options
 
     // Main function - gets ran when the mod is loaded
     main() {
         // allow access to the API in the menu functions and such, shortcut
         let api = this.api;
+        let myself = this;
 
         // Example adding a menu item - see morphic.js's MenuMorph
         // for more info on menus
@@ -84,6 +102,35 @@ return class extends Mod {
 
             );
         });
+
+        this.menu.addItem("Check hello", () => {
+            new DialogBoxMorph(
+                myself,
+                (choice) => {
+                    let valid = myself.options.validHellos[choice];
+
+                    new DialogBoxMorph().inform(
+                        "Result",
+                        valid ? "Yeah. That's good." : "Yeah, no. Get out of here.",
+                        api.world
+                    );
+                }
+            ).prompt(
+                "Check a hello",
+                "hello",
+                api.world,
+                null,
+                {
+                    "Hi": "hi",
+                    "Hello": "hello",
+                    "Sick": "sick",
+                    "Howdy": "howdy",
+                }
+            );
+        })
+
+        this.menu.addLine();
+        this.menu.addItem("Settings", () => { api.openSettings() })
 
         // Example of using events
         this.addEventListener("categoryCreating", (e) => {
