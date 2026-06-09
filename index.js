@@ -1533,7 +1533,8 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        version: "0.9.0",
+        versionArray: [0,10,0],
+        version: Mod.globalMod.api.versionStringFromSemver(this.versionArray),
         source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
