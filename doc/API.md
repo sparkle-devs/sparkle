@@ -181,3 +181,7 @@ There are functions that allow you to require, suggest OR disallow a specfic Sna
 - `requireSnaps`: Require either one of a set of snaps to run your addon
 - `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
 - `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
+
+### Sparkle for Tauri
+Beginning with v0.10.0, Sparkle has several APIs for addons that are meant to be used in a Tauri-packaged version of Snap!:
+- `environmentType` - Returns `"web"` when Sparkle is running in a web browser and `"tauri"` when Sparkle is running in a Tauri environment with the `window.__TAURI__` variable exposed
