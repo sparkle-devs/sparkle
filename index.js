@@ -189,12 +189,12 @@ class API {
         if (window.__TAURI__) {
             return "tauri";
         }
-        
+
         else {
             return "web";
         }
     }
-  
+
     openSettings() {
         this.sparkle.showModOptions(this.mod);
     }
