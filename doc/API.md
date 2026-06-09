@@ -59,9 +59,10 @@ This section describes the variables/functions that can be invoked from `this.ap
 - `storage` - An object with procedures for storing data, local for each mod:
   - `get` - Gets a property, second parameter is a default value if the property is non-existent
   - `set` - Sets a property
-- `requestPendingAction` - Informs Sparkle that a task (specified as a string in the first argument) should be performed when all addons are done loading. (Possible values are `"refreshIDE"` and `"refreshLogo"`.)
-- `openSettings` - Open this mods settings menu.
-
+- `requestPendingAction` - Informs Sparkle that a task (specified as a string in the first argument) should be performed when all addons are done loading (possible values are `"refreshIDE"` and `"refreshLogo"`)
+- `openSettings` - Open the addon's settings menu
+- `environmentType` - Returns `"web"` when Sparkle is running in a web browser and `"tauri"` when Sparkle is running in a Tauri environment with the `window.__TAURI__` variable exposed
+- 
 ### Removed APIs
 Support for these APIs is no longer included in Sparkle.
 - `inform`: Deprecated starting with v0.7 and removed starting with v0.8 because it's a small wrapper around Snap!'s `this.api.ide.inform`
@@ -181,7 +182,3 @@ There are functions that allow you to require, suggest OR disallow a specfic Sna
 - `requireSnaps`: Require either one of a set of snaps to run your addon
 - `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
 - `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
-
-### Sparkle for Tauri
-Beginning with v0.10.0, Sparkle has several APIs for addons that are meant to be used in a Tauri-packaged version of Snap!:
-- `environmentType` - Returns `"web"` when Sparkle is running in a web browser and `"tauri"` when Sparkle is running in a Tauri environment with the `window.__TAURI__` variable exposed
