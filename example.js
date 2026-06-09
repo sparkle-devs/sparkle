@@ -130,7 +130,9 @@ return class extends Mod {
         })
 
         this.menu.addLine();
-        this.menu.addItem("Settings", () => { api.openSettings() })
+        this.menu.addItem("Settings", () => {
+            api.openSettings()
+        })
 
         // Example of using events
         this.addEventListener("categoryCreating", (e) => {

@@ -856,16 +856,16 @@ class CrackleMorph extends ScrollFrameMorph {
             if (format?.type == "multiSelect") {
                 const myself = this;
                 let label = new StringMorph(
-                        format.name,
-                        12,
-                        "sans-serif",
-                        true,
-                        null,
-                        false,
-                        false,
-                        null,
-                        BLACK,
-                    );
+                    format.name,
+                    12,
+                    "sans-serif",
+                    true,
+                    null,
+                    false,
+                    false,
+                    null,
+                    BLACK,
+                );
 
                 this.settings.add(label);
 
