@@ -219,7 +219,9 @@ class API {
         }
     }
 
-
+    versionStringFromSemver(a) {
+        return `v${a[0]}.${a[1]}.${a[2]}`;
+    }
 }
 
 // A Mod, loaded from code
@@ -232,6 +234,7 @@ class Mod extends EventTarget {
     static DEPENDS = [];
     static DO_MENU = false;
     static pendingActions = new Set();
+    static globalMod = new Mod();
     constructor() {
         super(); // initialize EventTarget
         this.api = new API(this);
