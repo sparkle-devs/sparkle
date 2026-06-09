@@ -887,6 +887,36 @@ class CrackleMorph extends ScrollFrameMorph {
         this.settings = new AlignmentMorph("column", 5);
         this.settings.alignment = "left";
         this.mod.OPTIONS_FORMAT.forEach((format) => {
+                        if (format?.type == "multiSelect") {
+                const myself = this;
+                let label = new StringMorph(
+                    format.name,
+                    12,
+                    "sans-serif",
+                    true,
+                    null,
+                    false,
+                    false,
+                    null,
+                    BLACK,
+                );
+
+                this.settings.add(label);
+
+                for (const [display, real] of Object.entries(format.options)) {
+                    let checkbox = new ToggleMorph(
+                        "checkbox",
+                        null,
+                        () => {
+                            myself.newOptions[format.id][real] = !myself.newOptions[format.id][real];
+                        }, // action,
+                        display, // label
+                        () => myself.newOptions[format.id][real], // query
+                    );
+
+                    this.settings.add(checkbox);
+                }
+            } else if (format?.id && Array.isArray(format.default)) {
             if (format?.id && Array.isArray(format.default)) {
                 const myself = this;
                 let list,
