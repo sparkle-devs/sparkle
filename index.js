@@ -36,7 +36,6 @@ function commaOr(...items) {
 // API for mods
 class API {
     constructor(mod) {
-        this.sparkle = window.__crackle__;
         this.mod = mod;
         this.world = world;
         this.ide = world.children[0];
@@ -221,6 +220,17 @@ class API {
 
     versionStringFromSemver(a) {
         return `v${a[0]}.${a[1]}.${a[2]}`;
+    }
+
+    suggestMinVersion(a) {
+        if (this.semverIsGreaterThan(a, this.crackle.versionArray)) {
+            world.children[0].inform(
+                "Sparkle",
+                `This addon is designed for Sparkle ${this.versionStringFromSemver(a)} or later, but you are using ${this.versionStringFromSemver(this.crackle.versionArray)}.
+        The addon might still work; continue at your own risk.`
+
+            );
+        }
     }
 }
 
