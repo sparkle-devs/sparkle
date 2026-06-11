@@ -1057,7 +1057,7 @@ class CrackleMorph extends ScrollFrameMorph {
                         morph.setExtent(new Point(200, 5));
                         this.settings.add(morph);
                     }
-                }); this.settings.fixLayout();
+                }}); this.settings.fixLayout();
 
             this.alpha = 0;
             if (!this.vertical) {
