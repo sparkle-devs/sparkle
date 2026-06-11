@@ -64,6 +64,7 @@ This section describes the variables/functions that can be invoked from `this.ap
 - `environmentType` - Returns `"web"` when Sparkle is running in a web browser and `"tauri"` when Sparkle is running in a Tauri environment with the `window.__TAURI__` variable exposed
 - `semverIsGreaterThan` - Given two 3-item arrays representing a semver version using the format [major, minor, patch], check if the first one is greater than the second one
 - `versionStringFromSemver` - Returns the version string corresponding to a semver array of the format [major, minor, patch]
+- `suggestMinVersion` - Given a semver array (see entries above), show a warning message to the user if their version of Sparkle is older than the version expressed in the semver array.
 
 
 ### Removed APIs
@@ -174,14 +175,12 @@ The object stored in `this` is a `Mod` object. This object supports events using
 - `categoryCreated` - Triggered after a category is created, if it was not cancelled by another event. The 'detail' property of the event object contains the `name` and `color` (Color) of the category.
 - `optionsChanged` - Triggered after changing the options of a mod. Useful if you want to change something on the fly after setting new options.
 
-## "Snap" detection
+## Snap! fork detection
 
-One very interesting feature in Sparkle is its cross-modness. This means, that not only can you run Sparkle and make addons for Snap!, you can also use it on other Snap! mods!
+One very interesting feature in Sparkle is its ability to work across multiple Snap! forks.. This means, that not only can you run Sparkle and make addons for Snap!, you can also use it on other Snap! mods!
 
-The current term for a Snap! mod (including Snap! itself) is simply a "Snap".
+There are functions that allow you to require, suggest OR disallow a specfic Snap! fork. For example, if you are making an addon for [Split!](https://www.github.com/e016/split-mod) that should only be supported on Split!, you can call `requireSnaps`. Here are the functions that you can use (all of these can take multiple params, for each fork):
 
-There are functions that allow you to require, suggest OR disallow a specfic Snap!. For example, if you are making an addon for [Split](https://www.github.com/e016/split-mod) that should only be supported on Split, you can call `requireSnaps`. Here are the functions you can use (all of these can take multiple params, for each snap):
-
-- `requireSnaps`: Require either one of a set of snaps to run your addon
-- `suggestSnaps`: Suggest a list of snaps that would work perfectly with your addon
-- `disallowSnaps`: Disallow a list of snaps that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
+- `requireSnaps`: Require either one of a set of Snap! forks to run your addon
+- `suggestSnaps`: Suggest a list of Snap! forks that are known to work properly with your addon
+- `disallowSnaps`: Disallow a list of Snap! forks that your addon doesn't support. (e.g. better-flat-design, which won't work with Split as Split already has good flat design built-in)
