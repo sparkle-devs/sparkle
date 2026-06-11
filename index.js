@@ -58,6 +58,8 @@ class API {
                 );
             },
         };
+
+        this.versionStringFromSemver = API.versionStringFromSemver;
     }
 
     //this.showMsg = this.ide.showMessage; showMsg API is removed starting with v0.8.
@@ -218,7 +220,7 @@ class API {
         }
     }
 
-    versionStringFromSemver(a) {
+    static versionStringFromSemver(a) {
         return `v${a[0]}.${a[1]}.${a[2]}`;
     }
 
@@ -244,7 +246,7 @@ class Mod extends EventTarget {
     static DEPENDS = [];
     static DO_MENU = false;
     static pendingActions = new Set();
-    static globalMod = new Mod();
+    //static globalMod = new Mod(); Disabled because it causes race conditions.
     constructor() {
         super(); // initialize EventTarget
         this.api = new API(this);
@@ -1571,9 +1573,9 @@ class CrackleMorph extends ScrollFrameMorph {
         const controlBar = ide.controlBar;
 
         // create the __crackle__ object
-        window.__crackle__ = {
-            versionArray: [0, 10, 0],
-            version: Mod.globalMod.api.versionStringFromSemver(this.versionArray),
+        window.__crackle__ = {versionArray: [0, 10, 1]};
+        Object.assign(window.__crackle__, {
+            version: API.versionStringFromSemver(window.__crackle__.versionArray),
             source: "https://github.com/Mojavesoft-Group/sparkle/releases",
             loadedMods: [],
             extraApi: {},
@@ -1830,7 +1832,7 @@ class CrackleMorph extends ScrollFrameMorph {
             },
 
             currentMenu: null,
-        };
+        });
         window.__crackle__.loadSettings();
 
         // adjust the project label position to be after the mod button
