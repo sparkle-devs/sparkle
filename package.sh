@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 # Compress all of the files required for a working Sparkle installation into a file named sparkle.zip. Requires node.js.
 mkdir -p dist/
 cd dist/
