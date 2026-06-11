@@ -6,4 +6,4 @@ rm -f sparkle.zip
 zip -9 sparkle.zip ../icons/* ../LICENSE ../index.js ../manifest.json
 cp ../index.js sparkle.js
 npx terser  sparkle.js -c -m -o sparkle.min.js
-printf "javascript:%s" $(< sparkle.min.js)  > sparkle.bookmarklet.js
+printf "javascript:%s" "$(< sparkle.min.js)"  > sparkle.bookmarklet.js
