@@ -17,6 +17,12 @@ First, go to [chrome://extensions/](chrome://extensions/). There should be a "De
 ### Jameson
 [Jameson](https://mojavesoft.net/ide/) comes with Sparkle by default and does not require a browser extension.
 
+### Bookmarklet
+To install Sparkle as a bookmarklet, download the file labeled `sparkle.bookmarklet.js` from a Sparkle release in the Releases tab, copy its contents, and then paste them as the website URL for a bookmark. Now, you can activate Sparkle at any time by clicking on the bookmark.
+
+### Pasting code into the console
+To run Sparkle by pasting JavaScript code into your console, download the file named `sparkle.min.js` from the Releases tab, copy its contents, enter your browser's JavaScript console (F12 on most browsers), and then paste the code.
+
 ## How to use
 When launching Snap! or one of its forks with Sparkle installed, you should see a new button being added to the title bar:
 
