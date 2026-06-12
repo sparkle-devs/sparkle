@@ -2002,7 +2002,7 @@ function preloadAddonFromPath(path) {
                     IDE_Morph.prototype.ideRender(menu);
                 }
                 menu.addItem("About Sparkle...", "about");
-                menu.addItem("Sparkle settings...", "settings");
+                //menu.addItem("Sparkle settings...", "settings");
                 menu.addItem("Download source...", "download");
                 menu.addLine();
                 menu.addItem(
