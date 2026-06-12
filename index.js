@@ -715,6 +715,7 @@ class CrackleMorph extends ScrollFrameMorph {
         );
         this.contents.fixLayout();
     }
+    /*
     buildSettings() {
         if (this.settings) {
             this.settings.destroy();
@@ -737,6 +738,7 @@ class CrackleMorph extends ScrollFrameMorph {
         }
         this.addContents(this.settings);
     }
+    */
     buildOptionMorph(format, getter, setter) {
         let morph;
         if (format.type === "boolean") {
@@ -1580,7 +1582,7 @@ function preloadAddonFromPath(path) {
     };
     Object.assign(window.__crackle__, {
         version: API.versionStringFromSemver(window.__crackle__.versionArray),
-        source: "https://github.com/sparkle-devs/sparkle/releases",
+        source: "https://github.com/Mojavesoft-Group/sparkle/releases",
         loadedMods: [],
         extraApi: {},
         disabledMods: {},
@@ -1589,7 +1591,7 @@ function preloadAddonFromPath(path) {
         allEventTargets: {},
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
-        addonRepoPath: "https://raw.githubusercontent.com/sparkle-devs/SparkleAddons/refs/heads/master/",
+        addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
         snap: (function() {
             // Other forks?
             if (window.snapForkName && window.snapForkVersion) {
@@ -1787,10 +1789,12 @@ function preloadAddonFromPath(path) {
             },
         },
         isDev: false,
+        /*
         toggleDev() {
             window.__crackle__.isDev = !window.__crackle__.isDev;
             this.saveSettings();
         },
+        */
         loadSettings() {
             const settings = JSON.parse(this.storage.get("crackle_settings") || "{}");
             this.isDev = settings.isDev !== false;
@@ -1892,6 +1896,7 @@ function preloadAddonFromPath(path) {
                     world,
                 );
             },
+            /*
             settings() {
                 const dlg = new DialogBoxMorph(),
                     body = new CrackleMorph(window.__crackle__, false);
@@ -1905,6 +1910,7 @@ function preloadAddonFromPath(path) {
                 dlg.fixLayout();
                 dlg.popUp(world);
             },
+            */
             download() {
                 window.open(window.__crackle__.source, "_blank");
             },
@@ -1992,7 +1998,7 @@ function preloadAddonFromPath(path) {
                     new Color(255, 100, 100) :
                     new Color(100, 0, 0);
                 if (IDE_Morph.prototype.ideRender) {
-                    menu.bgColor = controlBar.color;
+                    menu.bgColor = IDE_Morph.prototype.getControlBarColor();
                     IDE_Morph.prototype.ideRender(menu);
                 }
                 menu.addItem("About Sparkle...", "about");
