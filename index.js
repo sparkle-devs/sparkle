@@ -1589,7 +1589,7 @@ function preloadAddonFromPath(path) {
         allEventTargets: {},
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
-        addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
+        addonRepoPath: "https://raw.githubusercontent.com/sparkle-devs/SparkleMods/refs/heads/master/",
         snap: (function() {
             // Other forks?
             if (window.snapForkName && window.snapForkVersion) {
