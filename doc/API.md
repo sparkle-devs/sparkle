@@ -139,12 +139,6 @@ Addons with an `OPTIONS_FORMAT` array will have an "Options" button in the addon
     minLength: 1,
     maxLength: 5,
   },
-  default: {
-      "hi": true,
-      "hello": true,
-      "sick": false,
-      "howdy": false,
-  },
 ];
 ```
 
