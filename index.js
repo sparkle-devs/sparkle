@@ -899,88 +899,58 @@ class CrackleMorph extends ScrollFrameMorph {
         this.settings = new AlignmentMorph("column", 5);
         this.settings.alignment = "left";
         this.mod.OPTIONS_FORMAT.forEach((format) => {
-            if (format?.type == "multiSelect") {
+            if (format?.id && Array.isArray(format.default)) {
                 const myself = this;
-                let label = new StringMorph(
-                    format.name,
-                    12,
-                    "sans-serif",
-                    true,
-                    null,
-                    false,
-                    false,
-                    null,
-                    BLACK,
-                );
-
-                this.settings.add(label);
-
-                for (const [display, real] of Object.entries(format.options)) {
-                    let checkbox = new ToggleMorph(
-                        "checkbox",
+                let list,
+                    label = new StringMorph(
+                        format.name,
+                        12,
+                        "sans-serif",
+                        true,
                         null,
+                        false,
+                        false,
+                        null,
+                        BLACK,
+                    ),
+                    plus = new PushButtonMorph(
+                        this,
                         () => {
-                            myself.newOptions[format.id][real] = !myself.newOptions[format.id][real];
-                        }, // action,
-                        display, // label
-                        () => myself.newOptions[format.id][real], // query
-                    );
-
-                    this.settings.add(checkbox);
-                }
-            } else if (format?.id && Array.isArray(format.default)) {
-                if (format?.id && Array.isArray(format.default)) {
-                    const myself = this;
-                    let list,
-                        label = new StringMorph(
-                            format.name,
-                            12,
-                            "sans-serif",
-                            true,
-                            null,
-                            false,
-                            false,
-                            null,
-                            BLACK,
-                        ),
-                        plus = new PushButtonMorph(
-                            this,
-                            () => {
-                                if (!Array.isArray(myself.newOptions[format.id])) {
-                                    myself.newOptions[format.id] = [];
-                                }
-                                if (myself.newOptions[format.id].length > format.maxLength) {
-                                    remakeLayout();
-                                    return;
-                                }
-                                myself.newOptions[format.id].push(
-                                    format.default[
-                                        myself.newOptions[format.id].length % format.default.length
-                                    ],
-                                );
+                            if (!Array.isArray(myself.newOptions[format.id])) {
+                                myself.newOptions[format.id] = [];
+                            }
+                            if (myself.newOptions[format.id].length > format.maxLength) {
                                 remakeLayout();
-                            },
-                            "+",
-                        ),
-                        less = new PushButtonMorph(
-                            this,
-                            () => {
-                                if (myself.newOptions[format.id].length - 1 < format.minLength) {
-                                    remakeLayout();
-                                    return;
-                                }
-                                myself.newOptions[format.id].pop();
+                                return;
+                            }
+                            myself.newOptions[format.id].push(
+                                format.default[
+                                    myself.newOptions[format.id].length % format.default.length
+                                ],
+                            );
+                            remakeLayout();
+                        },
+                        "+",
+                    ),
+                    less = new PushButtonMorph(
+                        this,
+                        () => {
+                            if (myself.newOptions[format.id].length - 1 < format.minLength) {
                                 remakeLayout();
-                            },
-                            "-",
-                        ),
-                        buttonGroup = new AlignmentMorph("row", 5);
-                    buttonGroup.alignment = "left";
-                    buttonGroup.add(plus);
-                    buttonGroup.add(less);
-                    buttonGroup.fixLayout();
-                    list = new AlignmentMorph("column", 5);
-                    list.alignment = "left";
+                                return;
+                            }
+                            myself.newOptions[format.id].pop();
+                            remakeLayout();
+                        },
+                        "-",
+                    ),
+                    buttonGroup = new AlignmentMorph("row", 5);
+                buttonGroup.alignment = "left";
+                buttonGroup.add(plus);
+                buttonGroup.add(less);
+                buttonGroup.fixLayout();
+                list = new AlignmentMorph("column", 5);
+                list.alignment = "left";
 
                     let total = new AlignmentMorph("column", 5);
                     total.alignment = "left";
@@ -1028,37 +998,36 @@ class CrackleMorph extends ScrollFrameMorph {
                             BLACK,
                         );
 
-                    morph = this.buildOptionMorph(
-                        format,
-                        () => this.newOptions[format.id],
-                        (x) => (this.newOptions[format.id] = x),
-                    );
-                    let total = new AlignmentMorph("row", 5);
-                    total.color = PushButtonMorph.prototype.color;
-                    total.alignment = "left";
-                    total.add(label);
-                    total.add(morph);
-                    total.fixLayout();
-                    this.settings.add(total);
-                } else if (typeof format === "string") {
-                    let morph = new StringMorph(
-                        format,
-                        15,
-                        "sans-serif",
-                        false,
-                        null,
-                        false,
-                        false,
-                        null,
-                        BLACK,
-                    );
-                    this.settings.add(morph);
-                } else if (format === null) {
-                    let morph = new Morph();
-                    morph.alpha = 0;
-                    morph.setExtent(new Point(200, 5));
-                    this.settings.add(morph);
-                }
+                morph = this.buildOptionMorph(
+                    format,
+                    () => this.newOptions[format.id],
+                    (x) => (this.newOptions[format.id] = x),
+                );
+                let total = new AlignmentMorph("row", 5);
+                total.color = PushButtonMorph.prototype.color;
+                total.alignment = "left";
+                total.add(label);
+                total.add(morph);
+                total.fixLayout();
+                this.settings.add(total);
+            } else if (typeof format === "string") {
+                let morph = new StringMorph(
+                    format,
+                    15,
+                    "sans-serif",
+                    false,
+                    null,
+                    false,
+                    false,
+                    null,
+                    BLACK,
+                );
+                this.settings.add(morph);
+            } else if (format === null) {
+                let morph = new Morph();
+                morph.alpha = 0;
+                morph.setExtent(new Point(200, 5));
+                this.settings.add(morph);
             }
         });
         this.settings.fixLayout();
