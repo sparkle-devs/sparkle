@@ -12,7 +12,13 @@ Visit the Releases tab and choose a Sparkle version. Download the file named `sp
 ### Waiting for the fork to load
 In some cases, it may be useful to run code once your fork has loaded. Sparkle exposes a function called `waitForSnapReady()` that does exactly that. Here's an example:
 ~~~javascript
-waitForSnapReady().then(alert("Loaded!"));
+waitForSnapReady().then(() => alert("Loaded!"));
+~~~
+
+### Preloading addons
+You can preload an addon from a URL using the `preloadAddonFromPath` function:
+~~~javascript
+preloadAddonFromPath("src/addon.js");
 ~~~
 
 ## Modifying snap.html
