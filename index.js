@@ -715,7 +715,6 @@ class CrackleMorph extends ScrollFrameMorph {
         );
         this.contents.fixLayout();
     }
-    /*
     buildSettings() {
         if (this.settings) {
             this.settings.destroy();
@@ -738,7 +737,6 @@ class CrackleMorph extends ScrollFrameMorph {
         }
         this.addContents(this.settings);
     }
-    */
     buildOptionMorph(format, getter, setter) {
         let morph;
         if (format.type === "boolean") {
@@ -1789,12 +1787,10 @@ function preloadAddonFromPath(path) {
             },
         },
         isDev: false,
-        /*
         toggleDev() {
             window.__crackle__.isDev = !window.__crackle__.isDev;
             this.saveSettings();
         },
-        */
         loadSettings() {
             const settings = JSON.parse(this.storage.get("crackle_settings") || "{}");
             this.isDev = settings.isDev !== false;
@@ -1896,7 +1892,6 @@ function preloadAddonFromPath(path) {
                     world,
                 );
             },
-            /*
             settings() {
                 const dlg = new DialogBoxMorph(),
                     body = new CrackleMorph(window.__crackle__, false);
@@ -1910,7 +1905,6 @@ function preloadAddonFromPath(path) {
                 dlg.fixLayout();
                 dlg.popUp(world);
             },
-            */
             download() {
                 window.open(window.__crackle__.source, "_blank");
             },
@@ -2002,7 +1996,7 @@ function preloadAddonFromPath(path) {
                     IDE_Morph.prototype.ideRender(menu);
                 }
                 menu.addItem("About Sparkle...", "about");
-                //menu.addItem("Sparkle settings...", "settings");
+                menu.addItem("Sparkle settings...", "settings");
                 menu.addItem("Download source...", "download");
                 menu.addLine();
                 menu.addItem(
