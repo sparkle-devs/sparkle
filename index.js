@@ -952,51 +952,51 @@ class CrackleMorph extends ScrollFrameMorph {
                 list = new AlignmentMorph("column", 5);
                 list.alignment = "left";
 
-                    let total = new AlignmentMorph("column", 5);
-                    total.alignment = "left";
-                    total.add(label);
-                    total.add(list);
-                    total.add(buttonGroup);
-                    this.settings.add(total);
+                let total = new AlignmentMorph("column", 5);
+                total.alignment = "left";
+                total.add(label);
+                total.add(list);
+                total.add(buttonGroup);
+                this.settings.add(total);
 
-                    let remakeLayout = () => {
-                        while (list.children.length > 0) {
-                            list.children.forEach((child) => child.destroy());
-                        }
-                        list.color = PushButtonMorph.prototype.color;
-                        for (let i = 0; i < this.newOptions[format.id].length; i++) {
-                            list.add(
-                                this.buildOptionMorph(
-                                    Object.assign(Object.assign({}, format), {
-                                        default: this.newOptions[format.id][i],
-                                    }),
-                                    () => this.newOptions[format.id][i],
-                                    (x) => (this.newOptions[format.id][i] = x),
-                                ),
-                            );
-                        }
-                        list.fixLayout();
-                        total.fixLayout();
-                        this.fixLayout();
-                        if (this.parent) {
-                            this.parent.fixLayout();
-                        }
-                    };
-
-                    remakeLayout();
-                } else if (format?.id) {
-                    let morph,
-                        label = new StringMorph(
-                            format.name,
-                            12,
-                            "sans-serif",
-                            true,
-                            null,
-                            false,
-                            false,
-                            null,
-                            BLACK,
+                let remakeLayout = () => {
+                    while (list.children.length > 0) {
+                        list.children.forEach((child) => child.destroy());
+                    }
+                    list.color = PushButtonMorph.prototype.color;
+                    for (let i = 0; i < this.newOptions[format.id].length; i++) {
+                        list.add(
+                            this.buildOptionMorph(
+                                Object.assign(Object.assign({}, format), {
+                                    default: this.newOptions[format.id][i],
+                                }),
+                                () => this.newOptions[format.id][i],
+                                (x) => (this.newOptions[format.id][i] = x),
+                            ),
                         );
+                    }
+                    list.fixLayout();
+                    total.fixLayout();
+                    this.fixLayout();
+                    if (this.parent) {
+                        this.parent.fixLayout();
+                    }
+                };
+
+                remakeLayout();
+            } else if (format?.id) {
+                let morph,
+                    label = new StringMorph(
+                        format.name,
+                        12,
+                        "sans-serif",
+                        true,
+                        null,
+                        false,
+                        false,
+                        null,
+                        BLACK,
+                    );
 
                 morph = this.buildOptionMorph(
                     format,
