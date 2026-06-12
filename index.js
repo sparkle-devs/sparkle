@@ -1582,7 +1582,7 @@ function preloadAddonFromPath(path) {
     };
     Object.assign(window.__crackle__, {
         version: API.versionStringFromSemver(window.__crackle__.versionArray),
-        source: "https://github.com/Mojavesoft-Group/sparkle/releases",
+        source: "https://github.com/sparkle-devs/sparkle/releases",
         loadedMods: [],
         extraApi: {},
         disabledMods: {},
@@ -1591,7 +1591,7 @@ function preloadAddonFromPath(path) {
         allEventTargets: {},
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
-        addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
+        addonRepoPath: "https://raw.githubusercontent.com/sparkle-devs/SparkleAddons/refs/heads/master/",
         snap: (function() {
             // Other forks?
             if (window.snapForkName && window.snapForkVersion) {
