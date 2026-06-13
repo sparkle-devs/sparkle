@@ -1545,7 +1545,7 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        versionArray: [0, 10, 3]
+        versionArray: [0, 10, 2]
     };
     Object.assign(window.__crackle__, {
         version: API.versionStringFromSemver(window.__crackle__.versionArray),
