@@ -1562,6 +1562,14 @@ function preloadAddonFromPath(path) {
         wrappedFunctions: new Map(),
         addonRepoPath: "https://raw.githubusercontent.com/sparkle-devs/SparkleAddons/refs/heads/master/",
         snap: (function() {
+            // Other forks?
+            if (window.snapForkName && window.snapForkVersion) {
+                return {
+                    snap: window.snapForkName,
+                    version: window.snapForkVersion
+                };
+            }
+
             // Jameson?
             if (window.isJameson) {
                 return {
