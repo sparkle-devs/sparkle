@@ -2,7 +2,7 @@
 /*
     Sparkle - A modding framework for Snap! and its forks
     
-    Copyright (c) 2025-2026 Mojavesoft Group
+    Copyright (c) 2025-2026 sparkle-devs
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
@@ -1493,7 +1493,7 @@ function preloadAddonFromPath(path) {
     // create the __crackle__ object
     window.__crackle__ = {
         version: "0.9.1",
-        source: "https://github.com/Mojavesoft-Group/sparkle/releases",
+        source: "https://github.com/sparkle-devs/sparkle/releases",
         loadedMods: [],
         extraApi: {},
         disabledMods: {},
@@ -1502,7 +1502,7 @@ function preloadAddonFromPath(path) {
         allEventTargets: {},
         crackleSymbol: Symbol("Crackle Data"),
         wrappedFunctions: new Map(),
-        addonRepoPath: "https://raw.githubusercontent.com/Mojavesoft-Group/SparkleMods/refs/heads/master/",
+        addonRepoPath: "https://raw.githubusercontent.com/sparkle-devs/SparkleAddons/refs/heads/master/",
         snap: (function() {
             // Jameson?
             if (window.isJameson) {
