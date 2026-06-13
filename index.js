@@ -1897,7 +1897,7 @@ function preloadAddonFromPath(path) {
                     new Color(255, 100, 100) :
                     new Color(100, 0, 0);
                 if (IDE_Morph.prototype.ideRender) {
-                    menu.bgColor = IDE_Morph.prototype.getControlBarColor();
+                    menu.bgColor = controlBar.color;
                     IDE_Morph.prototype.ideRender(menu);
                 }
                 menu.addItem("About Sparkle...", "about");
