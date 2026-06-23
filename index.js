@@ -1,4 +1,19 @@
 "use strict";
+
+// ==UserScript==
+// @name        Sparkle
+// @namespace   sparkle
+// @match       *://snap.berkeley.edu/snap/snap.html
+// @match       *://snap.berkeley.edu/snap/dev/snap.html
+// @match       *://e016.github.io/split-mod/split.html
+// @match       *://codingisfun2831t.github.io/split-mod-prs/split.html
+// @match       *://alessandrito123.github.io/Snavanced/snap.html
+// @grant       none
+// @version     1.0
+// @author      sparkle-devs
+// @description An addon manager for the Snap! programming language and its forks.
+// ==/UserScript==
+
 /*
     Sparkle - A modding framework for Snap! and its forks
     
