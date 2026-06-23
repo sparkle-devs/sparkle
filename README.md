@@ -23,6 +23,8 @@ To install Sparkle as a bookmarklet, download the file labeled `sparkle.bookmark
 ### Pasting code into the console
 To run Sparkle by pasting JavaScript code into your console, download the file named `sparkle.min.js` from the Releases tab, copy its contents, enter your browser's JavaScript console (F12 on most browsers), and then paste the code.
 
+### Installing as a userscript
+Beginning with v0.12, Sparkle contains native support for installation as a userscript in TamperMonkey, GreaseMonkey, or ViolentMonkey. To install it as a userscript, download the `sparkle.js` file from the Releases tab and add it to your preferred userscript manager. (Exact steps will vary depending on which extension you're using; consider searching for more specific instructions online.)
 
 ## How to use
 When launching Snap! or one of its forks with Sparkle installed, you should see a new button being added to the title bar:
