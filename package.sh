@@ -9,3 +9,6 @@ cp index.js dist/sparkle.js
 npx terser dist/sparkle.js -c -m -o dist/sparkle.min.js
 printf 'javascript:' > dist/sparkle.bookmarklet.js
 cat dist/sparkle.min.js >> dist/sparkle.bookmarklet.js
+
+git clone https://github.com/bonobo-devs/toolchain.git --depth 1
+python3 toolchain/tools/packager.py bonobo.toml dist/sparkle.min.js > dist/sparkle.bonobo
