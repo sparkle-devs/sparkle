@@ -26,10 +26,10 @@ To run Sparkle by pasting JavaScript code into your console, download the file n
 ### Installing as a userscript
 Beginning with v0.12, Sparkle contains native support for installation as a userscript.
 
-### TamperMonkey/GreaseMonkey/ViolentMonkey
+#### TamperMonkey/GreaseMonkey/ViolentMonkey
 To install Sparkle as a userscript in a *Monkey userscript manager, download the `sparkle.js` file from the Releases tab and add it to your preferred userscript manager. (Exact steps will vary depending on which extension you're using; consider searching for more specific instructions online.)
 
-### Bonobo
+#### Bonobo
 To install Sparkle in [Bonobo](https://github.com/bonobo-devs/bonobo/tree/main), download the `sparkle.bonobo` file from the Releases tab and select the downloaded file in your Bonobo userscript management window (opened by clicking the extension icon).
 
 ## How to use
