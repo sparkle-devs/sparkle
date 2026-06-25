@@ -1,5 +1,5 @@
 # Sparkle
-<img width=512 height=128 src=sparkle-text-2-nocurve.png>
+<img width=512 height=128 src=doc/sparkle-logo.png>
 
 [History](README.md#History) | [License](LICENSE)
 
