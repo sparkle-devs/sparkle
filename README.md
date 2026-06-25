@@ -1,5 +1,5 @@
 # Sparkle
-<img width=512 height=128 src=doc/wordmark.png>
+<img width=384 height=124 src=doc/wordmark.png>
 
 [History](README.md#History) | [License](LICENSE)
 
