@@ -1,26 +1,27 @@
 {
-  "manifest_version": 3,
-  "name": "Sparkle",
-  "version": "0.12.0",
-  "description": "Modding framework for Snap! and its forks.",
-  "content_scripts": [
-    {
-      "matches": [
-        "*://snap.berkeley.edu/snap/snap.html",
-        "*://snap.berkeley.edu/snap/dev/snap.html",
-        "*://e016.github.io/split-mod/split.html",
-        "*://codingisfun2831t.github.io/split-mod-prs/split.html",
-        "*://alessandrito123.github.io/Snavanced/snap.html"
-      ],
-      "js": ["index.js"],
-      "world": "MAIN"
+    "manifest_version": 3,
+    "name": "Sparkle",
+    "version": "0.12.0",
+    "description": "Modding framework for Snap! and its forks.",
+    "content_scripts": [
+        {
+            "matches": [
+                "*://snap.berkeley.edu/snap/snap.html",
+                "*://snap.berkeley.edu/snap/dev/snap.html",
+                "*://e016.github.io/split-mod/split.html",
+                "*://codingisfun2831t.github.io/split-mod-prs/split.html",
+                "*://alessandrito123.github.io/Snavanced/snap.html"
+            ],
+            "js": [
+                "index.js"
+            ],
+            "world": "MAIN"
+        }
+    ],
+    "icons": {
+        "16": "icons/16.png",
+        "32": "icons/32.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
     }
-  ],
-
-  "icons": {
-    "16": "icons/16.png",
-    "32": "icons/32.png",
-    "48": "icons/48.png",
-    "128": "icons/128.png"
-  }
 }
