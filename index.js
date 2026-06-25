@@ -1562,7 +1562,7 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        versionArray: [0, 12, 0]
+        versionArray: [0, 12, 0] // Maintainers: Change this array to match current version ([major, minor, patch]). Keyword for find-and-replace search: SEMVER-VAR.
     };
     Object.assign(window.__crackle__, {
         version: API.versionStringFromSemver(window.__crackle__.versionArray),
