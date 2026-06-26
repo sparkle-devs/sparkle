@@ -1,9 +1,10 @@
+name: Generate RoboTorvalds commentary
 on:
   pull_request:
     branches:
       - main
 jobs:
-  test:
+  robotorvalds:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
