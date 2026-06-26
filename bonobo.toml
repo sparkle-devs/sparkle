@@ -4,7 +4,7 @@ version = 1
 [userscript]
 name = "Sparkle"
 id = "sparkle"
-version = "v0.12.0"
+version = "v1.0.0"
 match = [
     "*://snap.berkeley.edu/snap/snap.html",
     "*://snap.berkeley.edu/snap/dev/snap.html",
