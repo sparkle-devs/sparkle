@@ -12,4 +12,4 @@ jobs:
 
       - uses: mshick/add-pr-comment@v3
         with:
-          message: "To quote Linus Torvalds: ${{ env.TORVALDS }}"
+          message: 'To quote Linus Torvalds: \"${{ env.TORVALDS }}\"'
