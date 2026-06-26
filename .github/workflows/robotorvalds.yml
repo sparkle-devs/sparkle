@@ -1,0 +1,15 @@
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+      - run: printf "TORVALDS=$(tail -n +2 torvalds.txt | shuf -n 1)\n" >> "$GITHUB_ENV"
+
+      - uses: mshick/add-pr-comment@v3
+        with:
+          message: 'To quote Linus Torvalds: \"${{ env.TORVALDS }}\"'
