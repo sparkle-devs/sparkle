@@ -9,7 +9,7 @@
 // @match       *://codingisfun2831t.github.io/split-mod-prs/split.html
 // @match       *://alessandrito123.github.io/Snavanced/snap.html
 // @grant       none
-// @version     0.12.0
+// @version     1.0.0
 // @author      sparkle-devs
 // @description An addon manager for the Snap! programming language and its forks.
 // ==/UserScript==
@@ -1562,7 +1562,7 @@ function preloadAddonFromPath(path) {
 
     // create the __crackle__ object
     window.__crackle__ = {
-        versionArray: [0, 12, 0] // Maintainers: Change this array to match current version ([major, minor, patch]). Keyword for find-and-replace search: SEMVER-VAR.
+        versionArray: [1, 0, 0] // Maintainers: Change this array to match current version ([major, minor, patch]). Keyword for find-and-replace search: SEMVER-VAR.
     };
     Object.assign(window.__crackle__, {
         version: API.versionStringFromSemver(window.__crackle__.versionArray),
